@@ -1,9 +1,27 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { GridToolbar } from '@mui/x-data-grid';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import AdminAddDesignation from './AdminAddDesignation';
+import AdminAddDesignations from './AdminAddDesignations';
+import axios from 'axios';
+
 const AdminDesignationSection = () => {
+    const [designations, setDesignations] = useState([]);
+
+    useEffect(() => {
+        async function fetchDesignations() {
+            try {
+                const response = await axios.get("http://localhost:8080/designations");
+                setDesignations(response.data);
+                console.log("Data : ", response.data);
+            } catch (error) {
+                console.error("Failed to fetch designations:", error);
+            }
+        }
+
+        fetchDesignations();
+    }, []);
+
     return (
         <>
             <div className="page-wrapper">
@@ -22,64 +40,92 @@ const AdminDesignationSection = () => {
                         </div>
                     </div>
                     <div className="row mb-3">
-                        <div className="row mb-3">
-                            <div className="col">
-                                <button className='btn btn-white' data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i className='fa fa-plus'></i> Add Designtion</button>
-                            </div>
+                        <div className="col">
+                            <button className='btn btn-white' data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i className='fa fa-plus'></i> Add Designation</button>
                         </div>
-                        <div className="row">
-                            <div className="col-sm-12">
-                                <div className="card" style={{ minHeight: '520px' }}>
-                                    <DataGrid
-                                        columns={[
-                                            { field: 'id', headerName: 'id', hideable: false, width: 100 },
-                                            { field: 'name', headerName: 'Name', hideable: false, width: 300 },
-                                            {
-                                                field: 'parentDesignation', headerName: 'Parent Designation', hideable: false, width: 300
-                                            },
-                                            {
-                                                field: 'action', headerName: 'Action', width: 150, renderCell: (params) => (
-                                                    <div className="btn-group" role="group" aria-label="Basic outlined example">
-                                                        <button type="button" className="btn btn-outline-primary">View</button>
-                                                        <button type="button" className="btn btn-outline-primary"><MoreVertIcon /></button>
-                                                    </div>
-                                                )
-                                            },
-                                        ]}
-                                        // rows={rows
-                                        //          rows.map(row => ({
-                                        //             id: row.id,
-                                        //     //     name: row.name,
-                                        //     //     companyName: row.companyName,
-                                        //     //     email: row.email,
-                                        //     //     addedBy: row.addedBy,
-                                        //     //     savedAt: row.savedAt,
-                                        //     //     action: row.action
-                                        //      }))
-                                        // }
-                                        slots={{
-                                            toolbar: GridToolbar,
-                                        }}
-                                        checkboxSelection
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="offcanvas offcanvas-end" tabIndex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
-                            <div className="offcanvas-header">
-                                <h2 id="offcanvasRightLabel" className='text-bold'><b>Designation</b></h2>
-                                <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                            </div>
-                            <div className="offcanvas-body">
-                                <AdminAddDesignation />
+                    </div>
+                    <div className="row">
+                        <div className="col-sm-12">
+                            <div className="card" style={{ minHeight: '520px'}}>
+                                <DataGrid
+                                    columns={[
+                                        // { field: 'designationId', headerName: 'ID', width: 100 },
+                                        { field: 'name', headerName: 'Name', width: 450 },
+                                        { field: 'parent', headerName: 'Parent Designation', width: 450 },
+                                        {
+                                            field: 'action', headerName: 'Action', width: 150, renderCell: (params) => (
+                                                <div>
+                                                    <MoreVertIcon className="dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" />
+                                                    <ul className="dropdown-menu btn" aria-labelledby="dropdownMenuLink" style={{ fontSize: 'smaller' }}>
+                                                        <li data-bs-toggle="modal" data-bs-target="#viewModal"><a className="dropdown-item" ><i className="fa fa-eye"></i> View</a></li>
+                                                        <li><a className="dropdown-item" href="#"><i className="fa fa-pen"></i> Edit</a></li>
+                                                        <li><a className="dropdown-item" href="#"><i className="fa fa-trash" aria-hidden="true"></i> Delete</a></li>
+                                                    </ul>
+                                                </div>
+                                            )
+                                        },
+                                    ]}
+                                    rows={designations.map(designation => ({
+                                        id: designation.designationId,
+                                        name: designation.name,
+                                        parent: designation.parent,
+                                        action: '', // You can customize action buttons here if needed
+                                    }))}
+                                    slots={{
+                                        toolbar: GridToolbar,
+                                    }}
+                                    checkboxSelection
+                                />
                             </div>
                         </div>
                     </div>
-                    {/*End Page Content*/}
+                    <div className="offcanvas offcanvas-end" tabIndex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+                        <div className="offcanvas-header">
+                            <h2 id="offcanvasRightLabel" className='text-bold'><b>Designations</b></h2>
+                            <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div className="offcanvas-body">
+                            <AdminAddDesignations />
+                        </div>
+                    </div>
+                    <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Designation Details</h1>
+                                    <div class="dropdown" style={{fontSize:'smaller'}}>
+                                        <button class="btn btn-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#">Edit</a></li>
+                                            <li><a class="dropdown-item" href="#">Delete</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="modal-body">
+                                    <table style={{ border: 'none' }} className='table table-stripped'>
+                                        <tr>
+                                            <th>Name</th>
+                                            <td>--</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Parent</th>
+                                            <td>--</td>
+                                        </tr>
+                                    </table>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </>
-    )
-}
+    );
+};
 
-export default AdminDesignationSection
+export default AdminDesignationSection;

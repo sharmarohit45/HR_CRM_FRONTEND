@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 function AdminEmployeeForm() {
+    const [designation, setDesignation] = useState();
+    const [department, setDepartment] = useState();
     const [formData, setFormData] = useState({
         employeeIdentityentity: '',
         salutation: '',
@@ -65,7 +67,16 @@ function AdminEmployeeForm() {
             // Handle error
         }
     }
-    
+    async function getData() {
+        const response = await axios.get("http://localhost:8080/designations");
+        setDesignation(response.data);
+        const departmentresponse = await axios.get("http://localhost:8080/departments");
+        setDepartment(departmentresponse.data);
+    }
+    useEffect(() => {
+        getData();
+    }, [])
+
     return (
         <>
             <div className="row">
@@ -123,23 +134,18 @@ function AdminEmployeeForm() {
                                     <label htmlFor="designation">Designation</label>
                                     <select className="form-select" name="designation" value={formData.designation} onChange={handleChange}>
                                         <option value="">--</option>
-                                        <option value="Trainee">Trainee</option>
-                                        <option value="Senior">Senior</option>
-                                        <option value="Junior">Junior</option>
-                                        <option value="Team Lead">Team Lead</option>
-                                        <option value="Project Manager">Project Manager</option>
+                                        {designation && designation.map((desg)=>{
+                                            return<option value={desg.name}>{desg.name}</option>
+                                        })}
+                                        
                                     </select>
                                 </div>
                                 <div className="col">
                                     <label htmlFor="department">Department</label>
                                     <select className="form-select" name="department" value={formData.department} onChange={handleChange}>
                                         <option value="">--</option>
-                                        <option value="Marketing">Marketing</option>
-                                        <option value="Sales">Sales</option>
-                                        <option value="Human Resource">Human Resource</option>
-                                        <option value="Public Relations">Public Relations</option>
-                                        <option value="Research">Research</option>
-                                        <option value="Finance">Finance</option>
+                                        {department && department.map((dept)=>{return<option value={dept.departmentName}>{dept.departmentName}</option>})}
+                                     
                                     </select>
                                 </div>
                             </div>
@@ -181,7 +187,12 @@ function AdminEmployeeForm() {
                                 </div>
                                 <div className="col">
                                     <label htmlFor="emp_User_Name">User Role</label>
-                                    <input type="text" name="empUserRole" className="form-control" value={formData.empUserRole} onChange={handleChange} />
+                                    <select className="form-select" name="empUserRole" value={formData.empUserRole} onChange={handleChange}>
+                                        <option value="">--</option>
+                                        <option value="App Administrator">App Administrator</option>
+                                        <option value="Employee">Employee</option>
+                                        <option value="Manager">Manager</option>
+                                    </select>
                                 </div>
                             </div>
                             <div className="row">
@@ -290,7 +301,7 @@ function AdminEmployeeForm() {
                                     <button type="submit" className="btn btn-white form-control">Save</button>
                                 </div>
                                 <div className="col-sm-3">
-                                    <button type="reset" className="btn btn-white form-control">Cancel</button>
+                                    <button type="reset" className="btn btn-white form-control" data-bs-dismiss="offcanvas">Cancel</button>
                                 </div>
                             </div>
                         </form>

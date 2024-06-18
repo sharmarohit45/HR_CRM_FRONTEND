@@ -5,6 +5,13 @@ import { useLocation } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import { GridToolbar } from '@mui/x-data-grid';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import AdminAddProjectForm from './AdminAddProjectForm';
+import AdminAddTaskForm from './AdminAddTaskForm';
+import AdminAddLeaveForm from './AdminAddLeaveForm';
+import AdminAddTimeLog from './AdminAddTimeLog';
+import AdminCreateTicketForm from './AdminCreateTicketForm';
+import AdminAddTicketForm from './AdminAddTicketForm';
+import AdminAddAppereciation from './AdminAddAppereciation';
 
 const AdminEmployeeProfile = () => {
     const [data, setData] = useState(null);
@@ -335,7 +342,7 @@ const AdminEmployeeProfile = () => {
                     <div className="tab-pane fade" id="emp_projects">
                         <div className="row">
                             <div className="col">
-                                <button type='button' className='btn btn-white mb-2'>Add Project</button>
+                                <button type='button' className='btn btn-white mb-2'  data-bs-toggle="offcanvas" data-bs-target="#AddProject" aria-controls="offcanvasRight">Add Project</button>
                             </div>
                         </div>
                         <div className="row">
@@ -358,7 +365,7 @@ const AdminEmployeeProfile = () => {
                                                 field: 'deadline', headerName: 'Deadline', hideable: false, width: 155
                                             },
                                             {
-                                                field: 'client', headerName: 'CLient', hideable: false, width: 155
+                                                field: 'client', headerName: 'Client', hideable: false, width: 155
                                             },
                                             {
                                                 field: 'status', headerName: 'Status', hideable: false, width: 155
@@ -398,7 +405,7 @@ const AdminEmployeeProfile = () => {
                     <div className="tab-pane fade" id="emp_tasks">
                         <div className="row">
                             <div className="col">
-                                <button type='button' className='btn btn-white mb-2'><i className='fa fa-plus'></i> Add Task</button>
+                                <button type='button' className='btn btn-white mb-2' data-bs-toggle="offcanvas" data-bs-target="#AddTask" aria-controls="offcanvasRight"><i className='fa fa-plus'></i> Add Task</button>
                             </div>
                         </div>
                         <div className="row">
@@ -467,7 +474,7 @@ const AdminEmployeeProfile = () => {
                     <div className='tab-pane fade' id="emp_leaves">
                         <div className="row">
                             <div className="col">
-                                <button type='button' className='btn btn-white mb-2'><i className='fa fa-plus'></i> New Leave</button>
+                                <button type='button' className='btn btn-white mb-2'  data-bs-toggle="offcanvas" data-bs-target="#NewLeave" aria-controls="offcanvasRight"><i className='fa fa-plus'></i> New Leave</button>
                             </div>
                         </div>
                         <div className="row">
@@ -628,7 +635,7 @@ const AdminEmployeeProfile = () => {
                     <div className='tab-pane fade' id="timesheet">
                         <div className="row">
                             <div className="col">
-                                <button type='button' className='btn btn-white mb-2'><i className='fa fa-plus'></i> Log Time</button>
+                                <button type='button' className='btn btn-white mb-2'   data-bs-toggle="offcanvas" data-bs-target="#LogTime" aria-controls="offcanvasRight"><i className='fa fa-plus'></i> Log Time</button>
                             </div>
                         </div>
                         <div className="row">
@@ -697,33 +704,33 @@ const AdminEmployeeProfile = () => {
                                         <div className="col p-3">
                                             <h3>Documents</h3>
                                             <p style={{ color: 'blue', cursor: 'pointer' }} onClick={visibility}><i className='fa fa-plus'></i> Add File</p>
-                                           {
-                                            visible?
-                                             <div className="row">
-                                                <div className="col">
-                                                    <form action="">
-                                                        <div className="row mb-2">
-                                                            <div className="col">
-                                                                <label htmlFor="">File Name</label>
-                                                                <input type="text" name="" id="" className='form-control' />
-                                                            </div>
+                                            {
+                                                visible ?
+                                                    <div className="row">
+                                                        <div className="col">
+                                                            <form action="">
+                                                                <div className="row mb-2">
+                                                                    <div className="col">
+                                                                        <label htmlFor="">File Name</label>
+                                                                        <input type="text" name="" id="" className='form-control' />
+                                                                    </div>
+                                                                </div>
+                                                                <div className="row mb-2">
+                                                                    <div className="col">
+                                                                        <label htmlFor="">Upload File</label>
+                                                                        <input type="file" name="" id="" className='form-control' />
+                                                                    </div>
+                                                                </div>
+                                                                <div className="row mb-2">
+                                                                    <div className="col text-end">
+                                                                        <button type="button" className='btn btn-white'>Cancel</button>&nbsp;
+                                                                        <button type="submit" className='btn btn-white'>Submit</button>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
                                                         </div>
-                                                        <div className="row mb-2">
-                                                            <div className="col">
-                                                                <label htmlFor="">Upload File</label>
-                                                                <input type="file" name="" id="" className='form-control' />
-                                                            </div>
-                                                        </div>
-                                                        <div className="row mb-2">
-                                                            <div className="col text-end">
-                                                                <button type="button" className='btn btn-white'>Cancel</button>&nbsp;
-                                                                <button type="submit" className='btn btn-white'>Submit</button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>:''
-                                           }
+                                                    </div> : ''
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -733,7 +740,7 @@ const AdminEmployeeProfile = () => {
                     <div className='tab-pane fade' id="emergency_contacts">
                         <div className="row">
                             <div className="col">
-                                <button type='button' className='btn btn-white mb-2'><i className='fa fa-plus'></i> Create New</button>
+                                <button type='button' className='btn btn-white mb-2'   data-bs-toggle="offcanvas" data-bs-target="#CreateNew" aria-controls="offcanvasRight"><i className='fa fa-plus'></i> Create New</button>
                             </div>
                         </div>
                         <div className="row">
@@ -798,8 +805,8 @@ const AdminEmployeeProfile = () => {
                     <div className='tab-pane fade' id="ticket">
                         <div className="row">
                             <div className="col">
-                                <button type='button' className='btn btn-white mb-2'><i className='fa fa-plus'></i> Create Ticket</button> &nbsp; &nbsp;
-                                <button type='button' className='btn btn-white mb-2'><i className='fa fa-pen'></i> Ticket Form</button>
+                                <button type='button' className='btn btn-white mb-2'   data-bs-toggle="offcanvas" data-bs-target="#CreateTicket" aria-controls="offcanvasRight"><i className='fa fa-plus'></i> Create Ticket</button> &nbsp; &nbsp;
+                                <button type='button' className='btn btn-white mb-2'   data-bs-toggle="offcanvas" data-bs-target="#TicketForm" aria-controls="offcanvasRight"><i className='fa fa-pen'></i> Ticket Form</button>
                             </div>
                         </div>
                         <div className="row">
@@ -859,7 +866,7 @@ const AdminEmployeeProfile = () => {
                     <div className='tab-pane fade' id="appreciation">
                         <div className="row">
                             <div className="col">
-                                <button type='button' className='btn btn-white mb-2'><i className='fa fa-plus'></i> Add Appreciation</button>
+                                <button type='button' className='btn btn-white mb-2' data-bs-toggle="offcanvas" data-bs-target="#AddAppreciation" aria-controls="offcanvasRight"><i className='fa fa-plus'></i> Add Appreciation</button>
                             </div>
                         </div>
                         <div className="row">
@@ -916,6 +923,94 @@ const AdminEmployeeProfile = () => {
                     </div>
                     <div className='tab-pane fade' id="immigration">
                         <h6>Coming Sooooon....</h6>
+                    </div>
+                </div>
+                <div className="offcanvas offcanvas-end" tabIndex="-1" id="AddProject" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+                    <div className="offcanvas-header">
+                        <h2 id="offcanvasRightLabel" className='text-bold'><b>Add Project</b></h2>
+                        <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div className="offcanvas-body">
+                        <div className="card">
+                            <AdminAddProjectForm />
+                        </div>
+                    </div>
+                </div>
+                <div className="offcanvas offcanvas-end" tabIndex="-1" id="AddTask" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+                    <div className="offcanvas-header">
+                        <h2 id="offcanvasRightLabel" className='text-bold'><b>Add Task</b></h2>
+                        <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div className="offcanvas-body">
+                        <div className="card">
+                            <AdminAddTaskForm />
+                        </div>
+                    </div>
+                </div>
+                <div className="offcanvas offcanvas-end" tabIndex="-1" id="NewLeave" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+                    <div className="offcanvas-header">
+                        <h2 id="offcanvasRightLabel" className='text-bold'><b>New Leave</b></h2>
+                        <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div className="offcanvas-body">
+                        <div className="card">
+                        <AdminAddLeaveForm />
+                        </div>
+                    </div>
+                </div>
+                <div className="offcanvas offcanvas-end" tabIndex="-1" id="LogTime" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+                    <div className="offcanvas-header">
+                        <h2 id="offcanvasRightLabel" className='text-bold'><b>Log Time</b></h2>
+                        <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div className="offcanvas-body">
+                        <div className="card">
+                        <AdminAddTimeLog />
+                        </div>
+                    </div>
+                </div>
+                <div className="offcanvas offcanvas-end" tabIndex="-1" id="CreateNew" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+                    <div className="offcanvas-header">
+                        <h2 id="offcanvasRightLabel" className='text-bold'><b>Add New Emergency Contact</b></h2>
+                        <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div className="offcanvas-body">
+                        <div className="card">
+                            {/* <AdminAddProjectForm /> */}
+                        </div>
+                    </div>
+                </div>
+                <div className="offcanvas offcanvas-end" tabIndex="-1" id="CreateTicket" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+                    <div className="offcanvas-header">
+                        <h2 id="offcanvasRightLabel" className='text-bold'><b>Create Ticket</b></h2>
+                        <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div className="offcanvas-body">
+                        <div className="card">
+                        <AdminCreateTicketForm />
+                        </div>
+                    </div>
+                </div>
+                <div className="offcanvas offcanvas-end" tabIndex="-1" id="TicketForm" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+                    <div className="offcanvas-header">
+                        <h2 id="offcanvasRightLabel" className='text-bold'><b>Ticket Form</b></h2>
+                        <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div className="offcanvas-body">
+                        <div className="card">
+                            <AdminAddTicketForm />
+                        </div>
+                    </div>
+                </div>
+                <div className="offcanvas offcanvas-end" tabIndex="-1" id="AddAppreciation" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+                    <div className="offcanvas-header">
+                        <h2 id="offcanvasRightLabel" className='text-bold'><b>Add Appreciation</b></h2>
+                        <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div className="offcanvas-body">
+                        <div className="card">
+                        <AdminAddAppereciation />
+                        </div>
                     </div>
                 </div>
             </div>

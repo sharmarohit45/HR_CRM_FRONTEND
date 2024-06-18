@@ -44,13 +44,13 @@ const EmployeeSettings = () => {
                                                 <div  className="col-sm-6">
                                                     <div  className="form-group">
                                                         <label>Company Name <span  className="text-danger">*</span></label>
-                                                        <input  className="form-control" type="text" value="Dreamguy's Technologies" />
+                                                        <input  className="form-control" type="text" value="" />
                                                     </div>
                                                 </div>
                                                 <div  className="col-sm-6">
                                                     <div  className="form-group">
                                                         <label>Contact Person</label>
-                                                        <input  className="form-control " value="Daniel Porter" type="text" />
+                                                        <input  className="form-control " value="" type="text" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -58,13 +58,14 @@ const EmployeeSettings = () => {
                                                 <div  className="col-sm-12">
                                                     <div  className="form-group">
                                                         <label>Address</label>
-                                                        <input  className="form-control " value="3864 Quiet Valley Lane, Sherman Oaks, CA, 91403" type="text" />
+                                                        <input  className="form-control " value="" type="text" />
                                                     </div>
                                                 </div>
                                                 <div  className="col-sm-6 col-md-6 col-lg-3">
                                                     <div  className="form-group">
                                                         <label>Country</label>
                                                         <select  className="form-control select">
+                                                            <option value="">--</option>
                                                             <option>USA</option>
                                                             <option>United Kingdom</option>
                                                         </select>
@@ -73,13 +74,14 @@ const EmployeeSettings = () => {
                                                 <div  className="col-sm-6 col-md-6 col-lg-3">
                                                     <div  className="form-group">
                                                         <label>City</label>
-                                                        <input  className="form-control" value="Sherman Oaks" type="text" />
+                                                        <input  className="form-control" value="" type="text" />
                                                     </div>
                                                 </div>
                                                 <div  className="col-sm-6 col-md-6 col-lg-3">
                                                     <div  className="form-group">
                                                         <label>State/Province</label>
                                                         <select  className="form-control select">
+                                                            <option value="">--</option>
                                                             <option>California</option>
                                                             <option>Alaska</option>
                                                             <option>Alabama</option>
@@ -89,7 +91,7 @@ const EmployeeSettings = () => {
                                                 <div  className="col-sm-6 col-md-6 col-lg-3">
                                                     <div  className="form-group">
                                                         <label>Postal Code</label>
-                                                        <input  className="form-control" value="91403" type="text" />
+                                                        <input  className="form-control" value="" type="text" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -97,13 +99,13 @@ const EmployeeSettings = () => {
                                                 <div  className="col-sm-6">
                                                     <div  className="form-group">
                                                         <label>Email</label>
-                                                        <input  className="form-control" value="danielporter@example.com" type="email" />
+                                                        <input  className="form-control" value="" type="email" />
                                                     </div>
                                                 </div>
                                                 <div  className="col-sm-6">
                                                     <div  className="form-group">
                                                         <label>Phone Number</label>
-                                                        <input  className="form-control" value="818-978-7102" type="text" />
+                                                        <input  className="form-control" value="" type="text" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -111,13 +113,13 @@ const EmployeeSettings = () => {
                                                 <div  className="col-sm-6">
                                                     <div  className="form-group">
                                                         <label>Mobile Number</label>
-                                                        <input  className="form-control" value="818-635-5579" type="text" />
+                                                        <input  className="form-control" value="" type="text" />
                                                     </div>
                                                 </div>
                                                 <div  className="col-sm-6">
                                                     <div  className="form-group">
                                                         <label>Fax</label>
-                                                        <input  className="form-control" value="818-978-7102" type="text" />
+                                                        <input  className="form-control" value="" type="text" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -125,12 +127,13 @@ const EmployeeSettings = () => {
                                                 <div  className="col-sm-12">
                                                     <div  className="form-group">
                                                         <label>Website Url</label>
-                                                        <input  className="form-control" value="https://www.example.com" type="text" />
+                                                        <input  className="form-control" value="" type="text" />
                                                     </div>
                                                 </div>
                                             </div>
                                             <div  className="submit-section">
-                                                <button  className="btn btn-primary submit-btn">Save</button>
+                                                <button  className="btn btn-white submit-btn">Save</button>
+                                                
                                             </div>
                                         </form>
                                     </div>

@@ -84,7 +84,6 @@ const AdminAddProjectForm = () => {
         if(EmployeeIds){
             const result = EmployeeIds.join(',');
             data.append('employeeIds',result)
-            console.log("result",result)
         }
         if(ClientId){
             data.append('ClientIId',ClientId);
@@ -102,8 +101,6 @@ const AdminAddProjectForm = () => {
                    
                 }
             });
-            console.log(response.data);
-            console.log(formData);
             // Handle response data as needed
         } catch (error) {
             console.error('There was an error', error);
@@ -170,8 +167,6 @@ const AdminAddProjectForm = () => {
     ];
     return (
         <>
-            {console.log("clientid", ClientId)}
-            {console.log("employee", EmployeeIds)}
             <div className="row">
                 <div className="col">
                     <div className="card">

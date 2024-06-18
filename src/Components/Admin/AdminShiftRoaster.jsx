@@ -7,6 +7,8 @@ function AdminShiftRoaster() {
     const [dates, setDates] = useState([]);
     const [currentWeek, setCurrentWeek] = useState(0);
     const [shifts, setShifts] = useState([]);
+    const [shiftData,setShiftData]=useState();
+    const [IdandDate,setIdandDate]=useState(null)
     const [formData, setFormData] = useState({
         employeeId: '',
         employeeShift:'',
@@ -24,10 +26,6 @@ function AdminShiftRoaster() {
     };
 
     useEffect(() => {
-        getData();
-    }, []);
-
-    useEffect(() => {
         generateDates(currentWeek);
     }, [currentWeek]);
 
@@ -39,7 +37,25 @@ function AdminShiftRoaster() {
             console.error('Error fetching data:', error);
         }
     }
+    async function getShiftData() {
+        try {
+            const response = await axios.get("http://localhost:8080/shift/data");
+            setShiftData(response.data);
 
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+    useEffect(() => {
+
+        const intervalID = setInterval(() => {
+            getData();
+          }, 100);
+          return () => clearInterval(intervalID);
+    }, []);
+    useEffect(()=>{
+        getShiftData();
+    },[])
     const generateDates = (weekOffset) => {
         const today = new Date();
         today.setDate(today.getDate() + weekOffset * 7 - today.getDay());
@@ -73,11 +89,7 @@ function AdminShiftRoaster() {
 
         try {
             const response = await axios.post('http://localhost:8080/shift', submitData);
-            console.log('Shift submitted:', response.data);
-
-            // Assuming you want to update the shifts after successful submission
-            // Fetch updated data or update the local state accordingly
-            getData(); // This will refetch the shifts after successful submission
+            getData(); 
         } catch (error) {
             if (error.response) {
                 console.error('Error submitting shift:', error.response.data);
@@ -87,15 +99,23 @@ function AdminShiftRoaster() {
         }
     };
 
+    const showIdAndDate=(employeeId,date)=>{
+        let data={
+            employeeId:employeeId,
+            date:date
+        }
+        setIdandDate(data)
+    }
+
     const renderShift = (employeeId, date) => {
-        const shift = shifts.find(shift => shift.empId === employeeId && new Date(shift.start).toDateString().slice(4, 10) === date);
+        const shift = shiftData && shiftData.find( shift => shift?.employee?.empId === employeeId && new Date(shift?.date).toDateString().slice(4, 10) === date);
         if (shift) {
             return (
                 <div className="user-add-shedule-list">
                     <h2>
                         <a href="#" data-bs-toggle="modal" data-bs-target="#edit_schedule" style={{ border: '2px dashed #1eb53a' }}>
-                            <span className="username-info m-b-10">{`${new Date(shift.start).toLocaleTimeString()} - ${new Date(shift.end).toLocaleTimeString()} (${Math.abs(new Date(shift.end) - new Date(shift.start)) / 36e5} hrs)`}</span>
-                            <span className="userrole-info">{shift.title}</span>
+                            <span className="userrole-info">{shift.employeeShift}</span>
+
                         </a>
                     </h2>
                 </div>
@@ -103,7 +123,7 @@ function AdminShiftRoaster() {
         } else {
             return (
                 <div className="user-add-shedule-list">
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#add_schedule">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#add_schedule" onClick={() => showIdAndDate(employeeId, date)}>
                         <span><i className="fa fa-plus"></i></span>
                     </a>
                 </div>
@@ -201,6 +221,7 @@ function AdminShiftRoaster() {
                                         <h3>Date :</h3>
                                     </div>
                                     <div className="col">
+                                        <p> {IdandDate && <p>{IdandDate.date}</p>}</p>
                                         <input type="date" name="date" value={formData.date} onChange={handleChange} className='form-control' required />
                                     </div>
                                 </div>
@@ -209,6 +230,7 @@ function AdminShiftRoaster() {
                                         <h3>Employee ID :</h3>
                                     </div>
                                     <div className="col">
+                                    {IdandDate && <p>{IdandDate.employeeId}</p>}
                                         <input type="text" name="employeeId" value={formData.employeeId} onChange={handleChange} className='form-control' required />
                                     </div>
                                 </div>
@@ -244,6 +266,7 @@ function AdminShiftRoaster() {
                                 </div>
                                 <div className="submit-section">
                                     <button type="submit" className="btn btn-white submit-btn">Submit</button>
+                                    <button type="button" className="btn btn-white submit-btn" data-bs-dismiss="modal">Cancel</button>
                                 </div>
                             </form>
                         </div>
@@ -264,3 +287,4 @@ function AdminShiftRoaster() {
 }
 
 export default AdminShiftRoaster;
+

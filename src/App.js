@@ -154,7 +154,7 @@ function App() {
             <Route path='/admin/employee-profile/:empId' element={<AdminEmployeeProfile />} />
             <Route path='/admin/dashboard' element={<AdminProfileDashboard />} />
 
-            <Route path='/admin/client-profile' element={<AdminClientSectionProfile />} />
+            <Route path='/admin/client-profile/:clientId' element={<AdminClientSectionProfile />} />
             <Route path='/admin/project-tab' element={<AdminProjectTab />} />
             <Route path='/admin/client-tab' element={<AdminClientSection />} />
             <Route path='/admin/hr-tab' element={<AdminHrTab />} />

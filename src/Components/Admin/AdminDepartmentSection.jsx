@@ -1,10 +1,26 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import { GridToolbar } from '@mui/x-data-grid';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import AdminAddDepartment from './AdminAddDepartment';
+import AdminAddDepartments from './AdminAddDepartments';
+import axios from 'axios';
+
 
 const AdminDepartmentSection = () => {
+    const [departments, setDepartments] = useState([]);
+
+
+    useEffect(() => {
+        async function fetchDepartment() {
+            try {
+                const response = await axios.get("http://localhost:8080/departments");
+                setDepartments(response.data);
+            } catch (error) {
+                console.error("Failed to fetch designations:", error);
+            }
+        }
+        fetchDepartment();
+    }, []);
     return (
         <>
             <div className="page-wrapper">
@@ -33,31 +49,31 @@ const AdminDepartmentSection = () => {
                                 <div className="card" style={{ minHeight: '520px' }}>
                                     <DataGrid
                                         columns={[
-                                            { field: 'id', headerName: 'id', hideable: false, width: 100 },
-                                            { field: 'name', headerName: 'Name', hideable: false, width: 300 },
+                                            // { field: 'id', headerName: 'id', hideable: false, width: 100 },
+                                            { field: 'departmentName', headerName: 'Name', hideable: false, width: 400 },
                                             {
-                                                field: 'parentDepartment', headerName: 'Parent Department', hideable: false, width: 300
+                                                field: 'departmentParent', headerName: 'Parent Department', hideable: false, width: 500
                                             },
                                             {
                                                 field: 'action', headerName: 'Action', width: 150, renderCell: (params) => (
-                                                    <div className="btn-group" role="group" aria-label="Basic outlined example">
-                                                        <button type="button" className="btn btn-outline-primary">View</button>
-                                                        <button type="button" className="btn btn-outline-primary"><MoreVertIcon /></button>
+                                                    <div>
+                                                        <MoreVertIcon className="dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" />
+                                                        <ul className="dropdown-menu btn" aria-labelledby="dropdownMenuLink" style={{ fontSize: 'smaller' }}>
+                                                            <li data-bs-toggle="modal" data-bs-target="#viewModal"><a className="dropdown-item" ><i className="fa fa-eye"></i> View</a></li>
+                                                            <li><a className="dropdown-item" href="#"><i className="fa fa-pen"></i> Edit</a></li>
+                                                            <li><a className="dropdown-item" href="#"><i className="fa fa-trash" aria-hidden="true"></i> Delete</a></li>
+                                                        </ul>
                                                     </div>
                                                 )
                                             },
                                         ]}
-                                        // rows={rows
-                                        //          rows.map(row => ({
-                                        //             id: row.id,
-                                        //     //     name: row.name,
-                                        //     //     companyName: row.companyName,
-                                        //     //     email: row.email,
-                                        //     //     addedBy: row.addedBy,
-                                        //     //     savedAt: row.savedAt,
-                                        //     //     action: row.action
-                                        //      }))
-                                        // }
+                                         rows={departments.map(departments => ({
+                                                     id: departments.departmentId,
+                                                     departmentName: departments.departmentName,
+                                                     departmentParent: departments.departmentParent,
+                                                  action: departments.action
+                                              }))
+                                         }
                                         slots={{
                                             toolbar: GridToolbar,
                                         }}
@@ -72,9 +88,43 @@ const AdminDepartmentSection = () => {
                                 <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                             </div>
                             <div className="offcanvas-body">
-                               <AdminAddDepartment />
+                               <AdminAddDepartments />
                             </div>
                         </div>
+                        <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Department Details</h1>
+                                    <div class="dropdown" style={{fontSize:'smaller'}}>
+                                        <button class="btn btn-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#">Edit</a></li>
+                                            <li><a class="dropdown-item" href="#">Delete</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="modal-body">
+                                    <table style={{ border: 'none' }} className='table table-stripped'>
+                                        <tr>
+                                            <th>Name</th>
+                                            <td>--</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Parent</th>
+                                            <td>--</td>
+                                        </tr>
+                                    </table>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>

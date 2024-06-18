@@ -1,15 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AdminAddNotice from './AdminAddNotice';
 
-const sampleRows = [
-    { id: 1, notice: 'Notice 1', date: '2023-01-01', to: 'Employees' },
-    { id: 2, notice: 'Notice 2', date: '2023-01-02', to: 'Clients' },
-    { id: 3, notice: 'Notice 3', date: '2023-01-03', to: 'Employees' },
-];
-
 const AdminNoticeBoardSection = () => {
+    const [rows,setRows]=useState('');
     return (
         <>
             <div className="page-wrapper">
@@ -57,7 +52,7 @@ const AdminNoticeBoardSection = () => {
                                                 )
                                             },
                                         ]}
-                                        rows={sampleRows}
+                                        rows={rows}
                                         components={{
                                             Toolbar: GridToolbar,
                                         }}

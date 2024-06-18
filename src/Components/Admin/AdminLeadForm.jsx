@@ -5,7 +5,7 @@ import HeightIcon from '@mui/icons-material/Height';
 const AdminLeadForm = () => {
     // State to manage the visibility of each field
     const [fields, setFields] = useState({
-        name: true,
+        name: false,
         companyName: true,
         email: true,
         website: true,
@@ -84,14 +84,14 @@ const AdminLeadForm = () => {
                                     <h4><b>Preview</b></h4>
                                 </div>
                                 <form action="">
-                                    
-                                        <div className="row mt-3">
-                                            <div className="col">
-                                                <label htmlFor="name">Name</label>
-                                                <input type="text" name="name" id="name" className='form-control' />
-                                            </div>
+
+                                    <div className="row mt-3">
+                                        <div className="col">
+                                            <label htmlFor="name">Name</label>
+                                            <input type="text" name="name" id="name" className='form-control' />
                                         </div>
-                                   
+                                    </div>
+
                                     {fields.companyName && (
                                         <div className="row mt-3">
                                             <div className="col">

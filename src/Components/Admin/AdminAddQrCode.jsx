@@ -195,7 +195,7 @@ const AdminAddQrCode = () => {
                             <div className="row mt-5 mb-5">
                                 <div className="col">
                                     <button type="submit" className='btn btn-white'>Save</button> &nbsp;
-                                    <button type="reset" className='btn btn-dark'>Cancel</button>
+                                    <button type="reset" className='btn btn-dark' data-bs-dismiss='offcanvas'>Cancel</button>
                                 </div>
                             </div>
                         </form>

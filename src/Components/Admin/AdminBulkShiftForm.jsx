@@ -7,9 +7,10 @@ import { DateRangePicker } from 'react-date-range';
 import axios from 'axios';
 
 const AdminBulkShiftForm = () => {
-    const [selectedFilms, setSelectedFilms] = useState([]);
+
     const [selectedemployee, setSelectedemployee] = useState([]);
     const [employeeData, setEmployeeData] = useState('');
+    const [department, setDepartment] = useState([]);
     const [formData, setFormData] = useState({
         selectedemployee: '',
         department: '',
@@ -36,9 +37,18 @@ const AdminBulkShiftForm = () => {
             console.error('Error fetching employee data:', error);
         }
     }
+    
     useEffect(() => {
         getEmployee();
     }, [])
+    async function getDepartment() {
+        const deptResponse = await axios.get("http://localhost:8080/departments");
+        setDepartment(deptResponse.data)
+   
+}
+    useEffect(()=>{
+        getDepartment();
+    },[])
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -48,9 +58,7 @@ const AdminBulkShiftForm = () => {
             [name]: val
         }));
     };
-    const handleFilmsChange = (event, value) => {
-        setSelectedFilms(value);
-    };
+  
     const handleSelect = (ranges) => {
         setSelectedRange(ranges.selection);
         setFormData(prevState => ({
@@ -74,11 +82,11 @@ const AdminBulkShiftForm = () => {
         // axios.post('http://localhost:8080/submit-shift', formData)
         //     .then(response => {
         //         console.log('Submitted successfully:', response);
-        //         // Optionally handle success response
+        //         
         //     })
         //     .catch(error => {
         //         console.error('Error submitting form:', error);
-        //         // Optionally handle error
+        //         
         //     });
     };
     return (
@@ -93,9 +101,9 @@ const AdminBulkShiftForm = () => {
                                     <div className="col">
                                         <label htmlFor="department" className="form-label">Department</label>
                                         <select id="department" name="department" className="form-select" value={formData.department} onChange={handleInputChange}>
-                                            <option value="">-- Select Department --</option>
-                                            <option value="dept1">Department 1</option>
-                                            <option value="dept2">Department 2</option>
+                                            <option value="">Select Department</option>
+                                            {department.map((dept)=>{return<option value={dept.departmentName}>{dept.departmentName}</option>})}
+                                            
                                         </select>
                                     </div>
                                     <div className="col">
@@ -175,58 +183,6 @@ const AdminBulkShiftForm = () => {
                                 </div>
                                 <div className="row">
                                     <div className="col">
-                                        <div className="form-check">
-                                            <input type="checkbox" className="form-check-input" id="sendEmail" name="sendEmail" checked={formData.sendEmail} onChange={handleInputChange} />
-                                            <label className="form-check-label" htmlFor="sendEmail">Send Email</label>
-                                            <div className="row mb-2">
-                                                <div className="col">
-                                                    <div className="form-group">
-                                                        <label className="col-form-label">Employee Shift<span className="text-danger">*</span></label>
-                                                        <select className="form-select">
-                                                            <option value="">Select</option>
-                                                            <option value="Day Off"><img src="/assets/img/client-small.png" alt="" />Day Off</option>
-                                                            <option value="General Shift [ 09:00:00 To 18:00:00]">General Shift [ 09:00:00 To 18:00:00]</option>
-                                                            <option value="Night Shift [ 22:00:00 To 06:00:00 ]">Night Shift [ 22:00:00 To 06:00:00 ]</option>
-                                                            <option value="Day Shift [ 08:00:00 To 17:00:00 ]">Day Shift [ 08:00:00 To 17:00:00 ]</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div className="col pt-2">
-                                                    <label htmlFor="">Assign Shift By</label><br />
-                                                    <div className='pt-3'>
-                                                        <div className="form-check form-check-inline">
-                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" />
-                                                            <label className="form-check-label" htmlFor="inlineRadio1">Date</label>
-                                                        </div>
-                                                        <div className="form-check form-check-inline">
-                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" />
-                                                            <label className="form-check-label" htmlFor="inlineRadio2">Multiple</label>
-                                                        </div>
-                                                        <div className="form-check form-check-inline">
-                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" />
-                                                            <label className="form-check-label" htmlFor="inlineRadio3">Month</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className="col"></div>
-                                            </div>
-                                            <div className="row mb-2">
-                                                <div className="col">
-                                                    <div className="form-check form-check-inline">
-                                                        <input className="form-check-input" type="checkbox" id="inlineCheckbox1" />
-                                                        <label className="form-check-label" htmlFor="inlineCheckbox1">Send Email</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="row mb-2">
-                                                <div className="col">
-                                                    <label htmlFor="">Remark</label>
-                                                    <textarea name="" id="" className='form-control' ></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-
                                         <div className="row">
                                             <div className="col mb-3">
                                                 <label htmlFor="remark" className="form-label">Remark</label>
@@ -243,16 +199,16 @@ const AdminBulkShiftForm = () => {
                                             <button type="submit" className="btn btn-white">Save</button> &nbsp;
                                             <button type="button" className="btn btn-white" data-bs-dismiss="offcanvas">Cancel</button>
                                         </div>
-                                        </div>
-                                        </div>
-                                    </form>
+                                    </div>
                                 </div>
+                            </form>
                         </div>
                     </div>
                 </div>
+            </div>
 
-            </>
-            );
+        </>
+    );
 }
 
-            export default AdminBulkShiftForm;
+export default AdminBulkShiftForm;
