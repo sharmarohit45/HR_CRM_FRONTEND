@@ -114,7 +114,6 @@ function AdminDeals() {
                                         { field: 'dealWatcher', headerName: 'Deal Watcher', width: 130 },
                                         {
                                             field: 'dealStages', headerName: 'Stage', width: 170,renderCell: (params) => {
-                                                console.log('params.value:', params.value);
                                                 const dealStages = ["Generated", "Qualified", "Initial_Contact", "Schedule_Appointment", "Proposal_Sent", "Win", "Lost"];
                                                 const defaultValue = dealStages.includes(params.row.dealStages) ? params.value : "Generated";
                                                 return (

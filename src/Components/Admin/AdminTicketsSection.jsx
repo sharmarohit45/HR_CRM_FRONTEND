@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AdminCreateTicketForm from './AdminCreateTicketForm';
+import AdminAddTicketForm from './AdminAddTicketForm';
 const AdminTicketSection = () => {
     const [rows, setRows] = useState();
     return (
@@ -104,7 +105,7 @@ const AdminTicketSection = () => {
                 <div className="row">
                     <div className="col">
                         <Link to="" className="btn btn-white" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i className="fa fa-plus"></i> Create Ticket</Link> &nbsp;
-                        <Link to="" className="btn btn-white"><i className="fa fa-pen"></i> Ticket Form</Link>
+                        <Link to="" className="btn btn-white" data-bs-toggle="offcanvas" data-bs-target="#TicketForm" aria-controls="offcanvasRight"><i className="fa fa-pen"></i> Ticket Form</Link>
                     </div>
 
                 </div>
@@ -158,6 +159,17 @@ const AdminTicketSection = () => {
                     </div>
                     <div className="offcanvas-body">
                         <AdminCreateTicketForm />
+                    </div>
+                </div>
+                <div className="offcanvas offcanvas-end" tabIndex="-1" id="TicketForm" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+                    <div className="offcanvas-header">
+                        <h2 id="offcanvasRightLabel" className='text-bold'><b>Ticket Form</b></h2>
+                        <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div className="offcanvas-body">
+                        <div className="card">
+                            <AdminAddTicketForm />
+                        </div>
                     </div>
                 </div>
             </div>

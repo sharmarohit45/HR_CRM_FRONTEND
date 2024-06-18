@@ -27,9 +27,6 @@ function AdminEmployeeSection() {
             }
 
             const data = await response.json();
-            // const blob = await fetch(data.imageData).then(res => res.blob());
-            // const url = URL.createObjectURL(blob);
-            // console.log("Blob URL:", url);
             setRows(data);
         }
         catch (error) {
@@ -37,7 +34,7 @@ function AdminEmployeeSection() {
         }
     }
     const profileOnchange = (empId) => {
-        navigate('/admin/employee-profile/:empId', { state: { empId: empId } });
+        navigate(`/admin/employee-profile/${empId}`, { state: { empId: empId } });
     };
     const updateUserStatus = (userId, newStatus) => {
         setRows(prevRows => prevRows.map(row =>
@@ -158,7 +155,7 @@ function AdminEmployeeSection() {
                                         },
                                     ]}
                                     rows={rows.map(row => ({
-                                        id: row.empId, // Renamed from empId to id
+                                        id: row.empId,
                                         empId: row.empId,
                                         employeeIdentity: row.employeeIdentity,
                                         empName: row.empName,
@@ -221,7 +218,9 @@ function AdminEmployeeSection() {
                                                     </div>
                                                     <div className="row mt-4">
                                                         <div className="col-sm-3">
-                                                            <button type='submit' className='btn btn-white'><i className="fa fa-paper-plane"></i> Send Invite</button>
+                                                            <button type='submit' className='btn btn-white'><i className="fa fa-paper-plane"></i> Send Invite</button> &nbsp;
+                                                            <button type='submit' className='btn btn-white' data-bs-dismiss="modal"><i className="fa fa-close"></i> Cancel</button>
+                                                            
                                                         </div>
                                                     </div>
                                                 </form>
@@ -253,9 +252,11 @@ function AdminEmployeeSection() {
                                                         </div>
                                                     </div>
                                                     <div className="row">
-                                                        <div className="col-sm-4">
-                                                            <button className='btn btn-white'><i className="fa fa-link"></i> Create Link</button>
+                                                        <div className="col">
+                                                            <button className='btn btn-white'><i className="fa fa-link"></i> Create Link</button>  &nbsp;
+                                                            <button className='btn btn-white' data-bs-dismiss="modal"><i className="fa fa-close"></i> Cancel</button>
                                                         </div>
+                                                        
                                                     </div>
                                                 </form>
                                             </div>

@@ -1,11 +1,26 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import AdminAddAttendence from './AdminAddAttendence';
 
 function AdminAttendenceSection() {
-    // Example data for demonstration
-    const [attendanceData, setAttendanceData] = useState([
-        { id: 1, name: 'John Doe', attendance: [true, true, true, true, true, true, false, true, true, false , true, true, true, true, true, true, true, true, false, true, true, false, true, true, true, false, true, true] },
-        // Add more data as needed
-    ]);
+    const [attendance, setAttendance] = useState([]);
+    const [emp, setEmp] = useState([]);
+
+    async function getData() {
+        try {
+            const responseEmp = await axios.get("http://localhost:8080/allEmployee");
+            setEmp(responseEmp.data);
+
+            const responseAttendance = await axios.get("http://localhost:8080/attendance");
+            setAttendance(responseAttendance.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    useEffect(() => {
+        getData();
+    }, []);
 
     return (
         <div className="page-wrapper">
@@ -22,37 +37,40 @@ function AdminAttendenceSection() {
                     </div>
                 </div>
                 <div className="row">
+                    <div className="col">
+                        <button type='button' className='btn btn-white mb-3' data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i className='fa fa-plus'></i> Mark Attendance</button>
+                    </div>
+                </div>
+                <div className="row">
                     <div className="col-lg-12">
                         <div className="table-responsive">
                             <table className="table table-striped custom-table table-nowrap mb-0">
                                 <thead>
                                     <tr>
                                         <th>Employee</th>
-                                        {/* Dynamically generate headers for each day */}
                                         {[...Array(31).keys()].map(day => (
                                             <th key={day + 1}>{day + 1}</th>
                                         ))}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {/* Map over attendance data to generate rows */}
-                                    {attendanceData.map(employee => (
-                                        <tr key={employee.id}>
+                                    {emp.map(employee => (
+                                        <tr key={employee.empId}>
                                             <td>
                                                 <h2 className="table-avatar">
-                                                    <a className="avatar avatar-xs" href="profile.html"><img alt="" src="/assets/img/profiles/avatar-09.jpg" /></a>
-                                                    <a href="profile.html">{employee.name}</a>
+                                                    <a className="avatar avatar-xs" href="profile.html"><img src={`data:image/png;base64,${employee.imageData}`} alt="Employee Avatar" /></a>
+                                                    <a href="profile.html">{employee.empName}</a>
                                                 </h2>
                                             </td>
-                                            {/* Dynamically generate attendance cells */}
-                                            {employee.attendance.map((status, index) => (
-                                                <td key={index}>
-                                                    {status ? (
-                                                        <a href="" data-bs-toggle="modal" data-bs-target="#attendance_info"><i className="fa fa-check text-success"></i></a>
+                                            {[...Array(31).keys()].map(day => (
+                                                <td key={day + 1}>
+                                                    {attendance.length > 0 && attendance[day] && attendance[day][employee.empId - 1] ? (
+                                                        <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i className="fa fa-check text-success"></i></a>
+
                                                     ) : (
                                                         <div className="half-day">
-                                                            <span className="first-off"><a href="" data-bs-toggle="modal" data-bs-target="#attendance_info"><i className="fa fa-check text-success"></i></a></span>
-                                                            <span className="first-off"><i className="fa fa-close text-danger"></i></span>
+                                                            <span className="first-off"><i className="fa fa-check text-success"></i></span>
+                                                            <span className="second-off"><i className="fa fa-close text-danger"></i></span>
                                                         </div>
                                                     )}
                                                 </td>
@@ -65,11 +83,32 @@ function AdminAttendenceSection() {
                     </div>
                 </div>
             </div>
-            {/* Attendance Modal */}
-            <div className="modal custom-modal fade" id="attendance_info" role="dialog">
-                {/* Modal content */}
+            <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="staticBackdropLabel">Modal title</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            Modal content...
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            {/* /Attendance Modal */}
+            <div className="offcanvas offcanvas-end" tabIndex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+                <div className="offcanvas-header">
+                    <h2 id="offcanvasRightLabel" className='text-bold'><b>Mark Attendance</b></h2>
+                    <button type="button" className="btn-close text-reset" data-bs-toggle="offcanvas" aria-label="Close"></button>
+                </div>
+                <div className="offcanvas-body">
+                    <AdminAddAttendence />
+                </div>
+            </div>
         </div>
     );
 }

@@ -107,7 +107,7 @@ const AdminCreateTicketForm = () => {
             <div className="col">
                 <div className="card">
                     <div className="card-header">
-                        <h4><b>Ticket Details</b></h4>
+                        <h3><b>Ticket Details</b></h3>
                     </div>
                     <hr />
                     <form onSubmit={handleSubmit}>

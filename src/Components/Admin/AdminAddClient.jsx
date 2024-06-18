@@ -92,24 +92,10 @@ function AdminAddClient() {
 
     return (
         <>
-            <div className="row">
-                <div className="col-md-12">
-                    <div className="page-head-box">
-                        <h3>Add Clients</h3>
-                        <nav aria-label="breadcrumb">
-                            <ol className="breadcrumb">
-                                <li className="breadcrumb-item">Dashboard</li>
-                                <li className="breadcrumb-item active" aria-current="page">Add Clients</li>
-                            </ol>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-
             <div className="card">
                 <form onSubmit={handleSubmit}>
                     <div className="row">
-                        <div className="col-12" style={{ padding: '20px' }}>
+                        <div className="col-12">
                             <h3>Account Details</h3><hr />
                         </div>
                     </div>

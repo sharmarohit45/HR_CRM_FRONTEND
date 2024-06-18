@@ -1,11 +1,57 @@
-import React from 'react'
-import { Link, Outlet } from 'react-router-dom'
-
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate , Outlet } from 'react-router-dom';
+import axios from 'axios';
 function EmployeeHome() {
 	const handleLogout = () => {
 		localStorage.removeItem('token');
 		localStorage.removeItem('email');
 	}
+	const navigate = useNavigate();
+	const email = localStorage.getItem('email');
+	const [user, setUser] = useState({});
+	const [imageUrl, setImageUrl] = useState(null);
+	// const profileOnchange = (email) => {
+	//   navigate('/admin/employee-profile/:empId', { state: { email: email } });
+	// };
+	async function getData() {
+	  try {
+		const response = await axios.get('http://localhost:8080/allEmployee', {
+		  headers: {
+			'Content-Type': 'application/json',
+		  },
+		});
+  
+		if (!response.data) {
+		  throw new Error('Failed to fetch data');
+		}
+  
+		const item = response.data.find((item) => item.email === email);
+  
+		if (item) {
+		  setUser(item);
+		  if (item.imageData) {
+			if (item.imageData.startsWith('data:image')) {
+			  setImageUrl(item.imageData);
+			}
+		  }
+		   else {
+			console.error('No imageData found');
+		  }
+		} else {
+		  navigate('/');
+		}
+	  } catch (error) {
+		console.error('Error fetching data:', error);
+	  }
+	}
+  
+	useEffect(() => {
+	  if (!email) {
+		navigate('/');
+	  } else {
+		getData();
+	  }
+	}, [email, navigate]);
 	return (
 
 		<>
@@ -116,8 +162,8 @@ function EmployeeHome() {
 
 						<li className="nav-item dropdown has-arrow main-drop">
 							<a href="#" className="dropdown-toggle nav-link" data-bs-toggle="dropdown">
-								<span className="user-img"><img src="/assets/img/profiles/avatar-21.jpg" alt="" /></span>
-								<span></span>
+								<span className="user-img"><img src={`data:image/png;base64,${user.imageData}`} style={{borderRadius:'50%'}} alt="" /></span>
+								<span>{user.empName}</span>
 							</a>
 							<div className="dropdown-menu">
 								<Link className="dropdown-item" to="/employee/profile">My Profile</Link>

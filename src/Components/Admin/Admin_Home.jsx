@@ -1,21 +1,27 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
+import AdminEmployeeForm from './AdminEmployeeForm';
+import AdminAddProjectForm from './AdminAddProjectForm';
+import AdminAddTaskForm from './AdminAddTaskForm';
+import AdminAddClient from './AdminAddClient';
+import AdminCreateTicketForm from './AdminCreateTicketForm';
+import AdminStickyNotesSection from './AdminStickyNotesSection';
 
 function Admin_Home() {
 	const [admin, setAdmin] = useState(null);
 
 	const getAdmin = async () => {
 		try {
-		  const response = await axios.get("http://localhost:8080/admin/data");
-		  if (!response.data || response.data.length === 0) {
-			throw new Error('Failed to fetch data');
-		  }
-		  setAdmin(response.data[0]);
+			const response = await axios.get("http://localhost:8080/admin/data");
+			if (!response.data || response.data.length === 0) {
+				throw new Error('Failed to fetch data');
+			}
+			setAdmin(response.data[0]);
 		} catch (error) {
-		  console.error('Error fetching data:', error);
+			console.error('Error fetching data:', error);
 		}
-	  };
+	};
 	// ADminHOME 
 
 	const handleLogout = () => {
@@ -46,6 +52,24 @@ function Admin_Home() {
 					</a>
 					<a id="mobile_btn" className="mobile_btn" href="#sidebar"><i className="fa fa-bars"></i></a>
 					<ul className="nav user-menu">
+						<li className="nav-item">
+							<a href="#" data-bs-toggle="offcanvas" data-bs-target="#StickyNotes" aria-controls="offcanvasRight">
+								<i className='fa fa-sticky-note'></i>
+							</a>
+						</li>
+						<li className="nav-item">
+							<a href="" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Create New">
+								<i className='fa fa-plus-circle' type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
+								<ul class="dropdown-menu" style={{ fontSize: 'smaller' }}>
+									<li style={{height:'30px'}} data-bs-toggle="offcanvas" data-bs-target="#AddProject" aria-controls="offcanvasRight"><a class="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Project</a></li>
+									<li style={{height:'30px'}} data-bs-toggle="offcanvas" data-bs-target="#AddTask" aria-controls="offcanvasRight"><a class="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Task</a></li>
+									<li style={{height:'30px'}} data-bs-toggle="offcanvas" data-bs-target="#AddClient" aria-controls="offcanvasRight"><a class="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Client</a></li>
+									<li style={{height:'30px'}} data-bs-toggle="offcanvas" data-bs-target="#AddEmployee" aria-controls="offcanvasRight"><a class="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Employee</a></li>
+									<li style={{height:'30px'}} data-bs-toggle="offcanvas" data-bs-target="#AddPayment" aria-controls="offcanvasRight"><a class="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Payment</a></li>
+									<li style={{height:'30px'}} data-bs-toggle="offcanvas" data-bs-target="#AddTicket" aria-controls="offcanvasRight"><a class="dropdown-item" href="#"><i className='fa fa-plus'></i> Create Ticket </a></li>
+								</ul>
+							</a>
+						</li>
 						<li className="nav-item dropdown">
 							<a href="#" className="dropdown-toggle nav-link" data-bs-toggle="dropdown">
 								<i className="far fa-bell"></i> <span className="badge rounded-pill">3</span>
@@ -138,7 +162,8 @@ function Admin_Home() {
 						<li className='nav-item text-black'><Link to="/" onClick={handleLogout}><i className="fa fa-power-off"></i></Link></li>
 					</ul>
 					<div className="dropdown mobile-user-menu">
-					<Link to="/" onClick={handleLogout}><i className="fa fa-power-off"></i></Link>
+						
+						<Link to="/" onClick={handleLogout}><i className="fa fa-power-off"></i></Link>
 					</div>
 				</div>
 				<div className="sidebar" id="sidebar">
@@ -189,7 +214,7 @@ function Admin_Home() {
 							// */}
 							<a className="nav-link" id="v-pills-tickets-tab" title="Events" data-bs-toggle="pill" href="#v-pills-tickets" role="tab" aria-controls="v-pills-events" aria-selected="false">
 								<span className="material-icons-outlined">
-								confirmation_number
+									confirmation_number
 								</span>
 							</a>
 							<a className="nav-link" id="v-pills-chat-tab" title="Chat" data-bs-toggle="pill" href="#v-pills-chat" role="tab" aria-controls="v-pills-chat" aria-selected="false">
@@ -448,6 +473,70 @@ function Admin_Home() {
 						</div>
 					</div>
 				</div>
+				<div className="offcanvas offcanvas-end" tabIndex="-1" id="AddProject" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+					<div className="offcanvas-header">
+						<h2 id="offcanvasRightLabel" className='text-bold'><b>Add Project</b></h2>
+						<button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+					</div>
+					<div className="offcanvas-body">
+						<AdminAddProjectForm />
+					</div>
+				</div>
+				<div className="offcanvas offcanvas-end" tabIndex="-1" id="AddTask" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+					<div className="offcanvas-header">
+						<h2 id="offcanvasRightLabel" className='text-bold'><b>Add Task</b></h2>
+						<button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+					</div>
+					<div className="offcanvas-body">
+						<AdminAddTaskForm />
+					</div>
+				</div>
+				<div className="offcanvas offcanvas-end" tabIndex="-1" id="AddClient" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+					<div className="offcanvas-header">
+						<h2 id="offcanvasRightLabel" className='text-bold'><b>Add Client</b></h2>
+						<button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+					</div>
+					<div className="offcanvas-body">
+						<AdminAddClient />
+					</div>
+				</div>
+				<div className="offcanvas offcanvas-end" tabIndex="-1" id="AddEmployee" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+					<div className="offcanvas-header">
+						<h2 id="offcanvasRightLabel" className='text-bold'><b>Add Employee</b></h2>
+						<button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+					</div>
+					<div className="offcanvas-body">
+						<AdminEmployeeForm />
+					</div>
+				</div>
+				<div className="offcanvas offcanvas-end" tabIndex="-1" id="AddPayment" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+					<div className="offcanvas-header">
+						<h2 id="offcanvasRightLabel" className='text-bold'><b>Add Payment</b></h2>
+						<button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+					</div>
+					<div className="offcanvas-body">
+						{/* Add PAYMENT */}
+					</div>
+				</div>
+				<div className="offcanvas offcanvas-end" tabIndex="-1" id="AddTicket" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+					<div className="offcanvas-header">
+						<h2 id="offcanvasRightLabel" className='text-bold'><b>Add Ticket</b></h2>
+						<button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+					</div>
+					<div className="offcanvas-body">
+						<AdminCreateTicketForm />
+					</div>
+				</div>
+				<div className="offcanvas offcanvas-end" tabIndex="-1" id="StickyNotes" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+					<div className="offcanvas-header">
+						<h2 id="offcanvasRightLabel" className='text-bold'><b>Sticky Notes</b></h2>
+						<button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+					</div>
+					<div className="offcanvas-body">
+						<AdminStickyNotesSection />
+					</div>
+				</div>
+				
 				<Outlet />
 			</div>
 		</>
