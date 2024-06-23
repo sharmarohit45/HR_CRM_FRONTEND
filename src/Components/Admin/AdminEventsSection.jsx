@@ -4,6 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import axios from 'axios';
+import AdminAddEvent from './AdminAddEvent';
 
 const AdminEventsSection = () => {
     const [events, setEvents] = useState([]);
@@ -33,7 +34,7 @@ const AdminEventsSection = () => {
                         <div className="col-sm-12">
                             <div className="card">
                                 <div className="card-body">
-                                    <button className="btn btn-primary mb-3">Add Event</button>
+                                    <button className="btn btn-white mb-3"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add Event</button>
                                     <FullCalendar
                                         ref={calendarRef}
                                         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -52,6 +53,16 @@ const AdminEventsSection = () => {
                         </div>
                     </div>
                 </div>
+                <div className="offcanvas offcanvas-end" tabIndex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+                        <div className="offcanvas-header">
+                            <h2 id="offcanvasRightLabel" className='text-bold'><b>Add Events</b></h2>
+                            <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div className="offcanvas-body">
+                            {/* <AdminAddNotice /> */}
+                            <AdminAddEvent />
+                        </div>
+                    </div>
             </div>
         </>
     );

@@ -1,6 +1,7 @@
 import React from 'react'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import AdminAddOrder from './AdminAddOrder';
 const AdminOrderSection = () => {
    
     return (
@@ -66,7 +67,7 @@ const AdminOrderSection = () => {
                                 <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                             </div>
                             <div className="offcanvas-body">
-                                {/* <AdminAddNotice /> */}
+                                <AdminAddOrder />
                             </div>
                         </div>
                     </div>

@@ -134,8 +134,8 @@ function AdminEmployeeForm() {
                                     <label htmlFor="designation">Designation</label>
                                     <select className="form-select" name="designation" value={formData.designation} onChange={handleChange}>
                                         <option value="">--</option>
-                                        {designation && designation.map((desg)=>{
-                                            return<option value={desg.name}>{desg.name}</option>
+                                        {designation && designation.map((desg,index)=>{
+                                            return<option key={index} value={desg.name}>{desg.name}</option>
                                         })}
                                         
                                     </select>
@@ -144,7 +144,7 @@ function AdminEmployeeForm() {
                                     <label htmlFor="department">Department</label>
                                     <select className="form-select" name="department" value={formData.department} onChange={handleChange}>
                                         <option value="">--</option>
-                                        {department && department.map((dept)=>{return<option value={dept.departmentName}>{dept.departmentName}</option>})}
+                                        {department && department.map((dept,index)=>{return<option key={index} value={dept.departmentName}>{dept.departmentName}</option>})}
                                      
                                     </select>
                                 </div>

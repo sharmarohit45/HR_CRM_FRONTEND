@@ -57,6 +57,7 @@ function AdminEmployeeSection() {
     useEffect(() => {
         getData();
     }, []);
+    
     const deleteEmployee = async (emp_id) => {
         try {
             const response = await axios.delete(`http://localhost:8080/employee/${emp_id}`);

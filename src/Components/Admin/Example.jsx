@@ -28,14 +28,14 @@ const Example = () => {
                     </div>
                 )}
             </div>
-            <div class="dropdown action-label" style={{ fontSize: 'smaller' }}>
+            <div className="dropdown action-label" style={{ fontSize: 'smaller' }}>
                 <>
-                    <a class="btn btn-white btn-sm btn-rounded dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-circle text-danger"></i> Pending
+                    <a className="btn btn-white btn-sm btn-rounded dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i className="fa fa-circle text-danger"></i> Pending
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="#"><i class="fa fa-circle text-danger"></i> Pending</a>
-                        <a class="dropdown-item" href="#"><i class="fa fa-circle text-success"></i> Approved</a>
+                    <div className="dropdown-menu dropdown-menu-right">
+                        <a className="dropdown-item" href="#"><i className="fa fa-circle text-danger"></i> Pending</a>
+                        <a className="dropdown-item" href="#"><i className="fa fa-circle text-success"></i> Approved</a>
                     </div>
                 </>
                                                 // </div>
