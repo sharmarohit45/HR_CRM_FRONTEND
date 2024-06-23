@@ -60,13 +60,13 @@ function Admin_Home() {
 						<li className="nav-item">
 							<a href="" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Create New">
 								<i className='fa fa-plus-circle' type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
-								<ul class="dropdown-menu" style={{ fontSize: 'smaller' }}>
-									<li style={{height:'30px'}} data-bs-toggle="offcanvas" data-bs-target="#AddProject" aria-controls="offcanvasRight"><a class="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Project</a></li>
-									<li style={{height:'30px'}} data-bs-toggle="offcanvas" data-bs-target="#AddTask" aria-controls="offcanvasRight"><a class="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Task</a></li>
-									<li style={{height:'30px'}} data-bs-toggle="offcanvas" data-bs-target="#AddClient" aria-controls="offcanvasRight"><a class="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Client</a></li>
-									<li style={{height:'30px'}} data-bs-toggle="offcanvas" data-bs-target="#AddEmployee" aria-controls="offcanvasRight"><a class="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Employee</a></li>
-									<li style={{height:'30px'}} data-bs-toggle="offcanvas" data-bs-target="#AddPayment" aria-controls="offcanvasRight"><a class="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Payment</a></li>
-									<li style={{height:'30px'}} data-bs-toggle="offcanvas" data-bs-target="#AddTicket" aria-controls="offcanvasRight"><a class="dropdown-item" href="#"><i className='fa fa-plus'></i> Create Ticket </a></li>
+								<ul className="dropdown-menu" style={{ fontSize: 'smaller' }}>
+									<li style={{height:'60px'}} data-bs-toggle="offcanvas" data-bs-target="#AddProject" aria-controls="offcanvasRight"><a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Project</a></li>
+									<li style={{height:'60px'}} data-bs-toggle="offcanvas" data-bs-target="#AddTask" aria-controls="offcanvasRight">   <a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Task</a></li>
+									<li style={{height:'60px'}} data-bs-toggle="offcanvas" data-bs-target="#AddClient" aria-controls="offcanvasRight">  <a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Client</a></li>
+									<li style={{height:'60px'}} data-bs-toggle="offcanvas" data-bs-target="#AddEmployee" aria-controls="offcanvasRight"><a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Employee</a></li>
+									<li style={{height:'60px'}} data-bs-toggle="offcanvas" data-bs-target="#AddPayment" aria-controls="offcanvasRight"><a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Payment</a></li>
+									<li style={{height:'60px'}} data-bs-toggle="offcanvas" data-bs-target="#AddTicket" aria-controls="offcanvasRight"><a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Create Ticket </a></li>
 								</ul>
 							</a>
 						</li>

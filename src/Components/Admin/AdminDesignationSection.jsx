@@ -88,22 +88,22 @@ const AdminDesignationSection = () => {
                             <AdminAddDesignations />
                         </div>
                     </div>
-                    <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Designation Details</h1>
-                                    <div class="dropdown" style={{fontSize:'smaller'}}>
-                                        <button class="btn btn-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fa fa-ellipsis-h"></i>
+                    <div className="modal fade" id="viewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div className="modal-dialog modal-lg">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h1 className="modal-title fs-5" id="exampleModalLabel">Designation Details</h1>
+                                    <div className="dropdown" style={{fontSize:'smaller'}}>
+                                        <button className="btn btn-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i className="fa fa-ellipsis-h"></i>
                                         </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">Edit</a></li>
-                                            <li><a class="dropdown-item" href="#">Delete</a></li>
+                                        <ul className="dropdown-menu">
+                                            <li><a className="dropdown-item" href="#">Edit</a></li>
+                                            <li><a className="dropdown-item" href="#">Delete</a></li>
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="modal-body">
+                                <div className="modal-body">
                                     <table style={{ border: 'none' }} className='table table-stripped'>
                                         <tr>
                                             <th>Name</th>
@@ -116,8 +116,8 @@ const AdminDesignationSection = () => {
                                     </table>
 
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>

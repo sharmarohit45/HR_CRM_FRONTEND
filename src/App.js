@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Routes, Route,} from 'react-router-dom';
+import { BrowserRouter, Routes, Route, } from 'react-router-dom';
 import Admin_Home from './Components/Admin/Admin_Home';
 import AdminDashboard from './Components/Admin/AdminDashboard';
 import User_Dashboard from './Components/Client/User_Dashboard';
@@ -140,15 +140,54 @@ import Example from './Components/Admin/Example';
 import AdminViewInvoice from './Components/Admin/AdminViewInvoice';
 import AdminEstimateInvoice from './Components/Admin/AdminEstimateInvoice';
 import AdminReccuringExpenses from './Components/Admin/AdminReccuringExpenses';
+import AdminContractsInvoice from './Components/Admin/AdminContractsInvoice';
+import AdminCompanySettings from './Components/Admin/AdminCompanySettings';
+import AdminBuisnessAddress from './Components/Admin/AdminBuisnessAddress';
+import AdminAppSetting from './Components/Admin/AdminAppSetting';
+import AdminProfileSetting from './Components/Admin/AdminProfileSetting'
+import AdminNotificationSetting from './Components/Admin/AdminNotificationSetting';
+import AdminPaymentSetting from './Components/Admin/AdminPaymentSetting';
+import PayrollInvoice from './Components/Admin/PayrollInvoice';
+import AdminPurchaseProductProfile from './Components/Admin/AdminPurchaseProductProfile';
+import AdminCurrencySetting from './Components/Admin/AdminCurrencySetting';
+import AdminFinanceSetting from './Components/Admin/AdminFinanceSetting';
+import AdminContractSetting from './Components/Admin/AdminContractSetting';
+import AdminTaxSetting from './Components/Admin/AdminTaxSetting';
+import AdminTIcketSetting from './Components/Admin/AdminTIcketSetting';
+import AdminProjectSetting from './Components/Admin/AdminProjectSetting';
+import AdminUpdateApp from './Components/Admin/AdminUpdateApp';
+import AdminZoomSetting from './Components/Admin/AdminZoomSetting';
+import AdminRestApiSetting from './Components/Admin/AdminRestApiSetting';
+import AdminRecruitSetting from './Components/Admin/AdminRecruitSetting';
+import AdminPurchaseSetting from './Components/Admin/AdminPurchaseSetting';
+import AdminAttendenceSetting from './Components/Admin/AdminAttendenceSetting';
+import AdminLeaveSetting from './Components/Admin/AdminLeaveSetting';
+import AdminCustomField from './Components/Admin/AdminCustomField';
+import AdminRolesPermissionSetting from './Components/Admin/AdminRolesPermissionSetting';
+import AdminMessageSetting from './Components/Admin/AdminMessageSetting';
+import AdminLeadSetting from './Components/Admin/AdminLeadSetting';
+import AdminAssetSetting from './Components/Admin/AdminAssetSetting';
+import AdminSignUpSetting from './Components/Admin/AdminSignUpSetting';
+import AdminDatabaseSetting from './Components/Admin/AdminDatabaseSetting';
+import AdminCustomLinkSetting from './Components/Admin/AdminCustomLinkSetting';
+import AdminGoogleCalenderSetting from './Components/Admin/AdminGoogleCalenderSetting';
+import AdminSocialLoginSetting from './Components/Admin/AdminSocialLoginSetting';
+import AdminLanguageSetting from './Components/Admin/AdminLanguageSetting';
+import AdminStorageSetting from './Components/Admin/AdminStorageSetting';
+import AdminTimeLogSetting from './Components/Admin/AdminTimeLogSetting';
+import AdminTaskSetting from './Components/Admin/AdminTaskSetting';
+import AdminSecuritySetting from './Components/Admin/AdminSecuritySetting';
+import AdminThemeSetting from './Components/Admin/AdminThemeSetting';
+import AdminPayrollSetting from './Components/Admin/AdminPayrollSetting';
 function App() {
   const isLoggedIn = localStorage.getItem('token');
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<LogInSection/>} />
+          <Route path='/' element={<LogInSection />} />
           <Route path='/forget-password' element={<ForgetPassword />} />
-          <Route path='/admin' element={isLoggedIn?<Admin_Home />:<LogInSection />}>
+          <Route path='/admin' element={isLoggedIn ? <Admin_Home /> : <LogInSection />}>
             <Route index element={<AdminDashboard />} />
             <Route path='/admin/private-dashboard' element={<AdminPrivateDashboard />} />
             <Route path='/admin/employee-profile/:empId' element={<AdminEmployeeProfile />} />
@@ -184,6 +223,7 @@ function App() {
 
             {/* Admin Work Section Routing */}
             <Route path='/admin/contracts' element={<AdminContractsSection />} />
+            <Route path='/admin/contracts-invoice' element={<AdminContractsInvoice />} />
             <Route path='/admin/projects' element={<AdminProjectsSection />} />
             <Route path='/admin/tasks' element={<AdminTasksSection />} />
             <Route path='/admin/my-tasks' element={<AdminMyTasks />} />
@@ -231,11 +271,13 @@ function App() {
             <Route path='/admin/template' element={<AdminLetterTemplateSection />} />
             {/* Admin Payroll Section Routing */}
             <Route path='/admin/payroll' element={<AdminPayrollSection />} />
+            <Route path='/admin/payroll-invoice' element={<PayrollInvoice />} />
             <Route path='/admin/employee-salery' element={<AdminEmployeeSalerySection />} />
             <Route path='/admin/payroll-reports' element={<AdminReportSection />} />
             {/* Admin Purchase Section Routing */}
             <Route path='/admin/vendor' element={<AdminVendorSection />} />
             <Route path='/admin/products' element={<AdminProductsSection />} />
+            <Route path='/admin/products/{productId}' element={<AdminPurchaseProductProfile />} />
             <Route path='/admin/purchase-order' element={<AdminPurchaseOrderSection />} />
             <Route path='/admin/bills' element={<AdminBillsSection />} />
             <Route path='/admin/vendor-payments' element={<AdminVendorPaymentsSection />} />
@@ -269,9 +311,47 @@ function App() {
             <Route path='/admin/deal-report' element={<AdminDealReportSection />} />
             <Route path='/admin/sales-report' element={<AdminSalesReportSection />} />
             {/* Admin Settings Section Routing */}
-            <Route path='/admin/settings' element={<AdminSettingsSection />} />
+            <Route path='/admin/settings' element={<AdminSettingsSection />} >
+              <Route path="" element={<AdminCompanySettings />} />
+              <Route path="buisnessSetting" element={<AdminBuisnessAddress />} />
+              <Route path="appSetting" element={<AdminAppSetting />} />
+              <Route path="profileSetting" element={<AdminProfileSetting />} />
+              <Route path="notification-setting" element={<AdminNotificationSetting />} />
+              <Route path="currency-setting" element={<AdminCurrencySetting />} />
+              <Route path="payment-setting" element={<AdminPaymentSetting />} />
+              <Route path="finance-settings" element={<AdminFinanceSetting />} />
+              <Route path="contract-settings" element={<AdminContractSetting />} />
+              <Route path="tax-settings" element={<AdminTaxSetting />} />
+              <Route path="ticket-settings" element={<AdminTIcketSetting />} />
+              <Route path="project-settings" element={<AdminProjectSetting />} />
+              <Route path="attendance-settings" element={<AdminAttendenceSetting />} />
+              <Route path="leaves-settings" element={<AdminLeaveSetting />} />
+              <Route path="custom-fields" element={<AdminCustomField />} />
+              <Route path="Roles&Permissions" element={<AdminRolesPermissionSetting />} />
+              <Route path="message-settings" element={<AdminMessageSetting />} />
+              <Route path="lead-settings" element={<AdminLeadSetting />} />
+              <Route path="time-log-settings" element={<AdminTimeLogSetting />} />
+              <Route path="task-settings" element={<AdminTaskSetting />} />
+              <Route path="security-settings" element={<AdminSecuritySetting />} />
+              <Route path="theme-settings" element={<AdminThemeSetting />} />
+              <Route path="module-settings" element={<AdminSecuritySetting />} />
+              <Route path="storage-settings" element={<AdminStorageSetting />} />
+              <Route path="language-settings" element={<AdminLanguageSetting />} />
+              <Route path="social-login-setting" element={<AdminSocialLoginSetting />} />
+              <Route path="google-calendar-settings" element={<AdminGoogleCalenderSetting />} />
+              <Route path="custom-link-settings" element={<AdminCustomLinkSetting />} />
+              <Route path="database-backup-settings" element={<AdminDatabaseSetting />} />
+              <Route path="sign-up-settings" element={<AdminSignUpSetting />} />
+              <Route path="asset-settings" element={<AdminAssetSetting />} />
+              <Route path="payroll-settings" element={<AdminPayrollSetting />} />
+              <Route path="purchase-settings" element={<AdminPurchaseSetting />} />
+              <Route path="recruit-settings" element={<AdminRecruitSetting />} />
+              <Route path="Rest-API-Settings" element={<AdminRestApiSetting />} />
+              <Route path="zoom-settings" element={<AdminZoomSetting />} />
+              <Route path="Update-App" element={<AdminUpdateApp />} />
+            </Route>
           </Route>
-          <Route path='/employee' element={isLoggedIn?<EmployeeHome />:<LogInSection/>}>
+          <Route path='/employee' element={isLoggedIn ? <EmployeeHome /> : <LogInSection />}>
             <Route index element={<Employee_Dashboard />} />
             <Route path='/employee/profile' element={<EmployeeProfileSection />} />
             <Route path='/employee/lead-contacts' element={<EmployeeLeadContactsSection />} />
@@ -298,10 +378,11 @@ function App() {
             {/* Employee Carrer Site */}
             <Route path='/employee/carrer-sites' element={<EmployeeCarrerSitesSection />} />
             {/* Employee Setting Section */}
-            <Route path='/employee/settings' element={<EmployeeSettings />} />
-            <Route path='/employee/security-settings' element={<EmployeeSecuritySetting />} />
+            <Route path='/employee/settings' element={<EmployeeSettings />} >
+              <Route path='/employee/settings/' element={<EmployeeSecuritySetting />} />
+            </Route>
           </Route>
-          <Route path='/client' element={isLoggedIn?<ClientHome />:<LogInSection /> }>
+          <Route path='/client' element={isLoggedIn ? <ClientHome /> : <LogInSection />}>
             <Route index element={<User_Dashboard />} />
             <Route path='/client/Contracts' element={<ClientContracts />} />
             <Route path='/client/client-profile' element={<ClientProfile />} />
@@ -331,8 +412,6 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
-
-  {/* jdhfgfds */}
     </>
   );
 }

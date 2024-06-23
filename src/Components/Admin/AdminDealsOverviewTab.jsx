@@ -52,10 +52,10 @@ const AdminDealsOverviewTab = () => {
                             </div>
                             <div className="col">
                                 <p>{data.dealName}</p>
-                                <p>{data.leadContacts}</p>
-                                <p>--</p>
-                                <p>--</p>
-                                <p>--</p>
+                                <p>{data.lead.name}</p>
+                                <p>{data.lead.email}</p>
+                                <p>{data.lead.companyName}</p>
+                                <p>{data.dealAgent}</p>
                                 <p>{data.dealWatcher}</p>
                                 <p>{data.closeDate}</p>
                                 <p>{data.dealValue}</p>
@@ -68,27 +68,26 @@ const AdminDealsOverviewTab = () => {
                 <div className="col-sm-3">
                     <div className="card p-3">
                         <h4><b>Lead Contact Detail</b></h4>
+                        <hr />
                         <div className="row">
-                            <div className="col">
-                                <p>Lead</p>
-                                <p>Contact</p>
-                                <p>Email</p>
-                                <p>Mobile</p>
-                                <p>Company Name</p>
+                            <div className="col" style={{fontSize:'smaller'}}>
+                                <p><b>Lead Contact</b></p>
+                                <p><b>Email</b></p>
+                                <p><b>Mobile</b></p>
+                                <p><b>Company Name</b></p>
                             </div>
-                            <div className="col">
-                                <p>--</p>
-                                <p>--</p>
-                                <p>--</p>
-                                <p>--</p>
-                                <p>--</p>
+                            <div className="col" style={{fontSize:'smaller'}}>
+                                <p>{data.lead.name}</p>
+                                <p>{data.lead.email}</p>
+                                <p>{data.lead.mobile}</p>
+                                <p>{data.lead.companyName}</p>
 
                             </div>
                         </div>
                         <div className="row">
                             <div className="col">
-                                <a href="mailto:"><button className='btn btn-white'><i className="fa fa-envelope"></i> Email</button></a> &nbsp;
-                                <a href="tel:"><button className='btn btn-white'><i className="fa fa-phone"></i> Mobile</button></a>
+                                <a href={`mailto:${data.lead.email}`}><button className='btn btn-white'><i className="fa fa-envelope"></i> Email</button></a> &nbsp;
+                                <a href={`tel:${data.lead.mobile}`}><button className='btn btn-white'><i className="fa fa-phone"></i> Mobile</button></a>
                             </div>
                         </div>
                     </div>

@@ -3,6 +3,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { GridToolbar } from '@mui/x-data-grid';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import AdminAddPaymentForm from './AdminAddPaymentForm';
 
 const AdminPaymentSection = () => {
     const [rows, setRows] = useState([]);
@@ -75,7 +76,7 @@ const AdminPaymentSection = () => {
                             <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                         </div>
                         <div className="offcanvas-body">
-                            {/* <AdminCreateInvoiceForm /> */}
+                            <AdminAddPaymentForm />
                         </div>
                     </div>
                 </div>

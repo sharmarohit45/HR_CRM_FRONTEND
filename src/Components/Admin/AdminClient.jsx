@@ -78,7 +78,7 @@ function AdminClient() {
                                         ) },
                                         { field: 'email', headerName: 'Email', width: 290 },
                                         { field: 'status', headerName: 'Status', width: 150, renderCell: (params) => (
-                                            <h5><i className='fa fa-circle' style={{ color: '#39e500' }}></i> Active</h5>
+                                            <h5 className='p-3'><i className='fa fa-circle' style={{ color: '#39e500' }}></i> Active</h5>
                                         ) },
                                         { field: 'created', headerName: 'Created', width: 150 },
                                         {

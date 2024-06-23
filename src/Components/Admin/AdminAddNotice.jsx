@@ -1,30 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './quill.css';
+import axios from 'axios';
 
 const AdminAddNotice = () => {
-    const [editorData, setEditorData] = useState('');
+    const [noticeDetails, setNoticeDetails] = useState('');
     const [showData, setShowData] = useState(true);
     const [noticeHeading, setNoticeHeading] = useState('');
     const [department, setDepartment] = useState('1');
-    const [radioOption, setRadioOption] = useState('option1');
+    const [type, setType] = useState('To Employees');
+    const [data, setData] = useState([]);
+    const [date, setDate] = useState(new Date());
 
-    const showChange = () => {
-        setShowData(!showData);
+    const formatDate = (date) => {
+        return date.toLocaleDateString('en-GB'); // This will format the date to "dd/mm/yyyy"
     };
 
+    const formattedDate = formatDate(date);
+
+    async function getData() {
+        try {
+            const response = await axios.get("http://localhost:8080/departments");
+            setData(response.data);
+        } catch (error) {
+            console.log("Designation data fetching failed", error);
+        }
+    }
+
+    useEffect(() => {
+        getData();
+    }, []);
+
     const handleEditorChange = (value) => {
-        setEditorData(value);
+        setNoticeDetails(value);
     };
 
     const handleRadioChange = (e) => {
-        setRadioOption(e.target.value);
-        if (e.target.value === 'option2') {
-            setShowData(false);
-        } else {
-            setShowData(true);
-        }
+        setType(e.target.value);
+        setShowData(e.target.value === 'To Employees');
     };
 
     const handleHeadingChange = (e) => {
@@ -35,23 +49,35 @@ const AdminAddNotice = () => {
         setDepartment(e.target.value);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission logic here
-        console.log('Form submitted with data:', {
-            noticeHeading,
-            department,
-            radioOption,
-            editorData,
-        });
+        console.log(noticeHeading);
+        console.log(department);
+        console.log(type);
+        console.log(noticeDetails);
+        console.log(formattedDate);
+        try {
+            const response = await axios.post("http://localhost:8080/notice", {
+                noticeHeading,
+                department,
+                type,
+                noticeDetails,
+                date: formattedDate
+            });
+            console.log('Notice submitted successfully:', response.data);
+            handleReset();
+        } catch (error) {
+            console.error('Error submitting notice:', error);
+        }
     };
 
     const handleReset = () => {
-        setEditorData('');
+        setNoticeDetails('');
         setNoticeHeading('');
         setDepartment('1');
-        setRadioOption('option1');
+        setType('To Employees');
         setShowData(true);
+        setDate(new Date());
     };
 
     const modules = {
@@ -92,11 +118,11 @@ const AdminAddNotice = () => {
                                                 type="radio"
                                                 name="inlineRadioOptions"
                                                 id="inlineRadio1"
-                                                value="option1"
-                                                checked={radioOption === 'option1'}
+                                                value="To Employees"
+                                                checked={type === 'To Employees'}
                                                 onChange={handleRadioChange}
                                             />
-                                            <label className="form-check-label" htmlFor="inlineRadio1">
+                                            <label className="form-check-label">
                                                 To Employees
                                             </label>
                                         </div>
@@ -106,11 +132,11 @@ const AdminAddNotice = () => {
                                                 type="radio"
                                                 name="inlineRadioOptions"
                                                 id="inlineRadio2"
-                                                value="option2"
-                                                checked={radioOption === 'option2'}
+                                                value="To Clients"
+                                                checked={type === 'To Clients'}
                                                 onChange={handleRadioChange}
                                             />
-                                            <label className="form-check-label" htmlFor="inlineRadio2">
+                                            <label className="form-check-label">
                                                 To Clients
                                             </label>
                                         </div>
@@ -137,9 +163,12 @@ const AdminAddNotice = () => {
                                                     value={department}
                                                     onChange={handleDepartmentChange}
                                                 >
-                                                    <option value="1">One</option>
-                                                    <option value="2">Two</option>
-                                                    <option value="3">Three</option>
+                                                    <option value="1">--</option>
+                                                    {data.map((item, index) => (
+                                                        <option key={index} value={item.departmentName}>
+                                                            {item.departmentName}
+                                                        </option>
+                                                    ))}
                                                 </select>
                                             </>
                                         )}
@@ -149,7 +178,7 @@ const AdminAddNotice = () => {
                                     <div className="col">
                                         <label htmlFor="noticeDetails">Notice Details</label>
                                         <ReactQuill
-                                            value={editorData}
+                                            value={noticeDetails}
                                             onChange={handleEditorChange}
                                             theme="snow"
                                             modules={modules}
@@ -160,8 +189,8 @@ const AdminAddNotice = () => {
                                 </div>
                                 <div className="row mt-3 mb-3">
                                     <div className="col text-end">
-                                        <button type="submit" className="btn btn-white">Submit</button> &nbsp;
-                                        <button type="reset" className="btn btn-dark">Reset</button>
+                                        <button type="submit" className="btn btn-primary">Submit</button>&nbsp;
+                                        <button type="reset" className="btn btn-secondary">Reset</button>
                                     </div>
                                 </div>
                             </form>

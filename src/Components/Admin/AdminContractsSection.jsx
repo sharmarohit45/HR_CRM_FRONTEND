@@ -4,6 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { GridToolbar } from '@mui/x-data-grid';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AdminAddCOntractForm from './AdminAddCOntractForm';
+import { Link } from 'react-router-dom';
 
 const AdminContractsSection = () => {
     const [rows, setRows] = useState([]);
@@ -47,6 +48,7 @@ const AdminContractsSection = () => {
                         <div className="row mb-3">
                             <div className="col">
                                 <button className='btn btn-white'  data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add Contracts</button>
+                            <Link to="/admin/contracts-invoice"><button className='btn btn-white'><i className='fa fa-eye'></i></button></Link>
                             </div>
                         </div>
                         <div className="row">
