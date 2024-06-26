@@ -6,7 +6,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import axios from 'axios';
 
 function AdminAddClient() {
-    
+
     const initialFormData = {
         salutation: '',
         clientName: '',
@@ -272,17 +272,16 @@ function AdminAddClient() {
                     <div className="row mt-4">
                         <div className="col">
                             <label>Company Logo</label>
-                           <input type="file" name="clientLogo" onChange={handleChange} className='form-control' /> 
+                            <input type="file" name="clientLogo" onChange={handleChange} className='form-control' />
                         </div>
                     </div>
                     <div className="row mt-4">
                         <div className="col">
                             <div className="row">
                                 <div className="col">
-                                    <button type="submit" className='btn btn-dark form-control'><CheckIcon /> Save</button>
-                                </div>
-                                <div className="col">
-                                    <button type="button" className='btn btn-dark form-control'>Cancel</button>
+                                    <button type="submit" className='btn btn-white'><CheckIcon /> Save</button>
+                                    &nbsp;
+                                    <button type="button" className='btn btn-white'>Cancel</button>
                                 </div>
                             </div>
                         </div>

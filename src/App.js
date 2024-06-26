@@ -179,6 +179,7 @@ import AdminTaskSetting from './Components/Admin/AdminTaskSetting';
 import AdminSecuritySetting from './Components/Admin/AdminSecuritySetting';
 import AdminThemeSetting from './Components/Admin/AdminThemeSetting';
 import AdminPayrollSetting from './Components/Admin/AdminPayrollSetting';
+import SettingSection from './Components/Admin/SettingSection';
 function App() {
   const isLoggedIn = localStorage.getItem('token');
   return (
@@ -311,7 +312,7 @@ function App() {
             <Route path='/admin/deal-report' element={<AdminDealReportSection />} />
             <Route path='/admin/sales-report' element={<AdminSalesReportSection />} />
             {/* Admin Settings Section Routing */}
-            <Route path='/admin/settings' element={<AdminSettingsSection />} >
+            <Route path='/admin/settings' element={<SettingSection />} >
               <Route path="" element={<AdminCompanySettings />} />
               <Route path="buisnessSetting" element={<AdminBuisnessAddress />} />
               <Route path="appSetting" element={<AdminAppSetting />} />
@@ -350,6 +351,7 @@ function App() {
               <Route path="zoom-settings" element={<AdminZoomSetting />} />
               <Route path="Update-App" element={<AdminUpdateApp />} />
             </Route>
+            {/* <Route path='/admin/setting-section' element={<SettingSection />}/> */}
           </Route>
           <Route path='/employee' element={isLoggedIn ? <EmployeeHome /> : <LogInSection />}>
             <Route index element={<Employee_Dashboard />} />

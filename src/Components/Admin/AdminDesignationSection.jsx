@@ -7,6 +7,7 @@ import axios from 'axios';
 
 const AdminDesignationSection = () => {
     const [designations, setDesignations] = useState([]);
+    const [selectedDesignation, setSelectedDesignation] = useState(null);
 
     useEffect(() => {
         async function fetchDesignations() {
@@ -21,6 +22,10 @@ const AdminDesignationSection = () => {
 
         fetchDesignations();
     }, []);
+
+    const handleViewClick = (designation) => {
+        setSelectedDesignation(designation);
+    };
 
     return (
         <>
@@ -49,7 +54,6 @@ const AdminDesignationSection = () => {
                             <div className="card" style={{ minHeight: '520px'}}>
                                 <DataGrid
                                     columns={[
-                                        // { field: 'designationId', headerName: 'ID', width: 100 },
                                         { field: 'name', headerName: 'Name', width: 450 },
                                         { field: 'parent', headerName: 'Parent Designation', width: 450 },
                                         {
@@ -57,7 +61,7 @@ const AdminDesignationSection = () => {
                                                 <div>
                                                     <MoreVertIcon className="dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" />
                                                     <ul className="dropdown-menu btn" aria-labelledby="dropdownMenuLink" style={{ fontSize: 'smaller' }}>
-                                                        <li data-bs-toggle="modal" data-bs-target="#viewModal"><a className="dropdown-item" ><i className="fa fa-eye"></i> View</a></li>
+                                                        <li onClick={() => handleViewClick(params.row)} data-bs-toggle="modal" data-bs-target="#viewModal"><a className="dropdown-item"><i className="fa fa-eye"></i> View</a></li>
                                                         <li><a className="dropdown-item" href="#"><i className="fa fa-pen"></i> Edit</a></li>
                                                         <li><a className="dropdown-item" href="#"><i className="fa fa-trash" aria-hidden="true"></i> Delete</a></li>
                                                     </ul>
@@ -88,14 +92,14 @@ const AdminDesignationSection = () => {
                             <AdminAddDesignations />
                         </div>
                     </div>
-                    <div className="modal fade" id="viewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div className="modal fade" id="viewModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div className="modal-dialog modal-lg">
                             <div className="modal-content">
                                 <div className="modal-header">
                                     <h1 className="modal-title fs-5" id="exampleModalLabel">Designation Details</h1>
                                     <div className="dropdown" style={{fontSize:'smaller'}}>
                                         <button className="btn btn-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i className="fa fa-ellipsis-h"></i>
+                                            <i className="fa fa-ellipsis-h"></i>
                                         </button>
                                         <ul className="dropdown-menu">
                                             <li><a className="dropdown-item" href="#">Edit</a></li>
@@ -104,17 +108,18 @@ const AdminDesignationSection = () => {
                                     </div>
                                 </div>
                                 <div className="modal-body">
-                                    <table style={{ border: 'none' }} className='table table-stripped'>
-                                        <tr>
-                                            <th>Name</th>
-                                            <td>--</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Parent</th>
-                                            <td>--</td>
-                                        </tr>
+                                    <table style={{ border: 'none' }} className='table table-striped'>
+                                        <tbody>
+                                            <tr>
+                                                <th>Name</th>
+                                                <td>{selectedDesignation ? selectedDesignation.name : '--'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Parent</th>
+                                                <td>{selectedDesignation ? selectedDesignation.parent : '--'}</td>
+                                            </tr>
+                                        </tbody>
                                     </table>
-
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>

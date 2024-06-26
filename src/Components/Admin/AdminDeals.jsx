@@ -87,7 +87,7 @@ function AdminDeals() {
                                         { field: 'id', headerName: 'Id', hideable: false, width: 100 },
                                         {
                                             field: 'dealName', headerName: 'Deal Name', hideable: false, width: 100, renderCell: (params) => (
-                                                <div onClick={() => profileOnchange(params.row.id)}>
+                                                <div style={{cursor:'pointer'}}  onClick={() => profileOnchange(params.row.id)}>
                                                     {params.value}
                                                 </div>
                                             )

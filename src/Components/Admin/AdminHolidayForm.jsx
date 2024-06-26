@@ -104,7 +104,6 @@ const AdminHolidayForm = () => {
                                     <label htmlFor="designation">Designation</label>
                                     <select name="designation" id="designation" className="form-select">
                                         <option>--</option>
-                                        <option>Designation 1</option>
                                         {designation && designation.map((desg)=>{
                                             return<option value={desg.name}>{desg.name}</option>
                                         })}

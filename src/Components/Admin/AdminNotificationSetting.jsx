@@ -10,9 +10,6 @@ const AdminNotificationSetting = () => {
             <div className="row user-tabs">
               <div className="col-lg-12 col-md-12 col-sm-12 line-tabs">
                 <ul className="nav nav-tabs nav-tabs-bottom pt-3 pb-2">
-                
- 
-
                   <li className="nav-item"><a href="#Email" data-bs-toggle="tab" className="nav-link active">Email</a></li>
                   <li className="nav-item"><a href="#Slack" data-bs-toggle="tab" className="nav-link">Slack</a></li>
                   <li className="nav-item"><a href="#PushNotification" data-bs-toggle="tab" className="nav-link">Push Notification</a></li>

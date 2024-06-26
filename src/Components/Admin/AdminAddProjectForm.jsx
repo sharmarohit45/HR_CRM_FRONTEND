@@ -18,6 +18,7 @@ const AdminAddProjectForm = () => {
     const [clientSingle, setClientSingle] = useState(null);
     const [EmployeeIds, setEmployeeIds] = useState();
     const [ClientId, setClientId] = useState('');
+    const [data, setData] = useState([]);
     const [formData, setFormData] = useState({
         code: '',
         projectName: '',
@@ -132,9 +133,20 @@ const AdminAddProjectForm = () => {
         }
     }
 
+    async function deptData(){
+        try {
+            const response = await axios.get("http://localhost:8080/departments");
+            if (response.data) {
+                setData(response.data);
+            }
+        } catch (error) {
+            console.error('Error fetching client data:', error);
+        }
+    }
     useEffect(() => {
         getEmployee();
         getClient();
+        deptData();
     }, []);
 
     const handleFilmsChange = (event, value) => {
@@ -169,12 +181,11 @@ const AdminAddProjectForm = () => {
         <>
             <div className="row">
                 <div className="col">
-                    <div className="card">
-                        <div className="row mb-2">
+                <div className="row mb-2">
                             <div className="col">
                                 <h2>Project Details</h2>
                             </div>
-                        </div>
+                        </div><hr />
                         <div className="row">
                             <div className="col">
                                 <form onSubmit={handleSubmit}>
@@ -190,16 +201,16 @@ const AdminAddProjectForm = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="row">
+                                    <div className="row mt-3">
                                         <div className="col">
                                             <label htmlFor="">Start Date</label>
-                                            <input type="text" name="startDate" value={formData.startDate} onChange={handleChange} className='form-control' />
+                                            <input type="date" name="startDate" value={formData.startDate} onChange={handleChange} className='form-control' />
                                         </div>
                                         {showDeadline && (
                                             <>
                                                 <div className="col">
                                                     <label htmlFor="">Deadline</label>
-                                                    <input type="text" name="deadline" value={formData.deadline} onChange={handleChange} className='form-control' />
+                                                    <input type="date" name="deadline" value={formData.deadline} onChange={handleChange} className='form-control' />
                                                 </div>
                                             </>
                                         )}
@@ -209,7 +220,7 @@ const AdminAddProjectForm = () => {
                                         </div>
                                     </div>
 
-                                    <div className="row">
+                                    <div className="row mt-3">
                                         <div className="col">
                                             <label htmlFor="">Project Category</label>
                                             <div className="input-group">
@@ -220,14 +231,11 @@ const AdminAddProjectForm = () => {
                                         <div className="col">
                                             <label htmlFor="">Department</label>
                                             <select id="" name="department" value={formData.department} onChange={handleChange} className='form-select'>
-                                                <option value="fjhfhdfhsgh">fjhfhdfhsgh</option>
-                                                <option value="kjfdfj">kjfdfj</option>
                                                 <option value="">--</option>
-                                                <option value="">--</option>
-                                                <option value="">--</option>
-                                                <option value="">--</option>
-                                                <option value="">--</option>
-                                                <option value="">--</option>
+                                               {data && data.map((item,index)=>(
+                                                <option key={index} value={item.departmentName}>{item.departmentName}</option>
+                                               ))}
+                                               
                                             </select>
                                         </div>
                                         <div className="col">
@@ -252,13 +260,14 @@ const AdminAddProjectForm = () => {
                                                             style={{ height: '30px', width: '30px', marginRight: '10px', borderRadius: '50%' }}
                                                             alt="Profile"
                                                         />
-                                                        {option.clientName} ({option.email})
+                                                        {option.clientName} 
+                                                        {/* ({option.email}) */}
                                                     </Box>
                                                 )}
                                                 renderInput={(params) => (
                                                     <TextField
                                                         {...params}
-                                                        label="Select Client"
+                                                        // label="Select Client"
                                                         placeholder="Select Client"
                                                         inputProps={{
                                                             ...params.inputProps,
@@ -381,17 +390,16 @@ const AdminAddProjectForm = () => {
                                         </div>
                                     </div>
                                     <div className="form-group mt-2 mb-0">
-                                        <div className="row">
+                                        <div className="row mb-3">
                                             <div className="col">
-                                                <button type="submit" className="btn btn-primary"><span>Submit</span></button> &nbsp;
-                                                <button type="reset" className="btn btn-secondary"><span>Reset</span></button>
+                                                <button type="submit" className="btn btn-white"><span>Submit</span></button> &nbsp;
+                                                <button type="reset" className="btn btn-white" data-bs-dismiss="offcanvas"><span>Cancel</span></button>
                                             </div>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
         </>

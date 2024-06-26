@@ -1,8 +1,14 @@
-import React from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, Outlet, useLocation } from 'react-router-dom'
 import './AdminSettingsSection.css'; // Import custom CSS file
 
 const AdminSettingsSection = () => {
+    const [activeItem, setActiveItem] = useState('/settings'); // Initialize with default active route
+    const location = useLocation();
+
+    useEffect(() => {
+        setActiveItem(location.pathname); // Update activeItem whenever location changes
+    }, [location]);
     return (
         <>
             <div className="page-wrapper">
@@ -29,9 +35,9 @@ const AdminSettingsSection = () => {
                             </div>
                             {/* /Page Header */}
 
-                            <div className="row">
-                                <div className="col-md-4 col-lg-3">
-                                    <div className="card settings-menu">
+                            <div className="row" >
+                                <div className="col-md-4 col-lg-3 overflow-y-auto">
+                                    <div className="card settings-menu" style={{ maxHeight: '600px', overflowY: 'auto' }}>
                                         <div className="sidebar-menu">
                                             <ul className="scrollable-menu">
                                                 <li className="menu-title">Settings</li>
@@ -151,7 +157,7 @@ const AdminSettingsSection = () => {
                                     </div>
                                 </div>
                                 <div className="col-md-8 col-lg-9 settings-cont">
-                                        <Outlet />
+                                    <Outlet />
                                 </div>
                             </div>
                         </div>
