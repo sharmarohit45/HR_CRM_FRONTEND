@@ -1,5 +1,6 @@
 import React from 'react'
-
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 const AdminTimelogReportSection = () => {
   return (
     <>
@@ -19,10 +20,28 @@ const AdminTimelogReportSection = () => {
                             </div>
                         </div>
                     </div>
-                    {/* <!-- /Page Header --> */}
-                    {/* Page Content */}
-
-                    {/*End Page Content*/}
+                    <div className="row mt-2">
+                        <div className="col-sm-12">
+                            <div className="card text-dark" style={{ minHeight: '590px' }}>
+                                <DataGrid
+                                    columns={[
+                                        // { field: 'id', headerName: 'Id', hideable: false, width: 150 },
+                                        { field: 'code', headerName: 'Code', hideable: true, width: 180 },
+                                        { field: 'task', headerName: 'Task', hideable: true, width: 200 },
+                                        { field: 'employee', headerName: 'Employee', hideable: true, width: 250 },
+                                        { field: 'startTime', headerName: 'Start Time', hideable: true, width: 180 },
+                                        { field: 'endTime', headerName: 'End Time', hideable: true, width: 130 },
+                                        { field: 'totalTime', headerName: 'Total Time', hideable: true, width: 130 },
+                                        { field: 'earning', headerName: 'Earning', hideable: true, width: 130 },
+                                    ]}
+                                    // rows={rows}
+                                    slots={{
+                                        toolbar: GridToolbar,
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </>

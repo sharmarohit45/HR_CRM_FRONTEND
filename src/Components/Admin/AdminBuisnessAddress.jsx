@@ -447,7 +447,7 @@ const AdminBuisnessAddress = () => {
                             <div className="col">
                                 <div className="row">
                                     <div className="col pt-2">
-                                        <h3>Business Address</h3>
+                                        <h3 className='pt-3'><b>Business Address</b></h3>
                                     </div>
                                 </div>
                                 <hr />

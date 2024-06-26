@@ -1,156 +1,26 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-const AdminProposalForm = () => {
-    const [lead, setLead] = useState('');
-    const [deal, setDeal] = useState('');
-    const [validTill, setValidTill] = useState('');
-    const [currency, setCurrency] = useState('USD($)');
-    const [calculateTax, setCalculateTax] = useState('After Discount');
-    const [description, setDescription] = useState('');
-    const [requireSignature, setRequireSignature] = useState(false);
-    const [product, setProduct] = useState('');
-    const [data, setData] = useState([]);
-    const [dealData, setDealData] = useState([]);
-    const [rows, setRows] = useState([
-        {
-            description: '',
-            quantity: '',
-            unitPrice: '',
-            tax: 'GST 10%',
-            amount: 0,
-            notes: '',
-            file: null
-        }
-    ]);
-
+const AdminPurchaseOrderForm = () => {
+    const [currency, setCurrency] = useState("USD($)");
+    const [calculateTax, setCalculateTax] = useState("After Discount");
+    const [product, setProduct] = useState("");
+    const [rows, setRows] = useState([{ description: "", quantity: "", unitPrice: "", tax: "", amount: 0, notes: "", file: null }]);
     const [discount, setDiscount] = useState(0);
-    const [discountType, setDiscountType] = useState('%');
+    const [discountType, setDiscountType] = useState("%");
 
     const taxRates = {
-        'GST 10%': 0.10,
-        'CGST 18%': 0.18,
-        'VAT 10%': 0.10
+        "No Tax": 0,
+        "5%": 0.05,
+        "10%": 0.10,
+        "15%": 0.15,
+        "20%": 0.20,
     };
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        try {
-            const proposalProducts = await Promise.all(rows.map(async (row) => {
-                const fileData = row.file ? await convertFileToBase64(row.file) : null;
-                console.log(fileData);
-                return {
-                    description: row.description,
-                    quantity: row.quantity,
-                    unitPrice: row.unitPrice,
-                    tax: row.tax,
-                    amount: row.amount.toFixed(2),
-                    fileName: row.file ? row.file.name : null,
-                    fileData: fileData
-                };
-                
-            }));
- 
-            const formData = {
-                dealId: deal,
-                leadId: lead,
-                validTill:validTill,
-                currency:currency,
-                calculateTax:calculateTax,
-                description:description,
-                signatureApproval: requireSignature,
-                proposalProducts:proposalProducts
-            };
-
-            const response = await fetch('http://localhost:8080/proposals', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            // Assuming successful submission
-            console.log("Form Data:", formData);
-
-            // Reset the form
-            event.target.reset();
-
-            // Reset the state
-            setLead('');
-            setDeal('');
-            setValidTill('');
-            setCurrency('USD($)');
-            setCalculateTax('After Discount');
-            setDescription('');
-            setRequireSignature(false);
-            setProduct('');
-            setRows([
-                {
-                    description: '',
-                    quantity: '',
-                    unitPrice: '',
-                    tax: 'GST 10%',
-                    amount: 0,
-                    notes: '',
-                    file: null
-                }
-            ]);
-            setDiscount(0);
-            setDiscountType('%');
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
-
-    const convertFileToBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result.split(',')[1]);
-            reader.onerror = (error) => reject(error);
-        });
-    };
-
-    async function leadData() {
-        try {
-            const response = await axios.get("http://localhost:8080/lead");
-            setData(response.data);
-        } catch (error) {
-            console.error('Data fetching failed:', error);
-        }
-    }
-
-    useEffect(() => {
-        leadData();
-    }, []);
-
-    async function dealApiData() {
-        try {
-            const response = await axios.get("http://localhost:8080/deals");
-            setDealData(response.data);
-        } catch (error) {
-            console.error('Data fetching failed:', error);
-        }
-    }
-
-    useEffect(() => {
-        dealApiData();
-    }, []);
 
     const handleInputChange = (index, field, value) => {
         const newRows = [...rows];
         newRows[index][field] = value;
-        if (field === 'quantity' || field === 'unitPrice' || field === 'tax') {
-            const quantity = parseFloat(newRows[index].quantity) || 0;
-            const unitPrice = parseFloat(newRows[index].unitPrice) || 0;
-            const taxRate = taxRates[newRows[index].tax];
-            newRows[index].amount = quantity * unitPrice * (1 + taxRate);
+        if (field === "quantity" || field === "unitPrice" || field === "tax") {
+            newRows[index].amount = calculateAmount(newRows[index]);
         }
         setRows(newRows);
     };
@@ -161,43 +31,51 @@ const AdminProposalForm = () => {
         setRows(newRows);
     };
 
+    const calculateAmount = (row) => {
+        const quantity = parseFloat(row.quantity) || 0;
+        const unitPrice = parseFloat(row.unitPrice) || 0;
+        const taxRate = taxRates[row.tax] || 0;
+        const amount = quantity * unitPrice * (1 + taxRate);
+        return amount;
+    };
+
+    const addItem = () => {
+        setRows([...rows, { description: "", quantity: "", unitPrice: "", tax: "", amount: 0, notes: "", file: null }]);
+    };
+
+    const removeItem = (index) => {
+        const newRows = [...rows];
+        newRows.splice(index, 1);
+        setRows(newRows);
+    };
+
+    const calculateSubtotal = () => {
+        return rows.reduce((acc, row) => acc + row.amount, 0).toFixed(2);
+    };
+
     const handleDiscountChange = (value) => {
-        setDiscount(parseFloat(value) || 0);
+        setDiscount(value);
     };
 
     const handleDiscountTypeChange = (value) => {
         setDiscountType(value);
     };
 
-    const addItem = () => {
-        setRows([
-            ...rows,
-            {
-                description: '',
-                quantity: '',
-                unitPrice: '',
-                tax: 'GST 10%',
-                amount: 0,
-                notes: '',
-                file: null
-            }
-        ]);
-    };
-
-    const removeItem = (index) => {
-        const newRows = rows.filter((_, rowIndex) => rowIndex !== index);
-        setRows(newRows);
-    };
-
-    const calculateSubtotal = () => {
-        return rows.reduce((sum, row) => sum + row.amount, 0).toFixed(2);
-    };
-
     const calculateTotal = () => {
         const subtotal = parseFloat(calculateSubtotal());
-        const discountAmount = discountType === '%' ? (subtotal * discount / 100) : discount;
-        return (subtotal - discountAmount).toFixed(2);
+        let discountValue = parseFloat(discount) || 0;
+        if (discountType === "%") {
+            discountValue = (subtotal * discountValue) / 100;
+        }
+        const total = subtotal - discountValue;
+        return total.toFixed(2);
     };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Handle form submission logic
+    };
+
     return (
         <>
             <div className="row">
@@ -205,79 +83,75 @@ const AdminProposalForm = () => {
                     <div className="card">
                         <div className="row">
                             <div className="col">
-                                <h3>Proposal Details</h3>
+                                <h3>Purchase Order</h3>
                             </div>
                         </div>
                         <form onSubmit={handleSubmit}>
                             <div className="row mt-3  mb-3">
                                 <div className="col">
-                                    <label htmlFor="lead">Lead</label>
-                                    <select id="lead" className='form-select' value={lead} onChange={(e) => setLead(e.target.value)}>
-                                        <option value="--">--</option>
-                                        {data && data.map((item, index) => (
-                                            <option key={index} value={item.id}>{item.name}</option>
-                                        ))}
-                                    </select>
+                                    <label htmlFor="lead">Order Number</label>
+                                    <input type="text" name="" id="" className="form-control" />
                                 </div>
 
                                 <div className="col">
-                                    <label>Deal</label>
-                                    <select className='form-control' value={deal} onChange={(e) => setDeal(e.target.value)} >
-                                            <option value="">--</option>
-                                            {dealData && dealData.map((item,index)=>(
-                                                <option key={index} value={item.dealId}>{item.dealName}</option>
-                                            ))}
+                                    <label>Select Vendor</label>
+                                    <select className='form-control'>
+                                        <option value="">--</option>
                                     </select>
                                 </div>
-                                <div className="col">
-                                    <label>Valid Till</label>
-                                    <input type="date" className='form-control' value={validTill}
-                                        onChange={(e) => setValidTill(e.target.value)} />
-                                </div>
-                            </div>
-                            <div className="row">
                                 <div className="col mb-3">
                                     <label>Currency</label>
-                                    <select className="form-select" value={currency}
-                                        onChange={(e) => setCurrency(e.target.value)}>
+                                    <select className="form-select" value={currency} onChange={(e) => setCurrency(e.target.value)}>
                                         <option value="USD($)">USD($)</option>
                                         <option value="GBP(£)">GBP(£)</option>
                                         <option value="EUR(€)">EUR(€)</option>
                                         <option value="INR(₹)">INR(₹)</option>
                                     </select>
                                 </div>
+                            </div>
+                            <div className="row">
+                                <div className="col mb-3">
+                                    <label>Exchange Rate </label>
+                                    <input type="text" name="" id="" className="form-control" />
+                                </div>
+                                <div className="col">
+                                    <label htmlFor="">Order Date</label>
+                                    <input type="date" name="" id="" className="form-control" />
+                                </div>
+                                <div className="col">
+                                    <label htmlFor="">Expected Delivery Date</label>
+                                    <input type="date" name="" id="" className="form-control" />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <label htmlFor="">Delivery Address</label>
+                                    <select name="" id="" className="form-select">
+                                        <option value="">--</option>
+                                        <option value="PSSPL">PSSPL</option>
+                                    </select>
+                                </div>
+
                                 <div className="col mb-3">
                                     <label>Calculate Tax</label>
-                                    <select className="form-select" value={calculateTax}
-                                        onChange={(e) => setCalculateTax(e.target.value)}>
+                                    <select className="form-select" value={calculateTax} onChange={(e) => setCalculateTax(e.target.value)}>
                                         <option value="After Discount">After Discount</option>
                                         <option value="Before Discount">Before Discount</option>
                                     </select>
                                 </div>
-                                <div className="col"></div>
-                            </div>
-                            <div className="row mt-3">
                                 <div className="col">
-                                    <label>Description</label>
-                                    <input type="text" className='form-control' value={description}
-                                        onChange={(e) => setDescription(e.target.value)} />
+                                    <label htmlFor="">Delivery Status</label>
+                                    <select name="" id="" className="form-select">
+                                        <option value="">--</option>
+                                        <option value="PSSPL">PSSPL</option>
+                                    </select>
                                 </div>
                             </div>
-                            <div className="row mt-3">
-                                <div className="col">
-                                    <div className="form-check">
-                                        <input className="form-check-input" type="checkbox" id="requireSignature" checked={requireSignature}
-                                            onChange={(e) => setRequireSignature(e.target.checked)} />
-                                        <label className="form-check-label" htmlFor="requireSignature"> Require customer signature for approval
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
+
                             <div className="row mt-3">
                                 <div className="col-md-3 col-sm-6 mb-3">
-                                    <label htmlFor=""> Product</label>
-                                    <select className='form-select' value={product}
-                                        onChange={(e) => setProduct(e.target.value)}>
+                                    <label htmlFor="">Product</label>
+                                    <select className='form-select' value={product} onChange={(e) => setProduct(e.target.value)}>
                                         <option value="">A</option>
                                         <option value="">B</option>
                                         <option value="">C</option>
@@ -350,9 +224,7 @@ const AdminProposalForm = () => {
                                                             </div>
                                                         </td>
                                                         <td rowSpan={2}>
-                                                            <button type="button" className="btn btn-danger" onClick={() => removeItem(index)}>
-                                                                <i className="fa fa-times-circle"></i>
-                                                            </button>
+                                                                <i className="fa fa-times-circle text-danger" onClick={() => removeItem(index)}></i> 
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -377,6 +249,7 @@ const AdminProposalForm = () => {
                                                         </td>
                                                     </tr>
                                                 </tbody>
+
                                             </table>
                                         </React.Fragment>
                                     ))}
@@ -447,7 +320,7 @@ const AdminProposalForm = () => {
                 </div>
             </div>
         </>
-    );
-};
+    )
+}
 
-export default AdminProposalForm;
+export default AdminPurchaseOrderForm;

@@ -4,12 +4,12 @@ const AdminCompanySettings = () => {
     return (
         <>
         <div className="row">
-            <div className="col">
+            <div className="col-12">
                 <div className="card">
                 <form action="">
                     <div className="row">
                         <div className="col p-3">
-                            <h3>Company Settings</h3>
+                            <h3 className='pt-3'><b>Company Settings</b></h3>
                             <hr />
                         </div>
                     </div>

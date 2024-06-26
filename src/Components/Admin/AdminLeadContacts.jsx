@@ -4,6 +4,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AdminLeadContactsForm from './AdminLeadContactsForm';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function AdminLeadContacts() {
     const [rows, setRows] = useState([]);
@@ -34,10 +35,16 @@ function AdminLeadContacts() {
     const profileOnchange = (id) => {
         navigate(`/admin/leadContactsProfile/${id}`, { state: { id: id } });
     };
-    const handleActionClick = (row) => {
-        console.log(`Button clicked for row with ID: ${row.id}`);
+    const deleteEmployee = async (id) => {
+        try {
+            const response = await axios.delete(`http://localhost:8080/lead/${id}`);
+            console.log('Lead deleted:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('There was an error deleting the lead!', error);
+            throw error;
+        }
     };
-
 
     return (
         <>
@@ -77,8 +84,7 @@ function AdminLeadContacts() {
                                         { field: 'id', headerName: 'Id', hideable: false, width: 100 },
                                         {
                                             field: 'name', headerName: 'Contact Name', hideable: false, width: 190, renderCell: (params) => (
-                                                <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => profileOnchange(params.row.id)}>
-
+                                                <div style={{ display: 'flex', alignItems: 'center', cursor:'pointer' }} onClick={() => profileOnchange(params.row.id)}>
                                                     {params.value}
                                                 </div>
                                             ),
@@ -94,7 +100,7 @@ function AdminLeadContacts() {
                                                     <ul className="dropdown-menu btn" aria-labelledby="dropdownMenuLink" style={{ fontSize: 'smaller' }}>
                                                         <li onClick={() => profileOnchange(params.row.id)}><a className="dropdown-item" ><i className="fa fa-eye"></i> View</a></li>
                                                         <li><a className="dropdown-item" href="#"><i className="fa fa-pen"></i> Edit</a></li>
-                                                        <li><a className="dropdown-item" href="#"><i className="fa fa-trash" aria-hidden="true"></i> Delete</a></li>
+                                                        <li onClick={() => deleteEmployee(params.row.id)}><a className="dropdown-item" href="#"><i className="fa fa-trash" aria-hidden="true"></i> Delete</a></li>
                                                     </ul>
                                                 </div>
                                             )

@@ -1,15 +1,29 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Link } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
 import LayersIcon from '@mui/icons-material/Layers';
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
+import axios from 'axios';
 function AdminProjectTab() {
+    const [getProjectData, setProjectData] = useState(0)
+    async function projectdata() {
+        try {
+            const response = await axios.get("http://localhost:8080/project-count")
+            setProjectData(response.data);
+        } catch (error) {
+            console.log("Data fetching failed", error)
+        }
+
+    }
+    useEffect(() => {
+        projectdata();
+    }, [])
     return (
         <>
             <div className="page-wrapper">
                 <div className="content container-fluid pb-0">
-                    
+
                     <div className="row">
                         <div className="col-md-12">
                             <div className="page-head-box">
@@ -37,7 +51,7 @@ function AdminProjectTab() {
                                                 <li className="nav-item">
                                                     <Link className="nav-link" aria-current="page" to="/admin">Overview</Link>
                                                 </li>
-                                                <li className="nav-item" style={{borderBottom:'2px solid orange'}}>
+                                                <li className="nav-item" style={{ borderBottom: '2px solid orange' }}>
                                                     <Link className="nav-link  active" to="/admin/project-tab">Project</Link>
                                                 </li>
                                                 <li className="nav-item">
@@ -67,7 +81,7 @@ function AdminProjectTab() {
                                     <div className="row">
                                         <div className="col-sm-8 p-3">
                                             <h4 className='text-dark'><b>Total Projects</b></h4>
-                                            <p>0</p>
+                                            <h4><b>{getProjectData}</b></h4>
                                         </div>
                                         <div className="col-sm-4 pt-4 text-center">
                                             <LayersIcon style={{ fontSize: '35px', color: 'gray' }} />
@@ -83,7 +97,7 @@ function AdminProjectTab() {
                                     <div className="row">
                                         <div className="col-sm-8 p-3">
                                             <h4 className='text-dark'><b>Overdue Projects</b></h4>
-                                            <p>0</p>
+                                            <h4><b>0</b></h4>
                                         </div>
                                         <div className="col-sm-4 pt-4 text-center">
                                             <LayersIcon style={{ fontSize: '35px', color: 'gray' }} />
@@ -99,7 +113,7 @@ function AdminProjectTab() {
                                     <div className="row">
                                         <div className="col-sm-8 p-3">
                                             <h4 className='text-dark'><b>Hours logged</b></h4>
-                                            <p>0</p>
+                                            <h4><b>0</b></h4>
                                         </div>
                                         <div className="col-sm-4 pt-4 text-center">
                                             <WatchLaterIcon style={{ fontSize: '35px', color: 'gray' }} />
@@ -115,18 +129,21 @@ function AdminProjectTab() {
                         <div className="col">
                             <div className="card" style={{ height: '500px', padding: '15px' }}>
                                 <h4><b>Status Wise Projects</b></h4>
-                                <div className="row">
-                                    {/* DATA Section */}
+                                <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                                    <div className="col">
+                                        <i className='fa fa-list'></i>
+                                        <p>- No record found. -</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className="col">
                             <div className="card" style={{ height: '500px', padding: '15px' }}>
                                 <h4><b>Pending Milestone</b></h4>
-                                <div className="row">
-                                   <div className="col-sm-12">
-                                  <div className="card">
-                                  <table className='table table-hover table-stripped text-center' style={{fontSize:'smaller'}}>
+                                {/* <div className="row">
+                                    <div className="col-sm-12">
+                                        <div className="card">
+                                            {/* <table className='table table-hover table-stripped text-center' style={{fontSize:'smaller'}}>
                                         <thead>
                                             <tr>
                                                 <th>#</th>
@@ -144,9 +161,21 @@ function AdminProjectTab() {
                                                 <td>SEO</td>
                                             </tr>
                                         </tbody>
-                                    </table>
-                                  </div>
-                                   </div>
+                                    </table> 
+                                            <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                                                <div className="col">
+                                                    <i className='fa fa-list'></i>
+                                                    <p>- No record found. -</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> */}
+                                <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                                    <div className="col">
+                                    <i className='fa fa-list'></i>
+                                    <p>- No record found. -</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

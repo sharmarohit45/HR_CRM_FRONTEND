@@ -23,7 +23,7 @@ const AdminAttendenceReportSection = () => {
                     </div>
                     <div className="row">
                         <div className="col-sm-12">
-                            <div className="card text-dark" style={{ minHeight: '520px' }}>
+                            <div className="card text-dark" style={{ minHeight: '590px' }}>
                                 <DataGrid
                                     columns={[
                                         // { field: 'id', headerName: 'Id', hideable: false, width: 50 },

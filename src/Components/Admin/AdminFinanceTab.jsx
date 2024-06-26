@@ -109,16 +109,22 @@ function AdminFinanceTab() {
                         <div className="col">
                             <div className="card" style={{ height: '500px', padding: '15px' }}>
                                 <h4><b>Invoice Overview </b></h4>
-                                <div className="row">
-                                    {/* DATA Section */}
+                                <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                                    <div className="col">
+                                    <i className='fa fa-list'></i>
+                                    <p>- No record found. -</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className="col">
                             <div className="card" style={{ height: '500px', padding: '15px' }}>
                                 <h4><b>Estimate Overview </b></h4>
-                                <div className="row">
-                                    {/* DATA Section */}
+                                <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                                    <div className="col">
+                                    <i className='fa fa-list'></i>
+                                    <p>- No record found. -</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -127,16 +133,22 @@ function AdminFinanceTab() {
                         <div className="col">
                             <div className="card" style={{ height: '500px', padding: '15px' }}>
                                 <h4><b>Proposal Overview</b></h4>
-                                <div className="row">
-                                    {/* DATA Section */}
+                                <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                                    <div className="col">
+                                    <i className='fa fa-list'></i>
+                                    <p>- No record found. -</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className="col">
                             <div className="card" style={{ height: '500px', padding: '15px' }}>
                                 <h4><b>Client Wise Earnings</b></h4>
-                                <div className="row">
-                                    {/* DATA Section */}
+                                <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                                    <div className="col">
+                                    <i className='fa fa-list'></i>
+                                    <p>- No record found. -</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -145,8 +157,11 @@ function AdminFinanceTab() {
                         <div className="col">
                             <div className="card" style={{ height: '500px', padding: '15px' }}>
                                 <h4><b>Earnings By Projects </b></h4>
-                                <div className="row">
-                                    {/* DATA Section */}
+                                <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                                    <div className="col">
+                                    <i className='fa fa-list'></i>
+                                    <p>- No record found. -</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

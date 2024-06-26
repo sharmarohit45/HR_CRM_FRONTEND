@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import AdminLeadContactProfileTab from './AdminLeadContactProfileTab';
 import AdminLeadContactDealsTab from './AdminLeadContactDealsTab';
+import AdminAddNotesTab from './AdminAddNotesTab';
 
 const AdminLeadContactProfile = () => {
     const [data, setData] = useState(null);
@@ -11,7 +12,6 @@ const AdminLeadContactProfile = () => {
 
     useEffect(() => {
         if (id) {
-            console.log("Fetching data for id:", id);
             profileOnchange(id);
         }
     }, [id]);
@@ -19,7 +19,6 @@ const AdminLeadContactProfile = () => {
     async function profileOnchange(id) {
         try {
             const response = await axios.get(`http://localhost:8080/lead/${id}`);
-            console.log(response.data);
             setData(response.data);
         } catch (error) {
             console.log(error);
@@ -66,30 +65,17 @@ const AdminLeadContactProfile = () => {
                             </div>
                             <div className="tab-pane fade" id="deals">
                                 <div className="row">
-                                    <AdminLeadContactDealsTab  data={data}/>
+                                    <AdminLeadContactDealsTab data={data} />
                                 </div>
                             </div>
                             <div className="tab-pane fade" id="notes">
-                                <div className="row">
-                                    <div className="col">
-                                        <button className='btn btn-white'> <i className='fa fa-plus'></i> Add Note</button>
-                                    </div>
-
-                                </div>
-                                <div className="row mt-1">
-                                    <div className="col">
-                                        <div className="card">
-
-                                        </div>
-                                    </div>
-
-                                </div>
+                                <AdminAddNotesTab />
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
+
         </>
     )
 }

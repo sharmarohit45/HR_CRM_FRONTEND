@@ -19,7 +19,7 @@ const AdminLeadContactDealsTab = ({ data }) => {
             if (!response.data) {
                 throw new Error('Failed to fetch data');
             }
-            const filteredRows = response.data.filter(row => row.leadContacts === data.name);
+            const filteredRows = response.data.filter(row => row.leadContacts === data.id);
             setRows(filteredRows);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -66,9 +66,9 @@ const AdminLeadContactDealsTab = ({ data }) => {
                                 },
                             ]}
                             rows={rows.map(row => ({
-                                id: row.id,
+                                id: row.dealId,
                                 dealName: row.dealName,
-                                leadContacts: row.leadContacts,
+                                leadContacts: data.name,
                                 email: data.email,
                                 mobile: data.mobile,
                                 dealValue: row.dealValue,

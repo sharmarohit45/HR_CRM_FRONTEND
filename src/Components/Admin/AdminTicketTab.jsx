@@ -7,7 +7,7 @@ function AdminTicketTab() {
         <>
             <div className="page-wrapper">
                 <div className="content container-fluid pb-0">
-                    
+
                     <div className="row">
                         <div className="col-md-12">
                             <div className="page-head-box">
@@ -44,7 +44,7 @@ function AdminTicketTab() {
                                                 <li className="nav-item">
                                                     <Link className="nav-link" to="/admin/hr-tab">HR</Link>
                                                 </li>
-                                                <li className="nav-item" style={{borderBottom:'2px solid orange'}}>
+                                                <li className="nav-item" style={{ borderBottom: '2px solid orange' }}>
                                                     <Link className="nav-link active" to="/admin/ticket-tab">Ticket</Link>
                                                 </li>
                                                 <li className="nav-item">
@@ -94,63 +94,74 @@ function AdminTicketTab() {
                     </div>
                     <div className="row">
                         <div className="col">
-                            <Link to="">
-                                <div className="card" style={{height:'350px'}}>
+                                <div className="card" style={{ height: '350px' }}>
                                     <div className="row">
                                         <div className="col-sm-12 p-3">
                                             <h4 className='text-dark'><b>Type Wise Ticket</b></h4>
-                                           
+                                            <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                                                <div className="col">
+                                                    <i className='fa fa-list'></i>
+                                                    <p>- No record found. -</p>
+                                                </div>
+                                            </div>
                                         </div>
-                                        
+
                                     </div>
                                 </div>
-                            </Link>
                         </div>
                         <div className="col">
-                            <Link to="">
-                            <div className="card" style={{height:'350px'}}>
+                                <div className="card" style={{ height: '350px' }}>
                                     <div className="row">
                                         <div className="col-sm-12 p-3">
                                             <h4 className='text-dark'><b>Status Wise Ticket</b></h4>
-                                           
+                                            <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                                                <div className="col">
+                                                    <i className='fa fa-list'></i>
+                                                    <p>- No record found. -</p>
+                                                </div>
+                                            </div>
                                         </div>
-                                        
+
                                     </div>
                                 </div>
-                            </Link>
+                            
                         </div>
                     </div>
                     <div className="row">
                         <div className="col">
-                            <Link to="">
-                                <div className="card" style={{height:'350px'}}>
+                            
+                                <div className="card" style={{ height: '350px' }}>
                                     <div className="row">
                                         <div className="col-sm-12 p-3">
                                             <h4 className='text-dark'><b>Channel Wise Ticket</b></h4>
-                                           
+                                            <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                                                <div className="col">
+                                                    <i className='fa fa-list'></i>
+                                                    <p>- No record found. -</p>
+                                                </div>
+                                            </div>
                                         </div>
-                                        
+
                                     </div>
                                 </div>
-                            </Link>
                         </div>
                         <div className="col">
-                            <Link to="">
-                            <div className="card" style={{height:'350px'}}>
+                                <div className="card" style={{ height: '350px' }}>
                                     <div className="row">
                                         <div className="col-sm-12 p-3">
                                             <h4 className='text-dark'><b>Open Tickets</b></h4>
-                                           
+                                            <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                                                <div className="col">
+                                                    <i className='fa fa-list'></i>
+                                                    <p>- No record found. -</p>
+                                                </div>
+                                            </div> 
                                         </div>
-                                        
                                     </div>
-                                </div>
-                            </Link>
+                                </div>  
                         </div>
                     </div>
-
                 </div>
-                {/* <!-- /Page Content --> */}
             </div>
         </>
     )

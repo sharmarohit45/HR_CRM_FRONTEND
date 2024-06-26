@@ -35,7 +35,7 @@ const AdminDealsProfile = () => {
                                         <li className="nav-item"><a href="#files" data-bs-toggle="tab" className="nav-link">Files</a></li>
                                         <li className="nav-item"><a href="#followUp" data-bs-toggle="tab" className="nav-link">Follow Up</a></li>
                                         <li className="nav-item"><a href="#proposal" data-bs-toggle="tab" className="nav-link">Proposal</a></li>
-                                        <li className="nav-item"><a href="#notes" data-bs-toggle="tab" className="nav-link">Notes</a></li>
+                                        <li className="nav-item"><a href="#noteSection" data-bs-toggle="tab" className="nav-link">Notes</a></li>
                                         <li className="nav-item"><a href="#history" data-bs-toggle="tab" className="nav-link">History</a></li>
                                     </ul>
                                 </div>
@@ -61,7 +61,7 @@ const AdminDealsProfile = () => {
                                     <AdminCreateProposalTab />
                                 </div>
                             </div>
-                            <div className="tab-pane fade" id="notes">
+                            <div className="tab-pane fade" id="noteSection">
                                 <div className="row">
                                     <AdminAddNotes />
                                 </div>
