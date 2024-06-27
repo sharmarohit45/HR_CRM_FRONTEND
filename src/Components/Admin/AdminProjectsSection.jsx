@@ -1,40 +1,34 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { GridToolbar } from '@mui/x-data-grid';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AdminAddProjectForm from './AdminAddProjectForm';
+
 const AdminProjectsSection = () => {
     const [rows, setRows] = useState([]);
+    const [loading, setLoading] = useState(true); // State to manage loading state
+
     async function getData() {
         try {
-            const response = await fetch("http://localhost:8080/getallProject", {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch data');
-            }
-
-            const data = await response.json();
-            setRows(data);
-            console.log(data);
-        }
-        catch (error) {
+            const response = await axios.get("http://localhost:8080/getallProject");
+            setRows(response.data);
+            setLoading(false); // Set loading to false once data is fetched
+        } catch (error) {
             console.error('Error fetching data:', error);
+            setLoading(false); // Ensure loading is set to false on error
+            // Handle error state or show a message to the user
         }
     }
+
     useEffect(() => {
         getData();
-    }, []);
+    }, []); // Run once on component mount
+
     return (
         <>
             <div className="page-wrapper">
                 <div className="content container-fluid pb-0">
-
                     <div className="row">
                         <div className="col-md-12">
                             <div className="page-head-box">
@@ -48,16 +42,20 @@ const AdminProjectsSection = () => {
                             </div>
                         </div>
                     </div>
-                    {/* <!-- /Page Header --> */}
+
+                    {/* Page Header */}
+
                     <div className="row mb-3">
                         <div className="row mb-3">
                             <div className="col">
-                                <button className='btn btn-white' data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i className='fa fa-plus'></i> Add Projects</button>
+                                <button className='btn btn-white' data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                                    <i className='fa fa-plus'></i> Add Projects
+                                </button>
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-sm-12">
-                                <div className="card" style={{minHeight:'600px'}}>
+                                <div className="card" style={{ minHeight: '600px' }}>
                                     <DataGrid
                                         columns={[
                                             { field: 'id', headerName: 'id', hideable: false, width: 100 },
@@ -70,7 +68,7 @@ const AdminProjectsSection = () => {
                                                 width: 200,
                                                 renderCell: (params) => (
                                                     <>
-                                                        {params.value.map((imageData, index) => (
+                                                        {params.value && params.value.map((imageData, index) => (
                                                             <img
                                                                 key={index}
                                                                 src={`data:image/png;base64,${imageData}`}
@@ -81,18 +79,11 @@ const AdminProjectsSection = () => {
                                                     </>
                                                 )
                                             },
+                                            { field: 'startDate', headerName: 'Start Date', hideable: false, width: 150 },
+                                            { field: 'deadline', headerName: 'Deadline', hideable: false, width: 150 },
+                                            { field: 'client', headerName: 'Client', hideable: false, width: 150 },
                                             {
-                                                field: 'startDate', headerName: 'Start Date', hideable: false, width: 150
-                                            },
-                                            {
-                                                field: 'deadline', headerName: 'Deadline', hideable: false, width: 150
-                                            },
-                                            {
-                                                field: 'client', headerName: 'Client', hideable: false, width: 150
-                                            },
-                                            {
-                                                field: 'status', headerName: 'Status', hideable: false, width: 150, renderCell: (params) =>
-                                                (
+                                                field: 'status', headerName: 'Status', hideable: false, width: 150, renderCell: (params) => (
                                                     <select className="form-select mt-2" aria-label="status">
                                                         <option value="in progress">in progress</option>
                                                         <option value="not started">not started</option>
@@ -102,7 +93,6 @@ const AdminProjectsSection = () => {
                                                     </select>
                                                 )
                                             },
-
                                             {
                                                 field: 'action', headerName: 'Action', width: 190, renderCell: (params) => (
                                                     <div>
@@ -121,19 +111,8 @@ const AdminProjectsSection = () => {
                                                 )
                                             },
                                         ]}
-                                        rows={rows.map(row => ({
-                                            id: row.id,
-                                            code: row.code,
-                                            projectName: row.projectName,
-                                            members: row.members.map((item, index) =>
-                                                (item.imageData)),
-                                            startDate: row.startDate,
-                                            deadline: row.deadline,
-                                            client: row.client.clientName,
-                                            status: row.status,
-                                            action: row.action
-                                        }))
-                                        }
+                                        rows={rows}
+                                        loading={loading} // Show loading indicator while fetching data
                                         slots={{
                                             toolbar: GridToolbar,
                                         }}
@@ -141,6 +120,8 @@ const AdminProjectsSection = () => {
                                 </div>
                             </div>
                         </div>
+
+                        {/* Offcanvas for adding projects */}
                         <div className="offcanvas offcanvas-end" tabIndex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
                             <div className="offcanvas-header">
                                 <h2 id="offcanvasRightLabel" className='text-bold'><b>Projects</b></h2>
@@ -154,7 +135,7 @@ const AdminProjectsSection = () => {
                 </div>
             </div>
         </>
-    )
+    );
 }
 
-export default AdminProjectsSection
+export default AdminProjectsSection;

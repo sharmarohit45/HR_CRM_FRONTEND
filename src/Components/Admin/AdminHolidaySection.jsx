@@ -53,9 +53,8 @@ const AdminHolidaySection = () => {
                         </div>
                         <div className="col-sm-4 text-end">
                             <div className="btn-group" role="group" aria-label="Basic outlined example">
-                                <button type="button" className="btn btn-dark"><i className="fa fa-calendar"></i></button>
+                                <button type="button" className="btn btn-white"><i className="fa fa-calendar"></i></button>
                                 <button type="button" className="btn btn-white"><Link to='/admin/holiday-list'><i className="fa fa-list"></i></Link></button>
-
                             </div>
                         </div>
                     </div>
@@ -63,7 +62,6 @@ const AdminHolidaySection = () => {
                         <div className="col-sm-12">
                             <div className="card">
                                 <div className="card-body">
-
                                     <FullCalendar
                                         ref={calendarRef}
                                         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}

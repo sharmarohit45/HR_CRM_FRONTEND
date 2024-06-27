@@ -26,14 +26,44 @@ function AdminPrivateDashboard() {
     probationDate: true,
     internshipDate: true,
   });
+
   const [formData, setFormData] = useState({
+    employeeId: '',
+    currentDate: new Date().toLocaleDateString(),
+    currentTime: new Date().toLocaleTimeString(),
     location: '',
-    workingFrom: 'Office',
-    otherLocation: '',
-    attendanceType: '',
-    currentDate: '',
-    currentTime: ''
+    workingFrom: '',
+    clockInTime: null,
+    clockOutTime: null,
   });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    if (name === 'workingFrom' && value === 'Other') {
+      setIsOtherLocation(true);
+    } else if (name === 'workingFrom') {
+      setIsOtherLocation(false);
+    }
+  };
+
+  const handleClockIn = async (e) => {
+    e.preventDefault();
+    const response = await axios.post('/api/attendance/clock-in', {
+      ...formData,
+      clockInTime: new Date(),
+    });
+    setFormData({ ...formData, clockInTime: response.data.clockInTime });
+  };
+
+  const handleClockOut = async (e) => {
+    e.preventDefault();
+    const response = await axios.put(`/api/attendance/clock-out/${formData.id}`, {
+      clockOutTime: new Date(),
+    });
+    setFormData({ ...formData, clockOutTime: response.data.clockOutTime });
+  };
+
   const getAdmin = async () => {
     try {
       const response = await axios.get("http://localhost:8080/admin/data");
@@ -59,13 +89,13 @@ function AdminPrivateDashboard() {
     time: dateTime.toLocaleTimeString()
   };
 
-  // Toggle function to update visibility state of each section
   const toggleSectionVisibility = (section) => {
     setSectionsVisibility({
       ...sectionsVisibility,
       [section]: !sectionsVisibility[section],
     });
   };
+
   useEffect(() => {
     const now = new Date();
     const currentDate = now.toLocaleDateString();
@@ -78,36 +108,25 @@ function AdminPrivateDashboard() {
     }));
   }, []);
 
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    fetch('/api/attendance', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Success:', data);
-        // Handle successful submission
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        // Handle error in submission
-      });
-  };
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-    if (name === 'workingFrom' && value === 'Other') {
-      setIsOtherLocation(true);
-    } else if (name === 'workingFrom') {
-      setIsOtherLocation(false);
-    }
-  };
-
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   fetch('/api/attendance', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify(formData),
+  //   })
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       console.log('Success:', data);
+  //       // Handle successful submission
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error:', error);
+  //       // Handle error in submission
+  //     });
+  // };
   return (
     <div className="page-wrapper">
       <div className="content container-fluid pb-0">
@@ -151,45 +170,52 @@ function AdminPrivateDashboard() {
                         <h1 class="modal-title fs-5" id="exampleModalLabel">Clock In</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
-                      <div class="modal-body">
-                        <form onSubmit={handleSubmit}>
+                      <div className="modal-body">
+                        <form onSubmit={handleClockIn}>
                           <div className="row">
                             <div className="col" style={{ fontSize: '25px' }}>
-                              <label htmlFor=""><i className='fa fa-clock' ></i>
-                                <b> {` ${formData.currentDate} ${formData.currentTime}`} </b>
+                              <label>
+                                <i className="fa fa-clock"></i>
+                                <b> {`${formData.currentDate} ${formData.currentTime}`} </b>
                               </label>
                             </div>
                             <div className="col text-end">
-                              <label htmlFor="" className='btn-success p-1'>General Shift</label>
+                              <label className="btn-success p-1">General Shift</label>
                             </div>
                           </div>
                           <div className="row mt-3">
                             <div className="col">
-                              <label htmlFor="">Location</label>
-                              <select name="location" id="location" className="form-select" value={formData.location} onChange={handleChange}>
+                              <label>Employee ID</label>
+                              <input type="text" name="employeeId" className="form-control" value={formData.employeeId} onChange={handleChange} required />
+                            </div>
+                            <div className="col">
+                              <label>Location</label>
+                              <select name="location" className="form-select" value={formData.location} onChange={handleChange}>
                                 <option value="PSSPL">PSSPL</option>
                               </select>
                             </div>
                             <div className="col">
-                              <label htmlFor="">Working From</label>
-                              <select name="workingFrom" id="workingFrom" className="form-select" value={formData.workingFrom} onChange={handleChange}>
+                              <label>Working From</label>
+                              <select name="workingFrom" className="form-select" value={formData.workingFrom} onChange={handleChange}>
                                 <option value="Office">Office</option>
                                 <option value="Home">Home</option>
                                 <option value="Other">Other</option>
                               </select>
                             </div>
                           </div>
-                          {isOtherLocation && (<div className="row mt-3">
-                            <div className="col">
-                              <label htmlFor="">Other Locations</label>
-                              <input type="text" name="" id="" className="form-control" />
+                          {isOtherLocation && (
+                            <div className="row mt-3">
+                              <div className="col">
+                                <label>Other Locations</label>
+                                <input type="text" className="form-control" />
+                              </div>
                             </div>
-                          </div>)}
+                          )}
+                          <div className="mt-2 modal-footer">
+                            <button type="button" className="btn btn-white" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" className="btn btn-white">Clock In</button>
+                          </div>
                         </form>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-white" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-white">Clock In</button>
                       </div>
                     </div>
                   </div>

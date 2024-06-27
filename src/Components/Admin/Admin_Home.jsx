@@ -37,7 +37,7 @@ function Admin_Home() {
 				<div className="header">
 					<div className="header-left">
 						<Link to="/admin" className="logo">
-							<img src="/assets/img/logo.png" width="40" height="40" alt="" />
+							<img src="/assets/img/side-logo.png" width="40" height="40" alt="" />
 						</Link>
 					</div>
 					<div className="header-center">
