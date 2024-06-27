@@ -59,8 +59,8 @@ function AdminClient() {
                         </div>
                         <div className="col-4 d-flex justify-content-end">
                             <div className="btn-group">
-                                <Link to="" className="btn btn-white active" aria-current="page"><ListIcon /></Link>
-                                <Link to="" className="btn btn-white" aria-current="page"><PersonAddAltIcon /></Link>
+                                {/* <Link to="" className="btn btn-white active" aria-current="page"><ListIcon /></Link> */}
+                                {/* <Link to="" className="btn btn-white" aria-current="page"><PersonAddAltIcon /></Link> */}
                             </div>
                         </div>
                     </div>
@@ -83,7 +83,12 @@ function AdminClient() {
                                         { field: 'created', headerName: 'Created', width: 150 },
                                         {
                                             field: 'action', headerName: 'Action', width: 100, renderCell: (params) => (
-                                                <div> <MoreVertIcon className='f-s' /></div>
+                                                <div> <MoreVertIcon style={{ fontSize: '15px' }} className="dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" />
+                                                <ul className="dropdown-menu btn" aria-labelledby="dropdownMenuLink" style={{ fontSize: 'smaller' }}>
+                                                    <li><a className="dropdown-item" onClick={() => profileOnchange(params.row.empId)}><i className="fa fa-eye"></i> View</a></li>
+                                                    <li><a className="dropdown-item" href="#"><i className="fa fa-pen"></i> Edit</a></li>
+                                                    <li><a className="dropdown-item" href="#"><i className="fa fa-trash" aria-hidden="true"></i> Delete</a></li>
+                                                </ul></div>
                                             )
                                         },
                                     ]}
