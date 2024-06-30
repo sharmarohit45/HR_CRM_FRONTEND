@@ -6,46 +6,121 @@ function EmployeeDashboard() {
   const navigate = useNavigate();
   const email = localStorage.getItem('email');
   const [user, setUser] = useState({});
-  // const [dateTime, setDateTime] = useState(new Date());
   const [dateTime, setDateTime] = useState(new Date());
   const [isOtherLocation, setIsOtherLocation] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
-  // const profileOnchange = (email) => {
-  //   navigate('/admin/employee-profile/:empId', { state: { email: email } });
-  // };
+  const [sessionValue, setSessionValue] = useState('')
+
+
   const [formData, setFormData] = useState({
-    employeeId: '',
-    attendanceDate: new Date().toLocaleDateString(),
+    attendanceDate: new Date().toISOString().split('T')[0],
     attendanceTime: new Date().toLocaleTimeString(),
     location: '',
     workingFrom: '',
-    otherlocation:''
+    otherlocation: ''
   });
+
+  useEffect(() => {
+    getData()
+    getSessionValue()
+  }, [])
+
+  useEffect(() => {
+    const interval = setInterval(checkDayCompletion, 60000); // Check every minute
+    return () => clearInterval(interval); // Clean up interval on unmount
+  }, []);
+
+  const checkDayCompletion = async () => {
+    const currentDateTime = new Date();
+    const endOfDay = new Date(formData.attendanceDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    if (currentDateTime > endOfDay && sessionValue === 'Active') {
+
+    }
+  };
+
+  const getSessionValue = () => {
+    const getvalue = sessionStorage.getItem('clockin')
+    setSessionValue(getvalue)
+    console.log(getvalue)
+  }
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+
     if (name === 'workingFrom' && value === 'Other') {
       setIsOtherLocation(true);
     } else if (name === 'workingFrom') {
       setIsOtherLocation(false);
+      if (value !== 'Other') {
+        setFormData(prevState => ({
+          ...prevState,
+          workingFrom: ''
+        }));
+      }
     }
   };
+
+
+
   const handleClockIn = async (e) => {
     e.preventDefault();
-     const response = await axios.post('http://localhost:8080/clockAttendance/clock-in', {
-       ...formData,
-       clockInTime: new Date(),
-     });
-     setFormData({ ...formData, clockInTime: response.data.clockInTime });
-    console.log(formData)
+    sessionStorage.setItem('clockin', 'Active');
+    try {
+      const payload = {
+        employeeId: user.empId,
+        attendanceDate: formData.attendanceDate,
+        attendanceTime: formData.attendanceTime,
+        location: formData.location,
+        workingFrom: formData.workingFrom,
+        otherlocation: formData.otherlocation,
+        status: 'Active'
+      };
+      console.log('payload', payload)
+
+      const response = await axios.post('http://localhost:8080/clockAttendance/clock-in', payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log(response.data);
+      getSessionValue();
+    } catch (error) {
+      console.error('Error during clock-in:', error);
+    }
   };
+
+
   const handleClockOut = async (e) => {
+    sessionStorage.removeItem('clockin');
     e.preventDefault();
-    const response = await axios.put(`/api/attendance/clock-out/${formData.id}`, {
-      clockOutTime: new Date(),
-    });
-    setFormData({ ...formData, clockOutTime: response.data.clockOutTime });
+
+    try {
+      const logoutTime = new Date().toLocaleTimeString(); // Set the logout time
+      const logoutData = {
+        logoutTime,
+       status: 'Not Active'
+      };
+      const response = await axios.put(`http://localhost:8080/clockAttendance/clock-out/${user.empId}/${formData.attendanceDate}`, logoutData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log('Clock out response:', response.data);
+      getSessionValue();
+    } catch (error) {
+      console.error('Error during clock-out:', error); // Log any errors
+    }
   };
+
+
+
   async function getData() {
     try {
       const response = await axios.get('http://localhost:8080/allEmployee', {
@@ -77,6 +152,8 @@ function EmployeeDashboard() {
       console.error('Error fetching data:', error);
     }
   }
+
+
   const formattedDateTime = {
     day: dateTime.toLocaleDateString(undefined, { weekday: 'long' }),
     time: dateTime.toLocaleTimeString()
@@ -103,7 +180,7 @@ function EmployeeDashboard() {
                       <Link to="/employee">Dashboard</Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                     Employee Dashboard
+                      Employee Dashboard
                     </li>
                   </ol>
                 </nav>
@@ -124,8 +201,14 @@ function EmployeeDashboard() {
                   <p>{formattedDateTime.time} <br /> {formattedDateTime.day}</p>
                 </div>
                 <div className="col-sm-3">
-                  <button type="button" className='btn btn-white' style={{ fontSize: '12px' }} data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    <ExitToAppIcon /> Clock In</button>
+                  {
+                    sessionValue ?
+                      <button type="button" className='btn btn-white' style={{ fontSize: '12px', backgroundColor: 'red' }} onClick={handleClockOut}>
+                        <ExitToAppIcon /> Clock out</button>
+                      :
+                      <button type="button" className='btn btn-white' style={{ fontSize: '12px' }} data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <ExitToAppIcon /> Clock In</button>
+                  }
                   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                       <div class="modal-content">
@@ -147,11 +230,11 @@ function EmployeeDashboard() {
                               </div>
                             </div>
                             <div className="row mt-3">
-                              <div className="col">
+                              {/* <div className="col">
                                 <label>Employee ID</label> &nbsp;
                                 <b className='text-info'>{user.empId}</b>
                                 <input type="text" name="employeeId" className="form-control" value={formData.employeeId} onChange={handleChange} required />
-                              </div>
+                              </div> */}
                               <div className="col">
                                 <label>Location</label>
                                 <select name="location" className="form-select" value={formData.location} onChange={handleChange}>
@@ -171,7 +254,7 @@ function EmployeeDashboard() {
                               <div className="row mt-3">
                                 <div className="col">
                                   <label>Other Locations</label>
-                                  <input type="text" className="form-control" value={formData.otherlocation} onChange={handleChange}/>
+                                  <input type="text" className="form-control" value={formData.otherlocation} onChange={handleChange} />
                                 </div>
                               </div>
                             )}
