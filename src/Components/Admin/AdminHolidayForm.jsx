@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
 const AdminHolidayForm = () => {
-    const [holidays, setHolidays] = useState([{ date: '', occasion: '' }]);
+    const [holidays, setHolidays] = useState([{ id: null, date: '', occasion: '' }]);
     const [department, setDepartment] = useState([]);
     const [designation, setDesignation] = useState([]);
     const [employmentType, setEmploymentType] = useState('');
@@ -23,7 +23,7 @@ const AdminHolidayForm = () => {
     }
 
     const handleAddRow = () => {
-        setHolidays([...holidays, { date: '', occasion: '' }]);
+        setHolidays([...holidays, { id: null, date: '', occasion: '' }]);
     };
 
     const handleRemoveRow = (index) => {
@@ -32,7 +32,6 @@ const AdminHolidayForm = () => {
     };
 
     const handleChange = (index, field, value) => {
-        console.log(`Changing ${field} for index ${index} to ${value}`);
         const newHolidays = holidays.map((holiday, i) => {
             if (i === index) {
                 return { ...holiday, [field]: value };
@@ -40,20 +39,19 @@ const AdminHolidayForm = () => {
             return holiday;
         });
         setHolidays(newHolidays);
-        console.log("Updated holidays:", newHolidays);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Current holidays state before submission:", holidays);
         try {
             const formData = {
-                holidays: holidays,
+                holidays: holidays.map(holiday => ({
+                    holidayId: holiday.id
+                })),
                 department: e.target.department.value,
                 designation: e.target.designation.value,
                 employmentType: employmentType
             };
-            console.log("Submitting form data:", formData);
             const response = await axios.post("http://localhost:8080/holiday", formData);
             console.log("Form data sent:", response.data);
             // Optionally handle success or reset form
