@@ -259,8 +259,8 @@ function EmployeeDashboard() {
                               </div>
                             )}
                             <div className="mt-2 modal-footer">
-                              <button type="button" className="btn btn-white" data-bs-dismiss="modal">Cancel</button>
-                              <button type="submit" className="btn btn-white">Clock In</button>
+                              {/* <button type="button" className="btn btn-white">Cancel</button> */}
+                              <button type="submit" className="btn btn-white"  data-bs-dismiss="modal">Clock In</button>
                             </div>
                           </form>
                         </div>

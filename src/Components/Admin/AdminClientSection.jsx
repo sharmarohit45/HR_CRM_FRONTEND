@@ -56,14 +56,14 @@ function AdminClientSection() {
                                         </button>
                                         <div className="collapse navbar-collapse" id="navbarNav">
                                             <ul className="navbar-nav">
-                                                <li className="nav-item">
+                                                <li className="nav-item" >
                                                     <Link className="nav-link" aria-current="page" to="/admin">Overview</Link>
                                                 </li>
                                                 <li className="nav-item">
-                                                    <Link className="nav-link" to="/admin/Lead-tab">Lead</Link>
+                                                    <Link className="nav-link" to="/admin/project-tab">Project</Link>
                                                 </li>
-                                                <li className="nav-item" style={{borderBottom:'2px solid orange'}}>
-                                                    <Link className="nav-link active" to="/admin/client-tab">Client</Link>
+                                                <li className="nav-item" style={{ borderBottom: '2px solid orange' }}>
+                                                    <Link className="nav-link" to="/admin/client-tab">Client</Link>
                                                 </li>
                                                 <li className="nav-item">
                                                     <Link className="nav-link" to="/admin/hr-tab">HR</Link>
@@ -74,7 +74,7 @@ function AdminClientSection() {
                                                 <li className="nav-item">
                                                     <Link className="nav-link" to="/admin/finance-tab">Finance</Link>
                                                 </li>
-                                               
+
                                             </ul>
                                         </div>
                                     </div>

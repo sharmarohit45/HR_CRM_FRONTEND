@@ -30,7 +30,7 @@ function AdminProjectTab() {
                                 <h3>Project Dashboard</h3>
                                 <nav aria-label="breadcrumb">
                                     <ol className="breadcrumb">
-                                        <li className="breadcrumb-item"><a href="admin-dashboard.html">Dashboard</a></li>
+                                        <li className="breadcrumb-item"><Link to="/admin">Dashboard</Link></li>
                                         <li className="breadcrumb-item active" aria-current="page">Project Dashboard</li>
                                     </ol>
                                 </nav>
