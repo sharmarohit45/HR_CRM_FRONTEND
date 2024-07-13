@@ -9,26 +9,19 @@ const EmployeeAppreciationSection = () => {
     const [rows, setRows] = useState([]);
 
     useEffect(() => {
-        // Function to fetch data from the backend
         const fetchData = async () => {
             try {
-                // Make a GET request to fetch employee appreciation data
                 const response = await axios.get('http://localhost:8080/employee-appreciation');
-
-                // Check if the response is successful
                 if (response.status === 200) {
-                    // Set the rows state with the fetched data
                     setRows(response.data);
                 }
             } catch (error) {
                 console.error('Error fetching employee appreciation data:', error);
             }
         };
-
-        // Call the fetchData function
         fetchData();
-    }, []); // Empty dependency array ensures useEffect runs only once on component mount
-
+    }, []); 
+    
     return (
         <>
             <div className="page-wrapper">

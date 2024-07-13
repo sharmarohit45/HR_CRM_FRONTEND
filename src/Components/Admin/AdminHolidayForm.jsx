@@ -76,8 +76,7 @@ const AdminHolidayForm = () => {
                             <div className="row mb-3" key={index}>
                                 <div className="col">
                                     <label htmlFor={`date-${index}`}>Date</label>
-                                    <input
-                                        type="date"
+                                    <input type="date"
                                         id={`date-${index}`}
                                         className="form-control"
                                         value={holiday.date}
@@ -86,12 +85,8 @@ const AdminHolidayForm = () => {
                                 </div>
                                 <div className="col">
                                     <label htmlFor={`occasion-${index}`}>Occasion</label>
-                                    <input
-                                        type="text"
-                                        id={`occasion-${index}`}
-                                        className="form-control"
-                                        value={holiday.occasion}
-                                        onChange={(e) => handleChange(index, 'occasion', e.target.value)}
+                                    <input type="text"id={`occasion-${index}`}className="form-control"
+                                     value={holiday.occasion} onChange={(e) => handleChange(index, 'occasion', e.target.value)}
                                     />
                                 </div>
                                 <div className="col-auto d-flex align-items-end pb-3">
