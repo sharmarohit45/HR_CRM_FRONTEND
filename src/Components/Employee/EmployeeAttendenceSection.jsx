@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const EmployeeAttendenceSection = () => {
+    const [user, setUser] = useState({});
+    console.log(user.empId);
    // Example data for demonstration
    const [attendanceData, setAttendanceData] = useState([
     { id: 'Emp_01', name: 'Employee Name', attendance: [true, true, true, true, true, true, false, true, true, false , true, true, true, true, true, true, true, true, false, true, true, false, true, true, true, false, true, true] },
