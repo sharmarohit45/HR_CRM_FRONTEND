@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import EmployeeMyCalendar from './EmployeeMyCalendar';
 function EmployeeDashboard() {
   const navigate = useNavigate();
   const email = localStorage.getItem('email');
@@ -10,8 +15,7 @@ function EmployeeDashboard() {
   const [isOtherLocation, setIsOtherLocation] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
   const [sessionValue, setSessionValue] = useState('')
-
-
+  const [birthdays, setBirthdays] = useState([]);
   const [formData, setFormData] = useState({
     attendanceDate: new Date().toISOString().split('T')[0],
     attendanceTime: new Date().toLocaleTimeString(),
@@ -105,7 +109,7 @@ function EmployeeDashboard() {
       const logoutTime = new Date().toLocaleTimeString(); // Set the logout time
       const logoutData = {
         logoutTime,
-       status: 'Not Active'
+        status: 'Not Active'
       };
       const response = await axios.put(`http://localhost:8080/clockAttendance/clock-out/${user.empId}/${formData.attendanceDate}`, logoutData, {
         headers: {
@@ -118,9 +122,6 @@ function EmployeeDashboard() {
       console.error('Error during clock-out:', error); // Log any errors
     }
   };
-
-
-
   async function getData() {
     try {
       const response = await axios.get('http://localhost:8080/allEmployee', {
@@ -148,12 +149,25 @@ function EmployeeDashboard() {
       } else {
         navigate('/');
       }
+      filterBirthdays(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   }
 
-
+  function filterBirthdays(data) {
+    const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-indexed month
+    const filteredBirthdays = data.filter((employee) => {
+      const dob = new Date(employee.dateOfBirth);
+      if (dob.toString() === 'Invalid Date') {
+        console.log('Invalid date format:', employee.dateOfBirth);
+        return false;
+      }
+      const employeeMonth = dob.getMonth() + 1;
+      return employeeMonth === currentMonth;
+    });
+    setBirthdays(filteredBirthdays);
+  }
   const formattedDateTime = {
     day: dateTime.toLocaleDateString(undefined, { weekday: 'long' }),
     time: dateTime.toLocaleTimeString()
@@ -238,6 +252,7 @@ function EmployeeDashboard() {
                               <div className="col">
                                 <label>Location</label>
                                 <select name="location" className="form-select" value={formData.location} onChange={handleChange}>
+                                  <option value="">--</option>
                                   <option value="PSSPL">PSSPL</option>
                                 </select>
                               </div>
@@ -260,7 +275,7 @@ function EmployeeDashboard() {
                             )}
                             <div className="mt-2 modal-footer">
                               {/* <button type="button" className="btn btn-white">Cancel</button> */}
-                              <button type="submit" className="btn btn-white"  data-bs-dismiss="modal">Clock In</button>
+                              <button type="submit" className="btn btn-white" data-bs-dismiss="modal">Clock In</button>
                             </div>
                           </form>
                         </div>
@@ -284,7 +299,7 @@ function EmployeeDashboard() {
                     {user.imageUrl}
                   </div>
                   <div className="col pt-4">
-                    <p style={{ fontSize: 'smaller', fontSize: '15px' }}><b style={{ fontSize: '20px' }}>{user.empName}</b> <br />{user.designation} <br /> <p style={{ fontSize: '13px', color: 'gray' }}>Employee Id : {user.employeeId} </p></p>
+                    <p style={{ fontSize: 'smaller', fontSize: '15px' }}><b style={{ fontSize: '20px' }}>{user.empName}</b> <br />{user.designation} <br /> <p style={{ fontSize: '13px', color: 'gray' }}>Employee Id : {user.employeeIdentity} </p></p>
                   </div>
                   <div className="col"></div>
                 </div>
@@ -303,11 +318,39 @@ function EmployeeDashboard() {
                 </div>
               </div>
               <div className="card p-4">
-                <div className="row">
+              <div className="row p-2">
                   <h4>
-                    <b>Birthday</b>
+                    <b>Birthday</b><hr />
                   </h4>
-                  <div className="col"></div>
+                  {birthdays.length > 0 ? (
+                    <div className="row overflow-auto">
+                      <div className="col ">
+
+                        {birthdays.map((employee) => (
+                          <>
+                            <div className="row mt-2">
+                              <div className="col">
+                                <p style={{fontSize: 'smaller' }}><img src={`data:image/png;base64,${employee.imageData}`} style={{ borderRadius: '50%', height: '30px', width: '30px' }} alt="" /> &nbsp; <b>{employee.empName}</b></p>
+
+                              </div>
+                              <div className="col text-end">
+                                <p >{new Date(employee.dateOfBirth).toLocaleDateString()}&nbsp; &nbsp; <i className='fa fa-birthday-cake'></i> </p>
+                              </div>
+                            </div>
+                          </>
+
+                        ))}
+
+                      </div>
+                    </div>
+                  ) : (
+                    <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                      <div className="col">
+                        <i className='fa fa-list'></i>
+                        <p>- No birthdays found this month. -</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card p-4">
@@ -315,7 +358,14 @@ function EmployeeDashboard() {
                   <h4>
                     <b>Employee Appreciations</b>
                   </h4>
-                  <div className="col"></div>
+                  <div className="col">
+                    <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                      <div className="col">
+                        <i className='fa fa-list'></i>
+                        <p>- No record found. -</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="card p-4">
@@ -323,7 +373,14 @@ function EmployeeDashboard() {
                   <h4>
                     <b>On Leave Today</b>
                   </h4>
-                  <div className="col"></div>
+                  <div className="col">
+                    <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                      <div className="col">
+                        <i className='fa fa-list'></i>
+                        <p>- No record found. -</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="card p-4">
@@ -331,7 +388,14 @@ function EmployeeDashboard() {
                   <h4>
                     <b>On Work From Home Today</b>
                   </h4>
-                  <div className="col"></div>
+                  <div className="col">
+                    <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                      <div className="col">
+                        <i className='fa fa-list'></i>
+                        <p>- No record found. -</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="card p-4">
@@ -339,7 +403,14 @@ function EmployeeDashboard() {
                   <h4>
                     <b>Today's Joinings & Work Anniversary</b>
                   </h4>
-                  <div className="col"></div>
+                  <div className="col">
+                    <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                      <div className="col">
+                        <i className='fa fa-list'></i>
+                        <p>- No record found. -</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -373,7 +444,7 @@ function EmployeeDashboard() {
                         <b>Projects</b>
                       </h4>
                       <div className="row">
-                        <div className="col-sm-4">
+                        <div className="col">
                           <b>7</b>
                           <p>In Progress</p>
                         </div>
@@ -381,28 +452,57 @@ function EmployeeDashboard() {
                           <b>6</b>
                           <p>Overdue</p>
                         </div>
-                        <div className="col text-center">
-                          <i className="fa fa-layer-group" style={{ fontSize: '25px', color: 'gray' }}></i>
-                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="card p-4">
-                <b>Week Timelogs</b>
+                <h4><b>Week Timelogs</b></h4>
+                <div className="col">
+                  <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                    <div className="col">
+                      <i className='fa fa-list'></i>
+                      <p>- No record found. -</p>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div className="card p-4">
-                <b>My Tasks</b>
+                <h4><b>My Tasks</b></h4>
+                <div className="col">
+                  <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                    <div className="col">
+                      <i className='fa fa-list'></i>
+                      <p>- No record found. -</p>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div className="card p-4">
-                <b>Tickets</b>
+                <h4><b>Tickets</b></h4>
+                <div className="col">
+                  <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                    <div className="col">
+                      <i className='fa fa-list'></i>
+                      <p>- No record found. -</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="card">
+                <EmployeeMyCalendar />
               </div>
               <div className="card p-4">
-                <b>My Calendar</b>
-              </div>
-              <div className="card p-4">
-                <b>Notices</b>
+                <h4><b>Notices</b></h4>
+                <div className="col">
+                  <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                    <div className="col">
+                      <i className='fa fa-list'></i>
+                      <p>- No record found. -</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

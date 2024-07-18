@@ -26,8 +26,6 @@ const AdminTasksSection = () => {
                             </div>
                         </div>
                     </div>
-                    {/* <!-- /Page Header --> */}
-                    {/* Page Content */}
                     <div className="row mb-3">
                         <div className="row mb-3">
                             <div className="col">
@@ -115,7 +113,6 @@ const AdminTasksSection = () => {
                             </div>
                         </div>
                     </div>
-                    {/*End Page Content*/}
                 </div>
             </div>
         </>

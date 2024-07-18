@@ -6,6 +6,7 @@ import ViewKanbanIcon from '@mui/icons-material/ViewKanban';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import { Link } from 'react-router-dom';
+import EmployeeAddTaskForm from './EmployeeAddTaskForm';
 
 const EmployeeTaskSection = () => {
   return (
@@ -109,7 +110,7 @@ const EmployeeTaskSection = () => {
                         <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
                     <div className="offcanvas-body">
-                       
+                       <EmployeeAddTaskForm />
                     </div>
                 </div>
             </div>

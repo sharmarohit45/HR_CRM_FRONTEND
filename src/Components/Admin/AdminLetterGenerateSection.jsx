@@ -83,7 +83,6 @@ const AdminLetterGenerateSection = () => {
                                 <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                             </div>
                             <div className="offcanvas-body">
-                                {/* <AdminAddTaskForm /> */}
                                 <AdminAddLetter />
                             </div>
                         </div>

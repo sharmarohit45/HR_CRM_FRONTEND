@@ -71,7 +71,6 @@ import AdminLetterTemplateSection from './Components/Admin/AdminLetterTemplateSe
 import AdminPayrollSection from './Components/Admin/AdminPayrollSection';
 import AdminEmployeeSalerySection from './Components/Admin/AdminEmployeeSalerySection';
 import AdminReportSection from './Components/Admin/AdminReportSection';
-import AdminSettingsSection from './Components/Admin/AdminSettingsSection';
 import AdminQrCodeSection from './Components/Admin/AdminQrCodeSection';
 import AdminZoomMeetingSection from './Components/Admin/AdminZoomMeetingSection';
 import AdminVendorSection from './Components/Admin/AdminVendorSection';
@@ -89,7 +88,6 @@ import AdminJobApplicationSection from './Components/Admin/AdminJobApplicationSe
 import AdminInterviewSchedule from './Components/Admin/AdminInterviewSchedule';
 import AdminOfferLetterSection from './Components/Admin/AdminOfferLetterSection';
 import AdminCandidatesSection from './Components/Admin/AdminCandidatesSection';
-import AdminCareerSiteSection from './Components/Admin/AdminCareerSiteSection';
 import AdminRecruitReportSection from './Components/Admin/AdminRecruitReportSection';
 import AdminTimelogReportSection from './Components/Admin/AdminTimelogReportSection';
 import AdminTaskReportSection from './Components/Admin/AdminTaskReportSection';
@@ -118,7 +116,6 @@ import EmployeeTicketSection from './Components/Employee/EmployeeTicketSection';
 import EmployeeEventsSection from './Components/Employee/EmployeeEventsSection';
 import EmployeeMessagesSection from './Components/Employee/EmployeeMessagesSection';
 import EmployeeNoticeBoardSection from './Components/Employee/EmployeeNoticeBoardSection';
-import EmployeeCarrerSitesSection from './Components/Employee/EmployeeCarrerSitesSection';
 import EmployeeLeaveCalender from './Components/Employee/EmployeeLeaveCalender';
 import EmployeeMyLeaveSection from './Components/Employee/EmployeeMyLeaveSection';
 import EmployeeProfileSection from './Components/Employee/EmployeeProfileSection';
@@ -180,6 +177,10 @@ import AdminSecuritySetting from './Components/Admin/AdminSecuritySetting';
 import AdminThemeSetting from './Components/Admin/AdminThemeSetting';
 import AdminPayrollSetting from './Components/Admin/AdminPayrollSetting';
 import SettingSection from './Components/Admin/SettingSection';
+import AdminEmployeeEditForm from './Components/Admin/AdminEmployeeEditForm';
+import EmployeeHolidayListView from './Components/Employee/EmployeeHolidayListView';
+import EmployeeProfileSetting from './Components/Employee/EmployeeProfileSetting';
+import AdminEditCompanySetting from './Components/Admin/AdminEditCompanySetting';
 function App() {
   const isLoggedIn = localStorage.getItem('token');
   return (
@@ -192,6 +193,7 @@ function App() {
             <Route index element={<AdminDashboard />} />
             <Route path='/admin/private-dashboard' element={<AdminPrivateDashboard />} />
             <Route path='/admin/employee-profile/:empId' element={<AdminEmployeeProfile />} />
+            <Route path='/admin/employee-edit-profile/:empId' element={<AdminEmployeeEditForm />} />
             <Route path='/admin/dashboard' element={<AdminProfileDashboard />} />
 
             <Route path='/admin/client-profile/:clientId' element={<AdminClientSectionProfile />} />
@@ -235,7 +237,7 @@ function App() {
 
             {/* Admin Finance Section Routing */}
             <Route path='/admin/proposal' element={<AdminProposalSection />} />
-            <Route path='/admin/proposal-invoice' element={<AdminProposalInvoice />} />
+            <Route path='/admin/proposal-invoice/:proposalId' element={<AdminProposalInvoice />} />
             <Route path='/admin/estimates' element={<AdminEstimatesSection />} />
             <Route path='/admin/estimates-invoice' element={<AdminEstimateInvoice />} />
             <Route path='/admin/invoices' element={<AdminInvoicesSection />} />
@@ -297,7 +299,6 @@ function App() {
             <Route path='/admin/offer-letters' element={<AdminOfferLetterSection />} />
             <Route path='/admin/candidate-databases' element={<AdminCandidatesSection />} />
             <Route path='/admin/reports' element={<AdminRecruitReportSection />} />
-            <Route path='/admin/career-site' element={<AdminCareerSiteSection />} />
 
             {/* Admin Zoom Meeting Section Routing */}
             <Route path='/admin/zoom-meeting' element={<AdminZoomMeetingSection />} />
@@ -314,6 +315,7 @@ function App() {
             {/* Admin Settings Section Routing */}
             <Route path='/admin/settings' element={<SettingSection />} >
               <Route path="" element={<AdminCompanySettings />} />
+              <Route path="edit-company" element={<AdminEditCompanySetting />} />
               <Route path="buisnessSetting" element={<AdminBuisnessAddress />} />
               <Route path="appSetting" element={<AdminAppSetting />} />
               <Route path="profileSetting" element={<AdminProfileSetting />} />
@@ -362,6 +364,7 @@ function App() {
             <Route path='/employee/my-leaves' element={<EmployeeMyLeaveSection />} />
             <Route path='/employee/attendance' element={<EmployeeAttendenceSection />} />
             <Route path='/employee/holiday' element={<EmployeeHolidaySection />} />
+            <Route path='/employee/holiday-list' element={<EmployeeHolidayListView />} />
             <Route path='/employee/appreciation' element={<EmployeeAppreciationSection />} />
             {/* Employee Work Section */}
             <Route path='/employee/projects' element={<EmployeeProjectsSection />} />
@@ -377,11 +380,11 @@ function App() {
             <Route path='/employee/messages' element={<EmployeeMessagesSection />} />
             {/* Employee Notice Board */}
             <Route path='/employee/notice-board' element={<EmployeeNoticeBoardSection />} />
-            {/* Employee Carrer Site */}
-            <Route path='/employee/carrer-sites' element={<EmployeeCarrerSitesSection />} />
+          
             {/* Employee Setting Section */}
             <Route path='/employee/settings' element={<EmployeeSettings />} >
-              <Route path='/employee/settings/' element={<EmployeeSecuritySetting />} />
+              <Route path='' element={<EmployeeProfileSetting />} />
+              <Route path='security-settings' element={<EmployeeSecuritySetting />} />
             </Route>
           </Route>
           <Route path='/client' element={isLoggedIn ? <ClientHome /> : <LogInSection />}>

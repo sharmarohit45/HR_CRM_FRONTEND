@@ -1,16 +1,17 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 import AdminEmployeeForm from './AdminEmployeeForm';
 import AdminAddProjectForm from './AdminAddProjectForm';
 import AdminAddTaskForm from './AdminAddTaskForm';
 import AdminAddClient from './AdminAddClient';
 import AdminCreateTicketForm from './AdminCreateTicketForm';
 import AdminStickyNotesSection from './AdminStickyNotesSection';
+import AdminTimelogTimer from './AdminTimelogTimer';
 
 function Admin_Home() {
 	const [admin, setAdmin] = useState(null);
-
+	const navigate = useNavigate();
 	const getAdmin = async () => {
 		try {
 			const response = await axios.get("http://localhost:8080/admin/data");
@@ -31,6 +32,9 @@ function Admin_Home() {
 	useEffect(() => {
 		getAdmin();
 	}, []);
+	const editProfile = () => {
+		navigate('/admin/settings/profileSetting');
+	}
 	return (
 		<>
 			<div className="main-wrapper">
@@ -58,15 +62,21 @@ function Admin_Home() {
 							</a>
 						</li>
 						<li className="nav-item">
+							<a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Timer">
+								<i className="fa fa-clock" type="button" data-bs-toggle="offcanvas" data-bs-target="#TIMER" aria-controls="offcanvasRight"></i>
+							</a>
+						</li>
+
+						<li className="nav-item">
 							<a href="" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Create New">
 								<i className='fa fa-plus-circle' type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
 								<ul className="dropdown-menu" style={{ fontSize: 'smaller' }}>
-									<li style={{height:'60px'}} data-bs-toggle="offcanvas" data-bs-target="#AddProject" aria-controls="offcanvasRight"><a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Project</a></li>
-									<li style={{height:'60px'}} data-bs-toggle="offcanvas" data-bs-target="#AddTask" aria-controls="offcanvasRight">   <a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Task</a></li>
-									<li style={{height:'60px'}} data-bs-toggle="offcanvas" data-bs-target="#AddClient" aria-controls="offcanvasRight">  <a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Client</a></li>
-									<li style={{height:'60px'}} data-bs-toggle="offcanvas" data-bs-target="#AddEmployee" aria-controls="offcanvasRight"><a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Employee</a></li>
-									<li style={{height:'60px'}} data-bs-toggle="offcanvas" data-bs-target="#AddPayment" aria-controls="offcanvasRight"><a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Payment</a></li>
-									<li style={{height:'60px'}} data-bs-toggle="offcanvas" data-bs-target="#AddTicket" aria-controls="offcanvasRight"><a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Create Ticket </a></li>
+									<li style={{ height: '60px' }} data-bs-toggle="offcanvas" data-bs-target="#AddProject" aria-controls="offcanvasRight"><a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Project</a></li>
+									<li style={{ height: '60px' }} data-bs-toggle="offcanvas" data-bs-target="#AddTask" aria-controls="offcanvasRight">   <a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Task</a></li>
+									<li style={{ height: '60px' }} data-bs-toggle="offcanvas" data-bs-target="#AddClient" aria-controls="offcanvasRight">  <a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Client</a></li>
+									<li style={{ height: '60px' }} data-bs-toggle="offcanvas" data-bs-target="#AddEmployee" aria-controls="offcanvasRight"><a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Employee</a></li>
+									<li style={{ height: '60px' }} data-bs-toggle="offcanvas" data-bs-target="#AddPayment" aria-controls="offcanvasRight"><a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Add Payment</a></li>
+									<li style={{ height: '60px' }} data-bs-toggle="offcanvas" data-bs-target="#AddTicket" aria-controls="offcanvasRight"><a className="dropdown-item" href="#"><i className='fa fa-plus'></i> Create Ticket </a></li>
 								</ul>
 							</a>
 						</li>
@@ -154,15 +164,15 @@ function Admin_Home() {
 							</div>
 						</li>
 						<li className="nav-item dropdown has-arrow main-drop">
-							<a href="#" >
-								<span className="user-img"><img src="/assets/img/profiles/avatar-21.jpg" alt="" /></span>
-								<span>{admin ? admin.adminName : 'Admin'}</span>
+							<a>
+								<span className="user-img"><img src={`data:image/png;base64,${admin ? admin.fileData : 'Admin'}`} alt="0" style={{borderRadius:'50%',height:'30px'}} /></span>
+								<span onClick={() => editProfile(admin.adminId)}>{admin ? admin.adminName : 'Admin'}</span>
 							</a>
 						</li>
 						<li className='nav-item text-black'><Link to="/" onClick={handleLogout}><i className="fa fa-power-off"></i></Link></li>
 					</ul>
 					<div className="dropdown mobile-user-menu">
-						
+
 						<Link to="/" onClick={handleLogout}><i className="fa fa-power-off"></i></Link>
 					</div>
 				</div>
@@ -440,7 +450,7 @@ function Admin_Home() {
 									<li><Link to="/admin/offer-letters"> Offer Letters </Link></li>
 									<li><Link to="/admin/candidate-databases"> Candidate Databases </Link></li>
 									<li><Link to="/admin/reports"> Reports </Link></li>
-									<li><Link to="/admin/career-site"> Career Site </Link></li>
+									<li><Link to="https://www.posistrength.com/p/hire-developers"> Career Site </Link></li>
 								</ul>
 							</div>
 							<div className="tab-pane fade" id="v-pills-video" role="tabpanel" aria-labelledby="v-pills-video-tab">
@@ -536,7 +546,17 @@ function Admin_Home() {
 						<AdminStickyNotesSection />
 					</div>
 				</div>
-				
+				<div className="offcanvas offcanvas-end" tabIndex="-1" id="TIMER" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
+					<div className="offcanvas-header">
+						<h2 id="offcanvasRightLabel" className='text-bold'><b>START TIMER</b></h2>
+						<button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+					</div>
+					<div className="offcanvas-body">
+						<AdminTimelogTimer />
+					</div>
+				</div>
+
+
 				<Outlet />
 			</div>
 		</>

@@ -31,7 +31,6 @@ const AdminEmployeeProfile = () => {
     async function profileOnchange(empId) {
         try {
             const response = await axios.get(`http://localhost:8080/employee/${empId}`);
-            console.log(response.data);
             setData(response.data);
         } catch (error) {
             console.log(error);
@@ -105,8 +104,7 @@ const AdminEmployeeProfile = () => {
                                                         <div className="col">
                                                             <div className='profile-info'>
                                                                 <h4><b>{data.empName}</b></h4>
-                                                                <p>{data.designation} | {data.department} | User Role : {data.empUserRole}<br /></p>
-                                                                <p>Last logged In: -----------</p>
+                                                                <p>{data.designation} | {data.department} | {data.emp_User_Name}<br /></p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -156,11 +154,11 @@ const AdminEmployeeProfile = () => {
                                 <div className="card text-center p-3" style={{ fontSize: 'smaller' }}>
                                     <div className="row">
                                         <div className="col-sm-6">
-                                            <h5>Reporting To</h5>
+                                            <h5><b>Reporting To</b></h5>
                                             <p>{data.reportingTo}</p>
                                         </div>
                                         <div className="col-sm-6">
-                                            <h5>Reporting Team</h5>
+                                            <h5><b>Reporting Team</b></h5>
                                             <p>{data.reportingTeam}</p>
                                         </div>
                                     </div>
@@ -280,12 +278,12 @@ const AdminEmployeeProfile = () => {
                                                     <p>{data.maritial_State}</p>
                                                 </div>
                                             </div>
-                                            <div className="row">
+                                            {/* <div className="row">
                                                 <div className="col d-flex justify-content-between">
                                                     <p>Marriage Anniversary Date</p>
                                                     <p>--</p>
                                                 </div>
-                                            </div>
+                                            </div> */}
                                             <div className="row">
                                                 <div className="col d-flex justify-content-between">
                                                     <p>Employment Type</p>
@@ -311,13 +309,13 @@ const AdminEmployeeProfile = () => {
                             <div className="col">
                                 <div className="row">
                                     <div className="col-sm-6">
-                                        <div className="card">
-                                            <h4>Late Attendance</h4>
+                                        <div className="card p-2">
+                                            <h5><b>Late Attendance</b></h5>
                                         </div>
                                     </div>
                                     <div className="col-sm-6">
-                                        <div className="card">
-                                            <h4>Leaves Taken</h4>
+                                        <div className="card p-2">
+                                            <h5><b>Leaves Taken</b></h5>
                                         </div>
                                     </div>
                                 </div>

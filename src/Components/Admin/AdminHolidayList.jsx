@@ -18,6 +18,18 @@ const AdminHolidayList = () => {
     useEffect(() => {
         getData();
     }, [])
+    const rows = holiday.flatMap(holiday => 
+        holiday.holiDayDateOcassion.map(occasion => ({
+            id: occasion.id,
+            date: occasion.date,
+            occasion: occasion.occasion,
+            day: new Date(occasion.date).toLocaleDateString('en-US', { weekday: 'long' }), // Convert date to day of the week
+            department: holiday.department,
+            designation: holiday.designation,
+            employementType: holiday.employmentType,
+            action: ''
+        }))
+    );
     
     return (
         <>
@@ -93,18 +105,7 @@ const AdminHolidayList = () => {
                                                 )
                                             },
                                         ]}
-                                        rows={
-                                            holiday.map(row => ({
-                                                id: row.holidayId,
-                                                date: row.date,
-                                                occasion: row.occasion,
-                                                day: row.day,
-                                                department: row.department,
-                                                designation: row.designation,
-                                                employementType: row.employmentType,
-                                                action: row.action
-                                            }))
-                                        }
+                                        rows={rows}
                                         slots={{
                                             toolbar: GridToolbar,
                                         }}

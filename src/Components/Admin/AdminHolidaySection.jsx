@@ -8,25 +8,26 @@ import { Link } from 'react-router-dom';
 import AdminHolidayForm from './AdminHolidayForm';
 
 const AdminHolidaySection = () => {
-    const [events, setEvents] = useState([]);
-    const calendarRef = useRef(null);
+    const [holidays, setHolidays] = useState([]);
+
+    async function getHolidayData() {
+        try {
+            const response = await axios.get("http://localhost:8080/holiday");
+            const holidayData = response.data.flatMap(holiday => 
+                holiday.holiDayDateOcassion.map(occasion => ({
+                    title: occasion.occasion, // Display the occasion
+                    start: occasion.date, // Use the date as the start date
+                }))
+            );
+            setHolidays(holidayData);
+        } catch (error) {
+            console.log("data fetching failed", error);
+        }
+    }
 
     useEffect(() => {
-        // Fetch events from the API when the component mounts
-        fetchEvents();
+        getHolidayData();
     }, []);
-
-    const fetchEvents = async () => {
-        try {
-            // Make GET request to fetch events from the API
-            const response = await axios.get('');
-
-            // Set the fetched events in the state
-            setEvents(response.data);
-        } catch (error) {
-            console.error('Error fetching events:', error);
-        }
-    };
     return (
         <>
             <div className="page-wrapper">
@@ -38,7 +39,7 @@ const AdminHolidaySection = () => {
                                 <h3>Holiday</h3>
                                 <nav aria-label="breadcrumb">
                                     <ol className="breadcrumb">
-                                        <li className="breadcrumb-item"><a href="admin-dashboard.html">Dashboard</a></li>
+                                        <li className="breadcrumb-item">Dashboard</li>
                                         <li className="breadcrumb-item active" aria-current="page">Holiday</li>
                                     </ol>
                                 </nav>
@@ -63,7 +64,6 @@ const AdminHolidaySection = () => {
                             <div className="card">
                                 <div className="card-body">
                                     <FullCalendar
-                                        ref={calendarRef}
                                         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                                         initialView="dayGridMonth"
                                         headerToolbar={{
@@ -71,9 +71,7 @@ const AdminHolidaySection = () => {
                                             center: "title",
                                             end: "dayGridMonth,dayGridWeek,dayGridDay",
                                         }}
-                                        selectable={true}
-                                        // select={handleDateSelect}
-                                        events={events}
+                                        events={holidays}
                                     />
                                 </div>
                             </div>

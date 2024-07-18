@@ -23,7 +23,6 @@ const AdminTicketSection = () => {
                         </div>
                     </div>
                 </div>
-                {/* <!-- /Page Header --> */}
                 <div className="row" style={{ fontSize: 'smaller' }}>
                     <div className="col">
                         <Link to="">

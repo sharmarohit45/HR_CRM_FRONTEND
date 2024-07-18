@@ -316,7 +316,7 @@ function EmployeeHome() {
 							<div className="tab-pane fade" id="v-pills-authentication" role="tabpanel" aria-labelledby="v-pills-authentication-tab">
 								<p>Recruit</p>
 								<ul>
-									<li><Link to="/employee/carrer-sites"> Career Sites</Link></li>
+									<li><Link to="https://www.posistrength.com/p/hire-developers"> Career Sites</Link></li>
 								</ul>
 							</div>
 							<div className="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">

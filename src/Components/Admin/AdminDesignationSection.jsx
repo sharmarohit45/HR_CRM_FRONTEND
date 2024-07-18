@@ -14,7 +14,6 @@ const AdminDesignationSection = () => {
             try {
                 const response = await axios.get("http://localhost:8080/designations");
                 setDesignations(response.data);
-                console.log("Data : ", response.data);
             } catch (error) {
                 console.error("Failed to fetch designations:", error);
             }
