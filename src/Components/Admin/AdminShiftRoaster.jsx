@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AdminBulkShiftForm from './AdminBulkShiftForm';
 
 function AdminShiftRoaster() {
@@ -16,6 +16,7 @@ function AdminShiftRoaster() {
         date: '',
         file: null,
     });
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value, type, files } = e.target;
@@ -67,7 +68,9 @@ function AdminShiftRoaster() {
         }
         setDates(tempDates);
     };
-
+    const profileOnchange = (empId) => {
+        navigate(`/admin/employee-profile/${empId}`, { state: { empId } });
+    };
     const handleNextWeek = () => {
         setCurrentWeek(currentWeek + 1);
     };
@@ -183,7 +186,7 @@ function AdminShiftRoaster() {
                                     <tbody>
                                         {shifts.map((item, index) => (
                                             <tr key={index}>
-                                                <td>
+                                                <td onClick={() => profileOnchange(item.empId)}>
                                                     <h2 className="table-avatar">
                                                         <a href="#" className="avatar">
                                                             <img src={`data:image/png;base64,${item.imageData}`} alt="Employee Avatar" />

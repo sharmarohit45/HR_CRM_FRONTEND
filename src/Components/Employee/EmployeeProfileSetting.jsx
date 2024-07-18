@@ -2,12 +2,11 @@ import React from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import { GridToolbar } from '@mui/x-data-grid';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-
-const AdminProfileSetting = ({adminId}) => {
-  console.log("ADMIN ID",adminId)
+const EmployeeProfileSetting = () => {
   return (
-    <div className="row">
+    <>
       <div className="card">
+      <div className="row">
         <div className="col">
           <div className="card tab-box mt-3">
             <div className="row user-tabs">
@@ -18,9 +17,6 @@ const AdminProfileSetting = ({adminId}) => {
                   </li>
                   <li className="nav-item">
                     <a href="#Emergency_Contacts" data-bs-toggle="tab" className="nav-link">Emergency Contacts</a>
-                  </li>
-                  <li className="nav-item">
-                    <a href="#Documents" data-bs-toggle="tab" className="nav-link">Documents</a>
                   </li>
                 </ul>
               </div>
@@ -40,16 +36,9 @@ const AdminProfileSetting = ({adminId}) => {
                   <div className="col">
                     <label htmlFor="">Your Name</label>
                     <div className="input-group">
-                      <select name="" id="" className="input-group-text">
+                      {/* <select name="" id="" className="form-select input-group-text">
                         <option value="">--</option>
-                        <option value="">Mr</option>
-                        <option value="">Mrs</option>
-                        <option value="">Miss</option>
-                        <option value="">Dr</option>
-                        <option value="">Sir</option>
-                        <option value="">Madam</option>
-                        <option value=""></option>
-                      </select>
+                      </select> */}
                       <input type="text" name="" id="" className="form-control" />
                     </div>
                   </div>
@@ -61,9 +50,7 @@ const AdminProfileSetting = ({adminId}) => {
                     <label htmlFor="">Your Password</label>
                     <div className="input-group">
                       <input type="password" name="" id="" className="form-control" />
-                      <i className="fa fa-eye input-group-text pt-3">
-
-                      </i>
+                      <i className="fa fa-eye input-group-text pt-3"></i>
                     </div>
                   </div>
                 </div>
@@ -76,17 +63,17 @@ const AdminProfileSetting = ({adminId}) => {
                     </div>
                   </div>
                   <div className="col">
-                    <label htmlFor="">Enable RTL Theme (Right to Left)</label>
+                    <label htmlFor="">Enable Google Calendar</label>
                     <div className="input-check">
                       <input type="radio" name="" id="" className='form-check-input' /> Yes &nbsp;
                       <input type="radio" name="" id="" className='form-check-input' /> No
                     </div>
                   </div>
                   <div className="col">
-                    <label htmlFor="">Enable Google Calender</label>
+                    <label htmlFor="">Gender</label>
                     <div className="input-check">
-                      <input type="radio" name="" id="" className='form-check-input' /> Yes &nbsp;
-                      <input type="radio" name="" id="" className='form-check-input' /> No
+                      <input type="radio" name="" id="" className='form-check-input' /> Male &nbsp;
+                      <input type="radio" name="" id="" className='form-check-input' /> Female
                     </div>
                   </div>
                 </div>
@@ -160,59 +147,12 @@ const AdminProfileSetting = ({adminId}) => {
                 </div>
               </div>
             </div>
-            {/* <!-- /Projects Tab --> */}
-
-            {/* <!-- Bank Statutory Tab --> */}
-            <div className="tab-pane fade" id="Documents">
-              <div className="row">
-                <div className="col mb-3">
-                  <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal"><b><i className='fa fa-plus-circle'></i> Add Files</b></a>
-                </div>
-              </div>
-              <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h1 class="modal-title fs-5" id="exampleModalLabel">Add File</h1>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                     <form action="">
-                      <div className="row">
-                        <div className="col">
-                          <label htmlFor="">File name</label>
-                          <input type="text" name="" id="" className="form-control" />
-                        </div>
-                      </div>
-                      <div className="row mt-3">
-                        <div className="col">
-                          <input type="file" name="" id="" className="form-control" />
-                        </div>
-                      </div><hr />
-                      <div className="row">
-                        <div className="col text-end">
-                        <button type="button" class="btn btn-white" data-bs-dismiss="modal">Cancel</button> &nbsp;
-                        <button type="submit" class="btn btn-white"><i className='fa fa-check'></i> Submit</button>
-                        </div>
-                      </div>
-                     </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-sm-3">
-                  <div className="card">
-
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }
 
-export default AdminProfileSetting
+export default EmployeeProfileSetting

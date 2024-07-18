@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import AdminMyCalender from './AdminMyCalender';
+import { useNavigate } from 'react-router-dom';
 function AdminPrivateDashboard() {
   const [admin, setAdmin] = useState(null);
+  const [notice, setNotice] = useState([]);
   const [dateTime, setDateTime] = useState(new Date());
   const [isOtherLocation, setIsOtherLocation] = useState(false);
+  const [empData, setEmpData] = useState([]);
+  const [anniversaryEmployees, setAnniversaryEmployees] = useState([]);
+  const [joinedTodayEmployees, setJoinedTodayEmployees] = useState([]);
+  const navigate = useNavigate();
+  const [noticePeriodEmployees, setNoticePeriodEmployees] = useState([]);
   const [sectionsVisibility, setSectionsVisibility] = useState({
     profile: true,
     shiftSchedule: true,
@@ -26,7 +34,7 @@ function AdminPrivateDashboard() {
     probationDate: true,
     internshipDate: true,
   });
-
+  const [probationEndEmployees, setProbationEndEmployees] = useState([]);
   const [formData, setFormData] = useState({
     employeeId: '',
     currentDate: new Date().toLocaleDateString(),
@@ -36,7 +44,20 @@ function AdminPrivateDashboard() {
     clockInTime: null,
     clockOutTime: null,
   });
-
+  const [birthdays, setBirthdays] = useState([]);
+  async function getEmpData() {
+    try {
+      const response = await axios.get("http://localhost:8080/allEmployee");
+      setEmpData(response.data);
+      filterBirthdays(response.data);
+      filterAnniversaryEmployees(response.data);
+      filterJoinedTodayEmployees(response.data);
+      filterNoticePeriodEmployees(response.data);
+      filterProbationEmployees(response.data);
+    } catch (error) {
+      console.log("data fetching failed", error);
+    }
+  }
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -46,7 +67,7 @@ function AdminPrivateDashboard() {
       setIsOtherLocation(false);
     }
   };
-
+  
   const handleClockIn = async (e) => {
     e.preventDefault();
     const response = await axios.post('/api/attendance/clock-in', {
@@ -96,6 +117,78 @@ function AdminPrivateDashboard() {
     });
   };
 
+ 
+  async function getdata() {
+    try {
+      const noticeReponse = await axios.get("http://localhost:8080/notice");
+      setNotice(noticeReponse.data);
+    } catch (error) {
+      console.log("data fetching failed", error);
+    }
+  }
+  const filterProbationEmployees = (data) => {
+    const today = new Date();
+    const filteredEmployees = data.filter(employee => {
+      const probationEndDate = new Date(employee.provision_End_Date); // Assuming probationEndDate is in "YYYY-MM-DD" format
+      return probationEndDate >= today; // Employee is still in probation if end date is in the future
+    });
+    console.log("Filtered Employees:", filteredEmployees); // Log filtered employees
+    setProbationEndEmployees(filteredEmployees);
+  };
+
+  const filterNoticePeriodEmployees = (data) => {
+    const today = new Date();
+    const filteredEmployees = data.filter(employee => {
+      const noticeStartDate = new Date(employee.notice_Period_Date);
+      const noticeEndDate = new Date(employee.notice_Period_Enddate);
+      return (
+        today >= noticeStartDate &&
+        today <= noticeEndDate
+      );
+    });
+    setNoticePeriodEmployees(filteredEmployees);
+  };
+  
+  function filterBirthdays(data) {
+    const currentMonth = new Date().getMonth() + 1;
+    const filteredBirthdays = data.filter((employee) => {
+      const dob = new Date(employee.dateOfBirth);
+      if (dob.toString() === 'Invalid Date') {
+        console.log('Invalid date format:', employee.dateOfBirth);
+        return false;
+      }
+      const employeeMonth = dob.getMonth() + 1;
+      return employeeMonth === currentMonth;
+    });
+    setBirthdays(filteredBirthdays);
+  }
+  const filterAnniversaryEmployees = (data) => {
+    const today = new Date();
+    const anniversaryEmployees = data.filter(employee => {
+      const anniversaryDate = new Date(employee.joiningDate);
+      return (
+        anniversaryDate.getMonth() === today.getMonth() &&
+        anniversaryDate.getDate() === today.getDate()
+      );
+    });
+    setAnniversaryEmployees(anniversaryEmployees);
+  };
+
+  const filterJoinedTodayEmployees = (data) => {
+    const today = new Date();
+    const joinedTodayEmployees = data.filter(employee => {
+      const joiningDate = new Date(employee.joiningDate);
+      return (
+        joiningDate.getFullYear() === today.getFullYear() &&
+        joiningDate.getMonth() === today.getMonth() &&
+        joiningDate.getDate() === today.getDate()
+      );
+    });
+    setJoinedTodayEmployees(joinedTodayEmployees);
+  };
+  const profileOnchange = (empId) => {
+    navigate(`/admin/employee-profile/${empId}`, { state: { empId } });
+  };
   useEffect(() => {
     const now = new Date();
     const currentDate = now.toLocaleDateString();
@@ -107,26 +200,12 @@ function AdminPrivateDashboard() {
       currentTime,
     }));
   }, []);
-
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   fetch('/api/attendance', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify(formData),
-  //   })
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       console.log('Success:', data);
-  //       // Handle successful submission
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error:', error);
-  //       // Handle error in submission
-  //     });
-  // };
+  useEffect(() => {
+    getdata();
+  }, [])
+  useEffect(() => {
+    getEmpData();
+  }, []);
   return (
     <div className="page-wrapper">
       <div className="content container-fluid pb-0">
@@ -212,7 +291,6 @@ function AdminPrivateDashboard() {
                             </div>
                           )}
                           <div className="mt-2 modal-footer">
-                            {/* <button type="button" className="btn btn-white" >Cancel</button> */}
                             <button type="submit" className="btn btn-white" data-bs-dismiss="modal">Clock In</button>
                           </div>
                         </form>
@@ -297,7 +375,7 @@ function AdminPrivateDashboard() {
               <div className="card">
                 <div className="row p-3">
                   <div className="col-sm-4">
-                    <img src="https://i.pravatar.cc/300?u=admin@example.com" alt="" style={{ height: '100px', width: '100px' }} />
+                    <img src={`data:image/png;base64,${admin ? admin.fileData : 'Admin'}`} alt="" style={{ height: '100px', width: '100px' }} />
                   </div>
                   <div className="col-sm-8">
                     <h4>
@@ -396,16 +474,37 @@ function AdminPrivateDashboard() {
               <div className="card">
                 <div className="row p-2">
                   <h4>
-                    <b>Birthday</b>
+                    <b>Birthday</b><hr />
                   </h4>
-                  <div className="col">
+                  {birthdays.length > 0 ? (
+                    <div className="row overflow-auto">
+                      <div className="col ">
+
+                        {birthdays.map((employee) => (
+                          <>
+                            <div className="row mt-2">
+                              <div className="col">
+                                <p onClick={() => profileOnchange(employee.empId)} style={{ cursor: 'pointer', fontSize: 'smaller' }}><img src={`data:image/png;base64,${employee.imageData}`} style={{ borderRadius: '50%', height: '30px', width: '30px' }} alt="" /> &nbsp; <b>{employee.empName}</b></p>
+
+                              </div>
+                              <div className="col text-end">
+                                <p >{new Date(employee.dateOfBirth).toLocaleDateString()}&nbsp; &nbsp; <i className='fa fa-birthday-cake'></i> </p>
+                              </div>
+                            </div>
+                          </>
+
+                        ))}
+
+                      </div>
+                    </div>
+                  ) : (
                     <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
                       <div className="col">
                         <i className='fa fa-list'></i>
-                        <p>- No record found. -</p>
+                        <p>- No birthdays found this month. -</p>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             )}
@@ -413,7 +512,7 @@ function AdminPrivateDashboard() {
               <div className="card">
                 <div className="row p-2">
                   <h4>
-                    <b>Employee Appreciations</b>
+                    <b>Employee Appreciations</b><hr />
                   </h4>
                   <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
                     <div className="col">
@@ -428,7 +527,7 @@ function AdminPrivateDashboard() {
               <div className="card">
                 <div className="row p-2">
                   <h4>
-                    <b>On Leave Today</b>
+                    <b>On Leave Today</b><hr />
                   </h4>
                   <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
                     <div className="col">
@@ -443,7 +542,7 @@ function AdminPrivateDashboard() {
               <div className="card">
                 <div className="row p-2">
                   <h4>
-                    <b>On Work From Home Today</b>
+                    <b>On Work From Home Today</b><hr />
                   </h4>
                   <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
                     <div className="col">
@@ -457,28 +556,56 @@ function AdminPrivateDashboard() {
             {sectionsVisibility.workAnniversary && (
               <div className="card">
                 <div className="row p-2">
-                  <h4>
-                    <b>Today's Joinings & Work Anniversary</b>
-                  </h4>
+                  <h4><b>Today's Joinings & Work Anniversary</b><hr /></h4>
                   <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
                     <div className="col">
-                      <i className='fa fa-list'></i>
-                      <p>- No record found. -</p>
+                      {anniversaryEmployees.length > 0 ? (
+                        anniversaryEmployees.map(employee => (
+                          <>
+                            <div className="row mt-2 overflow-y" style={{ fontSize: 'smaller' }}>
+                              <div className="col text-start">
+                                <p onClick={() => profileOnchange(employee.empId)} style={{ cursor: 'pointer' }}><img src={`data:image/png;base64,${employee.imageData}`} style={{ borderRadius: '15px', height: '30px', width: '30px' }} /> &nbsp; <b>{employee.empName}</b></p>
+                              </div>
+                              <div className="col text-end">
+                                <p>{employee.joiningDate}</p>
+                              </div>
+                            </div>
+                          </>
+                        ))
+                      ) : (
+                        <p>- No work anniversaries today. -</p>
+                      )}
                     </div>
                   </div>
                 </div>
+
               </div>
             )}
             {sectionsVisibility.noticePeriodDuration && (
               <div className="card">
                 <div className="row p-2">
                   <h4>
-                    <b>Notice Period Duration</b>
+                    <b>Notice Period Duration</b><hr />
                   </h4>
                   <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
                     <div className="col">
-                      <i className='fa fa-list'></i>
-                      <p>- No record found. -</p>
+                        {noticePeriodEmployees.length > 0 ? (
+                          noticePeriodEmployees.map(employee => (
+                              <div className="row" style={{fontSize:'smaller'}}>
+                                <div className="col text-start">
+                                <p onClick={() => profileOnchange(employee.empId)} style={{ cursor: 'pointer' }}><img src={`data:image/png;base64,${employee.imageData}`} style={{ borderRadius: '15px', height: '30px', width: '30px' }} /> &nbsp; <b>{employee.empName}</b></p>
+                                </div>
+                                <div className="col pt-1">
+                                  <p><b>{employee.notice_Period_Date} -  {employee.notice_Period_Enddate}</b></p>
+                                </div>
+                              </div>
+                          ))
+                        ) : (
+                          <div className="text-center">
+                            <i className='fa fa-list'></i>
+                            <p>- No employees in notice period. -</p>
+                          </div>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -488,12 +615,29 @@ function AdminPrivateDashboard() {
               <div className="card">
                 <div className="row p-2">
                   <h4>
-                    <b>Probation Date</b>
+                    <b>Probation Date</b><hr />
                   </h4>
                   <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
                     <div className="col">
-                      <i className='fa fa-list'></i>
-                      <p>- No record found. -</p>
+                    {probationEndEmployees.length > 0 ? (
+              probationEndEmployees.map(employee => (
+                <div className="row" key={employee.employeeId} style={{fontSize:'smaller'}}>
+                  <div className="col text-start">
+                    
+                    <p onClick={() => profileOnchange(employee.empId)} style={{ cursor: 'pointer' }}><img src={`data:image/png;base64,${employee.imageData}`} style={{ borderRadius: '15px', height: '30px', width: '30px' }} /> &nbsp; <b>{employee.empName}</b></p>
+                    
+                  </div>
+                  <div className="col text-end p-1">
+                    <strong>Probation End Date: {employee.provision_End_Date}</strong>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center">
+                <i className='fa fa-list'></i>
+                <p>- No employees ending probation today. -</p>
+              </div>
+            )}
                     </div>
                   </div>
                 </div>
@@ -503,7 +647,7 @@ function AdminPrivateDashboard() {
               <div className="card">
                 <div className="row p-2">
                   <h4>
-                    <b>Internship Date</b>
+                    <b>Internship Date</b><hr />
                   </h4>
                   <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
                     <div className="col">
@@ -514,11 +658,11 @@ function AdminPrivateDashboard() {
                 </div>
               </div>
             )}
-            {sectionsVisibility.contractDate && (
+            {/* {sectionsVisibility.contractDate && (
               <div className="card">
                 <div className="row p-2">
                   <h4>
-                    <b>Contract Date</b>
+                    <b>Contract Date</b><hr />
                   </h4>
                   <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
                     <div className="col">
@@ -528,7 +672,7 @@ function AdminPrivateDashboard() {
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
           </div>
           <div className="col-sm-6">
             <div className="row ">
@@ -536,7 +680,7 @@ function AdminPrivateDashboard() {
                 {sectionsVisibility.tasks && (
                   <div className="card p-3">
                     <h4>
-                      <b>Tasks</b>
+                      <b>Tasks</b><hr />
                     </h4>
                     <div className="row">
                       <div className="col">
@@ -556,7 +700,7 @@ function AdminPrivateDashboard() {
                   <div className="card">
                     <div className="row p-2">
                       <h4>
-                        <b>Projects</b>
+                        <b>Projects</b><hr />
                       </h4>
                       <div className="row">
                         <div className="col">
@@ -577,9 +721,9 @@ function AdminPrivateDashboard() {
               <div className="card">
                 <div className="row p-2">
                   <div className="col">
-                    <h4><b>Week Timelogs</b></h4>
+                    <h4><b>Week Timelogs</b><hr /></h4>
                     <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
-                      <div className="col">
+                      <div className="col pb-4">
                         <i className='fa fa-list'></i>
                         <p>- No record found. -</p>
                       </div>
@@ -592,7 +736,7 @@ function AdminPrivateDashboard() {
             {sectionsVisibility.myTasks && (
               <div className="card">
                 <div className="row p-2">
-                  <h4><b>My Tasks</b></h4>
+                  <h4><b>My Tasks</b><hr /></h4>
                   <div className="col">
                     <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
                       <div className="col">
@@ -604,10 +748,10 @@ function AdminPrivateDashboard() {
                 </div>
               </div>
             )}
-            {sectionsVisibility.ticketsi && (
+            {sectionsVisibility.tickets && (
               <div className="card">
                 <div className="row p-2">
-                  <h4><b>Tickets</b></h4>
+                  <h4><b>Tickets</b><hr /></h4>
                   <div className="col">
                     <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
                       <div className="col">
@@ -621,28 +765,26 @@ function AdminPrivateDashboard() {
             )}
             {sectionsVisibility.myCalendar && (
               <div className="card">
-                <div className="row p-2">
-                  <h4><b>My Calendar</b></h4>
-                  <div className="col">
-                    <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
-                      <div className="col">
-                        <i className='fa fa-list'></i>
-                        <p>- No record found. -</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <AdminMyCalender />
               </div>
             )}
             {sectionsVisibility.notices && (
               <div className="card">
                 <div className="row p-2">
-                  <h4><b>Notices</b></h4>
+                  <h4><b>Notices</b><hr /></h4>
                   <div className="col">
-                    <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                    <div className='row'>
                       <div className="col">
-                        <i className='fa fa-list'></i>
-                        <p>- No record found. -</p>
+                        {notice.map(item => (
+                          <div className="row" style={{ fontSize: 'smaller' }}>
+                            <div className="col-sm-4">
+                              <b>{item.date}</b>
+                            </div>
+                            <div className="col">
+                              <b className='pt-4' dangerouslySetInnerHTML={{ __html: item.noticeDetails }}></b>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>

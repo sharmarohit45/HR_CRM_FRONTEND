@@ -261,13 +261,11 @@ const AdminAddProjectForm = () => {
                                                             alt="Profile"
                                                         />
                                                         {option.clientName} 
-                                                        {/* ({option.email}) */}
                                                     </Box>
                                                 )}
                                                 renderInput={(params) => (
                                                     <TextField
                                                         {...params}
-                                                        // label="Select Client"
                                                         placeholder="Select Client"
                                                         inputProps={{
                                                             ...params.inputProps,

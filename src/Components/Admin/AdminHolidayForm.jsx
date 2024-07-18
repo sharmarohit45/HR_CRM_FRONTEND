@@ -1,11 +1,14 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import Spinner from "react-activity/dist/Dots";
+import "react-activity/dist/Dots.css";
 
 const AdminHolidayForm = () => {
-    const [holidays, setHolidays] = useState([{ id: null, date: '', occasion: '' }]);
+    const [holidays, setHolidays] = useState([]);
     const [department, setDepartment] = useState([]);
     const [designation, setDesignation] = useState([]);
     const [employmentType, setEmploymentType] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         getData();
@@ -23,7 +26,8 @@ const AdminHolidayForm = () => {
     }
 
     const handleAddRow = () => {
-        setHolidays([...holidays, { id: null, date: '', occasion: '' }]);
+        console.log('holiDay', holidays)
+        setHolidays([...holidays, { date: '', occasion: '' }]);
     };
 
     const handleRemoveRow = (index) => {
@@ -32,6 +36,7 @@ const AdminHolidayForm = () => {
     };
 
     const handleChange = (index, field, value) => {
+        console.log('index, field, value', index, field, value)
         const newHolidays = holidays.map((holiday, i) => {
             if (i === index) {
                 return { ...holiday, [field]: value };
@@ -42,22 +47,29 @@ const AdminHolidayForm = () => {
     };
 
     const handleSubmit = async (e) => {
+        
+            setLoading(true);
         e.preventDefault();
+        
         try {
             const formData = {
-                holidays: holidays.map(holiday => ({
-                    holidayId: holiday.id
-                })),
+                holiDayDateOcassion: holidays,
                 department: e.target.department.value,
                 designation: e.target.designation.value,
                 employmentType: employmentType
             };
             const response = await axios.post("http://localhost:8080/holiday", formData);
             console.log("Form data sent:", response.data);
+            setHolidays([]);
+            setEmploymentType('');
+            e.target.reset();
             // Optionally handle success or reset form
         } catch (error) {
             console.error("Form submission failed:", error);
             // Handle error state
+        }
+        finally {
+            setLoading(false); // Stop loading
         }
     };
 
@@ -85,8 +97,8 @@ const AdminHolidayForm = () => {
                                 </div>
                                 <div className="col">
                                     <label htmlFor={`occasion-${index}`}>Occasion</label>
-                                    <input type="text"id={`occasion-${index}`}className="form-control"
-                                     value={holiday.occasion} onChange={(e) => handleChange(index, 'occasion', e.target.value)}
+                                    <input type="text" id={`occasion-${index}`} className="form-control"
+                                        value={holiday.occasion} onChange={(e) => handleChange(index, 'occasion', e.target.value)}
                                     />
                                 </div>
                                 <div className="col-auto d-flex align-items-end pb-3">
@@ -139,7 +151,7 @@ const AdminHolidayForm = () => {
                         <div className="row mt-3 mb-3">
                             <div className="col">
                                 <button className="btn btn-white" type="submit">
-                                    Submit
+                                {loading ? <Spinner size={30} color="blue" speed={1} /> : 'Submit'}
                                 </button>{' '}
                                 &nbsp;
                                 <button className="btn btn-white" type="reset">

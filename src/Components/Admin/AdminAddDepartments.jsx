@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const AdminAddDepartments = () => {
+const AdminAddDepartments = ({ onAddDepartment }) => {
   const [departmentName, setDepartmentName] = useState('');
   const [parentDepartment, setParentDepartment] = useState('');
 
@@ -13,6 +13,7 @@ const AdminAddDepartments = () => {
         departmentName: departmentName,
         departmentParent: parentDepartment
       });
+      onAddDepartment();
 
       console.log('Department created successfully:', response.data);
       // Optionally, you can add a success message or redirect to another page upon successful creation.

@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file
+import React, { useEffect, useState } from 'react';
+import 'react-date-range/dist/styles.css';
+import 'react-date-range/dist/theme/default.css';
 import { DateRangePicker } from 'react-date-range';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
+
 function AdminAddLeaveForm() {
-    const [data, setData] = useState([])
+    const [data, setData] = useState([]);
     const [formData, setFormData] = useState({
         employee: '',
         leaveType: '',
@@ -36,34 +39,36 @@ function AdminAddLeaveForm() {
     };
 
     const currentDate = new Date();
+
     async function empdata() {
         const response = await axios.get("http://localhost:8080/allEmployee");
-        setData(response.data)
+        setData(response.data);
     }
+
     useEffect(() => {
         empdata();
-    }, [])
+    }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const currentDate = new Date().toISOString().split('T')[0];
         const formDataWithDate = { ...formData, savedAt: currentDate };
+
         try {
-            const response = await fetch('http://localhost:8000/leaves', {
-                method: 'POST',
+            const response = await axios.post('http://localhost:8080/leaves', formDataWithDate, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formDataWithDate),
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Leave data saved:', data);
+            if (response.status === 200) {
+                toast.success('Leave data saved successfully');
             } else {
-                console.error('Failed to save leave data');
+                toast.error('Failed to save leave data');
             }
         } catch (error) {
             console.error('Error saving leave data:', error);
+            console.error('An error occurred while saving leave data');
         }
     };
 
@@ -78,9 +83,9 @@ function AdminAddLeaveForm() {
     return (
         <>
             <form onSubmit={handleSubmit}>
-                <div className="row mt-4">
+                <div className="row">
                     <div className="col">
-                        <h3>New Leave</h3>
+                        <h3><b>New Leave</b></h3>
                         <hr />
                         <div className="row mt-4">
                             <div className="col">
@@ -92,9 +97,6 @@ function AdminAddLeaveForm() {
                                             {item.empName}
                                         </option>
                                     ))}
-                                    {/* <option value="Raj">Raj</option>
-                                    <option value="Rajesh">Rajesh</option>
-                                    <option value="Sudha">Sudha</option> */}
                                 </select>
                             </div>
                             <div className="col">
@@ -128,19 +130,29 @@ function AdminAddLeaveForm() {
                                     <label className="form-check-label" htmlFor="inlineRadio2">Multiple</label>
                                 </div>
                                 <div className="form-check form-check-inline">
-                                    <input className="form-check-input" type="radio" name="leaveDuration" id="inlineRadio2" value="option1" checked={selectedOption === 'option1'} onChange={handleOptionChange} />
-                                    <label className="form-check-label" htmlFor="inlineRadio2">First Half</label>
+                                    <input className="form-check-input" type="radio" name="leaveDuration" id="inlineRadio3" value="option2" checked={selectedOption === 'option2'} onChange={handleOptionChange} />
+                                    <label className="form-check-label" htmlFor="inlineRadio3">First Half</label>
                                 </div>
                                 <div className="form-check form-check-inline">
-                                    <input className="form-check-input" type="radio" name="leaveDuration" id="inlineRadio2" value="option1" checked={selectedOption === 'option1'} onChange={handleOptionChange} />
-                                    <label className="form-check-label" htmlFor="inlineRadio2">Second Half</label>
+                                    <input className="form-check-input" type="radio" name="leaveDuration" id="inlineRadio4" value="option3" checked={selectedOption === 'option3'} onChange={handleOptionChange} />
+                                    <label className="form-check-label" htmlFor="inlineRadio4">Second Half</label>
                                 </div>
                             </div>
                             <div className="col">
                                 <div className="row">
                                     {selectedOption === 'option1' && (
                                         <div className="col pt-4">
-                                            <input type="date" name="leaveDate" value={formData.leaveDate} className='form-control' />
+                                            <input type="date" name="leaveDate" value={formData.leaveDate} className='form-control' onChange={handleChange} />
+                                        </div>
+                                    )}
+                                     {selectedOption === 'option2' && (
+                                        <div className="col pt-4">
+                                            <input type="date" name="leaveDate" value={formData.leaveDate} className='form-control' onChange={handleChange} />
+                                        </div>
+                                    )}
+                                     {selectedOption === 'option3' && (
+                                        <div className="col pt-4">
+                                            <input type="date" name="leaveDate" value={formData.leaveDate} className='form-control' onChange={handleChange} />
                                         </div>
                                     )}
                                     {selectedOption === 'multiple' && (
@@ -158,26 +170,26 @@ function AdminAddLeaveForm() {
                         </div>
                         <div className="row mt-4">
                             <div className="col">
-                                <label htmlFor="Deal Watcher">Reason For Absense</label>
-                                <textarea name="absenceReason" id="" className='form-control' value={formData.absenceReason} onChange={handleChange}></textarea>
-
+                                <label htmlFor="absenceReason">Reason For Absence</label>
+                                <textarea name="absenceReason" id="absenceReason" className='form-control' value={formData.absenceReason} onChange={handleChange}></textarea>
                             </div>
                         </div>
                         <div className="row mt-4">
-                            <label htmlFor="">Add File</label>
-                            <input type="file" name="" id="" value={formData.file} onChange={handleChange} />
+                            <label htmlFor="file">Add File</label>
+                            <input type="file" name="file" id="file" onChange={(e) => setFormData(prevState => ({ ...prevState, file: e.target.files[0] }))} />
                         </div>
                         <div className="row mt-4">
                             <div className="col-sm-4 mb-4">
-                                <button type="submit" className='btn btn-white'>Submit</button>&nbsp;
-                                <button type="reset" className='btn btn-white'>Reset</button>
+                                <button type="submit" className='btn btn-white'>Submit</button> &nbsp;
+                                <button type="button" className='btn btn-white' data-bs-dismiss="offcanvas">Cancel</button>
                             </div>
                         </div>
                     </div>
+                    <ToastContainer />
                 </div>
             </form>
         </>
     )
 }
 
-export default AdminAddLeaveForm
+export default AdminAddLeaveForm;

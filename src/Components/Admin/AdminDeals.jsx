@@ -135,7 +135,7 @@ function AdminDeals() {
                                                 <div>
                                                     <MoreVertIcon style={{ fontSize: '15px' }} className="dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" />
                                                     <ul className="dropdown-menu btn" aria-labelledby="dropdownMenuLink" style={{ fontSize: 'smaller' }}>
-                                                        <li><a className="dropdown-item" ><i className="fa fa-eye"></i> View</a></li>
+                                                        <li><a className="dropdown-item" onClick={() => profileOnchange(params.row.id)}><i className="fa fa-eye"></i> View</a></li>
                                                         <li><a className="dropdown-item" href="#"><i className="fa fa-pen"></i> Edit</a></li>
                                                         <li onClick={() => deleteData(params.row.id)}><a className="dropdown-item" href="#"><i className="fa fa-trash" aria-hidden="true"></i> Delete</a></li>
                                                         <li><a className="dropdown-item" href="#"><i className="fa fa-thumbs-up"></i> Add Follow Up</a></li>

@@ -13,13 +13,72 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { LineChart } from '@mui/x-charts';
+import axios from 'axios';
+import { Table } from '@mui/material';
 function AdminHrTab() {
+    const [empData, setEmpData] = useState([]);
+    const [counts, setCounts] = useState({
+        totalEmployees: 0,
+        byDesignation: {},
+        byDepartment: {},
+        byGender: {},
+        byRole: {},
+    });
+    const [birthdays, setBirthdays] = useState([]);
+    async function getDataCount() {
+        try {
+            const response = await axios.get("http://localhost:8080/allEmployee");
+            setEmpData(response.data);
+            processEmployeeData(response.data);
+            filterBirthdays(response.data);
+        } catch (error) {
+            console.log("data fetching failed", error);
+        }
+    }
 
+    function processEmployeeData(data) {
+        const totalEmployees = data.length;
+        const byDesignation = {};
+        const byDepartment = {};
+        const byGender = {};
+        const byRole = {};
+        data.forEach((employee) => {
+            byDesignation[employee.designation] = (byDesignation[employee.designation] || 0) + 1;
+            byDepartment[employee.department] = (byDepartment[employee.department] || 0) + 1;
+            byGender[employee.gender] = (byGender[employee.gender] || 0) + 1;
+            byRole[employee.emp_User_Name] = (byRole[employee.emp_User_Name] || 0) + 1;
+
+        });
+
+        setCounts({
+            totalEmployees,
+            byDesignation,
+            byDepartment,
+            byGender,
+            byRole,
+        });
+    }
+    function filterBirthdays(data) {
+        const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-indexed month
+        const filteredBirthdays = data.filter((employee) => {
+            const dob = new Date(employee.dateOfBirth);
+            if (dob.toString() === 'Invalid Date') {
+                console.log('Invalid date format:', employee.dateOfBirth);
+                return false;
+            }
+            const employeeMonth = dob.getMonth() + 1;
+            return employeeMonth === currentMonth;
+        });
+        setBirthdays(filteredBirthdays);
+    }
+
+    useEffect(() => {
+        getDataCount();
+    }, []);
     return (
         <>
             <div className="page-wrapper">
                 <div className="content container-fluid pb-0">
-
                     <div className="row">
                         <div className="col-md-12">
                             <div className="page-head-box">
@@ -33,7 +92,6 @@ function AdminHrTab() {
                             </div>
                         </div>
                     </div>
-                    {/* <!-- /Page Header --> */}
                     <div className="card">
                         <div className="row">
                             <div className="col">
@@ -92,7 +150,7 @@ function AdminHrTab() {
                                     <div className="row">
                                         <div className="col-sm-8 p-3">
                                             <h4 className='text-dark'><b>Employees</b></h4>
-                                            <p>0</p>
+                                            <p>{counts.totalEmployees}</p>
                                         </div>
                                         <div className="col-sm-4 pt-4 text-center">
                                             <GroupsIcon style={{ fontSize: '35px', color: 'gray' }} />
@@ -162,14 +220,11 @@ function AdminHrTab() {
                                         <PieChart
                                             series={[
                                                 {
-                                                    data: [
-                                                        { id: 0, value: 1, label: 'Marketing' },
-                                                        { id: 1, value: 4, label: 'Sales' },
-                                                        { id: 2, value: 1, label: 'Human Resource' },
-                                                        { id: 3, value: 5, label: 'Public Relations' },
-                                                        { id: 4, value: 2, label: 'Research' },
-                                                        { id: 5, value: 3, label: 'Finance' },
-                                                    ],
+                                                    data: Object.entries(counts.byDepartment).map(([label, value], id) => ({
+                                                        id,
+                                                        value,
+                                                        label,
+                                                    })),
                                                 },
                                             ]}
                                             width={500}
@@ -188,16 +243,14 @@ function AdminHrTab() {
                                         <PieChart
                                             series={[
                                                 {
-                                                    data: [
-                                                        { id: 0, value: 1, label: 'Trainee' },
-                                                        { id: 1, value: 3, label: 'Senior' },
-                                                        { id: 2, value: 5, label: 'Junior' },
-                                                        { id: 3, value: 1, label: 'Team Lead' },
-                                                        { id: 4, value: 3, label: 'Manager' },
-                                                    ],
+                                                    data: Object.entries(counts.byDesignation).map(([label, value], id) => ({
+                                                        id,
+                                                        value,
+                                                        label,
+                                                    })),
                                                 },
                                             ]}
-                                            width={400}
+                                            width={600}
                                             height={200}
                                         />
                                     </div>
@@ -210,25 +263,15 @@ function AdminHrTab() {
                             <div className="card" style={{ height: '350px', padding: '15px' }}>
                                 <h4><b>Gender Wise Employee </b></h4>
                                 <div className="row">
-                                    {/* DATA SECTION */}
                                     <div className="col mt-4" style={{ height: '250px', fontSize: 'smaller' }}>
-                                        {/* <Chart
-                                            type="pie"
-                                            series={genderPercentage}
-                                            options={{
-                                                noData: { text: "Empty Data" },
-                                                labels: genderData
-                                            }}
-                                            height="100%"
-                                            width="100%"
-                                        /> */}
                                         <PieChart
                                             series={[
                                                 {
-                                                    data: [
-                                                        { id: 0, value: 3, label: 'Male' },
-                                                        { id: 1, value: 1, label: 'Female' },
-                                                    ],
+                                                    data: Object.entries(counts.byGender).map(([label, value], id) => ({
+                                                        id,
+                                                        value,
+                                                        label,
+                                                    })),
                                                 },
                                             ]}
                                             width={400}
@@ -242,19 +285,18 @@ function AdminHrTab() {
                             <div className="card" style={{ height: '350px', padding: '15px' }}>
                                 <h4><b>Role Wise Employee</b></h4>
                                 <div className="row">
-                                    {/* DATA SECTION */}
                                     <div className="col mt-3" style={{ height: '250px', fontSize: 'smaller' }}>
                                         <PieChart
                                             series={[
                                                 {
-                                                    data: [
-                                                        { id: 0, value: 1, label: 'Admin' },
-                                                        { id: 1, value: 13, label: 'Employee' },
-                                                        { id: 2, value: 1, label: 'Manager' },
-                                                    ],
+                                                    data: Object.entries(counts.byRole).map(([label, value], id) => ({
+                                                        id,
+                                                        value,
+                                                        label,
+                                                    })),
                                                 },
                                             ]}
-                                            width={400}
+                                            width={600}
                                             height={200}
                                         />
                                     </div>
@@ -309,8 +351,8 @@ function AdminHrTab() {
                                 <h4><b>Leaves Taken</b></h4>
                                 <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
                                     <div className="col">
-                                    <i className='fa fa-list'></i>
-                                    <p>- No record found. -</p>
+                                        <i className='fa fa-list'></i>
+                                        <p>- No record found. -</p>
                                     </div>
                                 </div>
                             </div>
@@ -318,12 +360,32 @@ function AdminHrTab() {
                         <div className="col">
                             <div className="card" style={{ height: '350px', padding: '15px' }}>
                                 <h4><b>Birthdays</b></h4>
-                                <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
-                                    <div className="col">
-                                    <i className='fa fa-list'></i>
-                                    <p>- No record found. -</p>
+                                {birthdays.length > 0 ? (
+                                    <div className="row overflow-auto">
+                                        <div className="col ">
+                                            <Table className='table table-stripped table-hover' style={{fontSize:'smaller'}}>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Employee Name</th>
+                                                </tr>
+                                                {birthdays.map((employee) => (
+                                                    <tr key={employee.emp_User_Name}>
+                                                        <td>{new Date(employee.dateOfBirth).toLocaleDateString()}</td>
+                                                        <td><img src={`data:image/png;base64,${employee.imageData}`} style={{ borderRadius: '50%', height: '60px', width: '60px' }} alt="" /> <b>{employee.empName}</b></td>
+                                                    </tr>
+                                                ))}
+                                            </Table>
+
+                                        </div>
                                     </div>
-                                </div>
+                                ) : (
+                                    <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                                        <div className="col">
+                                            <i className='fa fa-list'></i>
+                                            <p>- No birthdays found this month. -</p>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -334,8 +396,8 @@ function AdminHrTab() {
                                 <h4><b>Late Attendance</b></h4>
                                 <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
                                     <div className="col">
-                                    <i className='fa fa-list'></i>
-                                    <p>- No record found. -</p>
+                                        <i className='fa fa-list'></i>
+                                        <p>- No record found. -</p>
                                     </div>
                                 </div>
                             </div>

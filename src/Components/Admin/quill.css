@@ -1,11 +1,11 @@
 .quill-editor {
-    height: 200px; /* Adjust as needed */
+    height: 200px; 
     max-height: 200px;
     overflow: hidden;
    
 }
 .ql-container {
     height: 200px;
-    min-height: 200px; /* Adjust as needed */
+    min-height: 200px;
     border: none;
 }

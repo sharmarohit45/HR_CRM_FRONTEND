@@ -36,7 +36,7 @@ const EmployeeLeaveCalender = () => {
                             <div className="col-4 d-flex justify-content-end">
                                 <div className="btn-group">
                                     <Link to="/employee/leaves" className="btn btn-white" aria-current="page"><ListIcon /></Link>
-                                    <Link to="/employee/leaves-calendar" className="btn btn-primary" aria-current="page"><CalendarTodayIcon /></Link>
+                                    <Link to="/employee/leaves-calendar" className="btn btn-dark text-white" aria-current="page"><CalendarTodayIcon /></Link>
                                     <Link to="/employee/my-leaves" className="btn btn-white" aria-current="page"><PersonIcon /></Link>
                                 </div>
                             </div>

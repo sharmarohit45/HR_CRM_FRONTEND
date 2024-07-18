@@ -23,7 +23,6 @@ const LogInSection = () => {
 
             axios.post('http://localhost:8080/authenticate', loginData)
                 .then(response => {
-                    console.log('Logged in successfully:', response.data);
                     toast.success('Login successful');
                     localStorage.setItem('token', response.data.jwtToken);
                     const role = response.data?.user?.role;

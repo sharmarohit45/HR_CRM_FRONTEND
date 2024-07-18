@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -8,24 +8,25 @@ import AdminAddEvent from './AdminAddEvent';
 
 const AdminEventsSection = () => {
     const [events, setEvents] = useState([]);
-    const calendarRef = useRef(null);
 
     useEffect(() => {
-        // Fetch events from the API when the component mounts
-        fetchEvents();
+        async function getEventsData() {
+            try {
+                const response = await axios.get("http://localhost:8080/events");
+                const eventData = response.data.map(event => ({
+                    title: event.eventName,
+                    start: event.startsOnDate + 'T' + event.startsOnTime,
+                    end: event.endsOnDate + 'T' + event.endsOnTime,
+                }));
+                setEvents(eventData);
+            } catch (error) {
+                console.log("Data fetching failed", error);
+            }
+        }
+        
+        getEventsData();
     }, []);
 
-    const fetchEvents = async () => {
-        try {
-            // Make GET request to fetch events from the API
-            const response = await axios.get('https://example.com/api/events');
-
-            // Set the fetched events in the state
-            setEvents(response.data);
-        } catch (error) {
-            console.error('Error fetching events:', error);
-        }
-    };
     return (
         <>
             <div className="page-wrapper">
@@ -34,9 +35,8 @@ const AdminEventsSection = () => {
                         <div className="col-sm-12">
                             <div className="card">
                                 <div className="card-body">
-                                    <button className="btn btn-white mb-3"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add Event</button>
+                                    <button className="btn btn-white mb-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add Event</button>
                                     <FullCalendar
-                                        ref={calendarRef}
                                         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                                         initialView="dayGridMonth"
                                         headerToolbar={{
@@ -44,8 +44,6 @@ const AdminEventsSection = () => {
                                             center: "title",
                                             end: "dayGridMonth,dayGridWeek,dayGridDay",
                                         }}
-                                        selectable={true}
-                                        // select={handleDateSelect}
                                         events={events}
                                     />
                                 </div>
@@ -54,15 +52,14 @@ const AdminEventsSection = () => {
                     </div>
                 </div>
                 <div className="offcanvas offcanvas-end" tabIndex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" style={{ width: '85%' }}>
-                        <div className="offcanvas-header">
-                            <h2 id="offcanvasRightLabel" className='text-bold'><b>Add Events</b></h2>
-                            <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                        </div>
-                        <div className="offcanvas-body">
-                            {/* <AdminAddNotice /> */}
-                            <AdminAddEvent />
-                        </div>
+                    <div className="offcanvas-header">
+                        <h2 id="offcanvasRightLabel" className='text-bold'><b>Add Events</b></h2>
+                        <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
+                    <div className="offcanvas-body">
+                        <AdminAddEvent />
+                    </div>
+                </div>
             </div>
         </>
     );

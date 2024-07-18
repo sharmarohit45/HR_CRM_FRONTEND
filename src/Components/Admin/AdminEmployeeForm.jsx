@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
-function AdminEmployeeForm() {
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+function AdminEmployeeForm({onAddEmployee}) {
     const [designation, setDesignation] = useState();
     const [department, setDepartment] = useState();
     const [formData, setFormData] = useState({
@@ -20,7 +21,7 @@ function AdminEmployeeForm() {
         dateOfBirth: '',
         reportingTo: '',
         language: '',
-        empUserRole: '',
+        emp_User_Name: '',
         address: '',
         about: '',
         login_Allowed: '',
@@ -59,12 +60,11 @@ function AdminEmployeeForm() {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log(response.data);
-            // Handle response data as needed
-            console.log(formData)
+            toast.success("Employee Added Succeessfully")
+            onAddEmployee()
+
         } catch (error) {
             console.error('There was an error', error);
-            // Handle error
         }
     }
     async function getData() {
@@ -187,7 +187,7 @@ function AdminEmployeeForm() {
                                 </div>
                                 <div className="col">
                                     <label htmlFor="emp_User_Name">User Role</label>
-                                    <select className="form-select" name="empUserRole" value={formData.empUserRole} onChange={handleChange}>
+                                    <select className="form-select" name="emp_User_Name" value={formData.emp_User_Name} onChange={handleChange}>
                                         <option value="">--</option>
                                         <option value="App Administrator">App Administrator</option>
                                         <option value="Employee">Employee</option>
@@ -307,6 +307,7 @@ function AdminEmployeeForm() {
                         </form>
                     </div>
                 </div>
+                <ToastContainer/>
             </div>
         </>
     );

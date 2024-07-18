@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import ListIcon from '@mui/icons-material/List';
-import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import { DataGrid } from '@mui/x-data-grid';
 import { GridToolbar } from '@mui/x-data-grid';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import EmployeeLeadContactForm from './EmployeeLeadContactForm';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import PersonIcon from '@mui/icons-material/Person';
 import EmployeeLeaveForm from './EmployeeLeaveForm';
@@ -63,7 +61,7 @@ const EmployeeLeavesSection = () => {
                             </div>
                             <div className="col-4 d-flex justify-content-end">
                                 <div className="btn-group">
-                                    <Link to="/employee/leaves" className="btn btn-primary" aria-current="page"><ListIcon /></Link>
+                                    <Link to="/employee/leaves" className="btn btn-dark text-white" aria-current="page"><ListIcon /></Link>
                                     <Link to="/employee/leaves-calendar" className="btn btn-white" aria-current="page"><CalendarTodayIcon /></Link>
                                     <Link to="/employee/my-leaves" className="btn btn-white" aria-current="page"><PersonIcon /></Link>
                                 </div>

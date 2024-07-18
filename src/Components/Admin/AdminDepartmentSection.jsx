@@ -11,16 +11,17 @@ const AdminDepartmentSection = () => {
 
 
     useEffect(() => {
-        async function fetchDepartment() {
-            try {
-                const response = await axios.get("http://localhost:8080/departments");
-                setDepartments(response.data);
-            } catch (error) {
-                console.error("Failed to fetch designations:", error);
-            }
-        }
+        
         fetchDepartment();
     }, []);
+    async function fetchDepartment() {
+        try {
+            const response = await axios.get("http://localhost:8080/departments");
+            setDepartments(response.data);
+        } catch (error) {
+            console.error("Failed to fetch designations:", error);
+        }
+    }
     return (
         <>
             <div className="page-wrapper">
@@ -88,7 +89,7 @@ const AdminDepartmentSection = () => {
                                 <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                             </div>
                             <div className="offcanvas-body">
-                               <AdminAddDepartments />
+                               <AdminAddDepartments onAddDepartment={fetchDepartment}/>
                             </div>
                         </div>
                         <div className="modal fade" id="viewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

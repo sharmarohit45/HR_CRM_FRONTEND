@@ -1,9 +1,11 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const AdminProposalForm = () => {
     const [lead, setLead] = useState('');
     const [deal, setDeal] = useState('');
+    const [productData, SetProductData] = useState('');
     const [validTill, setValidTill] = useState('');
     const [currency, setCurrency] = useState('USD($)');
     const [calculateTax, setCalculateTax] = useState('After Discount');
@@ -12,6 +14,9 @@ const AdminProposalForm = () => {
     const [product, setProduct] = useState('');
     const [data, setData] = useState([]);
     const [dealData, setDealData] = useState([]);
+    const [recipientNote, setRecipientNote] = useState('');
+    const [total, setTotal] = useState('');
+
     const [rows, setRows] = useState([
         {
             description: '',
@@ -36,10 +41,11 @@ const AdminProposalForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+
+        const currentDate = new Date().toISOString().split('T')[0];
         try {
             const proposalProducts = await Promise.all(rows.map(async (row) => {
                 const fileData = row.file ? await convertFileToBase64(row.file) : null;
-                console.log(fileData);
                 return {
                     description: row.description,
                     quantity: row.quantity,
@@ -49,39 +55,30 @@ const AdminProposalForm = () => {
                     fileName: row.file ? row.file.name : null,
                     fileData: fileData
                 };
-                
+
             }));
- 
+            const totalAmount = calculateTotal();
             const formData = {
                 dealId: deal,
                 leadId: lead,
-                validTill:validTill,
-                currency:currency,
-                calculateTax:calculateTax,
-                description:description,
+                validTill: validTill,
+                currency: currency,
+                calculateTax: calculateTax,
+                description: description,
+                recipientNote: recipientNote,
                 signatureApproval: requireSignature,
-                proposalProducts:proposalProducts
+                proposalProducts: proposalProducts,
+                date: currentDate,
+                total: totalAmount
             };
 
-            const response = await fetch('http://localhost:8080/proposals', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
+            const response = await axios.post('http://localhost:8080/proposals', formData);
+            toast.success('Proposal added successfully');
 
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-
-            // Assuming successful submission
-            console.log("Form Data:", formData);
-
-            // Reset the form
             event.target.reset();
-
-            // Reset the state
             setLead('');
             setDeal('');
             setValidTill('');
@@ -138,9 +135,18 @@ const AdminProposalForm = () => {
             console.error('Data fetching failed:', error);
         }
     }
+    async function dealproductData() {
+        try {
+            const response = await axios.get("http://localhost:8080/product");
+            SetProductData(response.data);
+        } catch (error) {
+            console.error('Data fetching failed:', error);
+        }
+    }
 
     useEffect(() => {
         dealApiData();
+        dealproductData();
     }, []);
 
     const handleInputChange = (index, field, value) => {
@@ -197,6 +203,7 @@ const AdminProposalForm = () => {
         const subtotal = parseFloat(calculateSubtotal());
         const discountAmount = discountType === '%' ? (subtotal * discount / 100) : discount;
         return (subtotal - discountAmount).toFixed(2);
+
     };
     return (
         <>
@@ -223,10 +230,10 @@ const AdminProposalForm = () => {
                                 <div className="col">
                                     <label>Deal</label>
                                     <select className='form-control' value={deal} onChange={(e) => setDeal(e.target.value)} >
-                                            <option value="">--</option>
-                                            {dealData && dealData.map((item,index)=>(
-                                                <option key={index} value={item.dealId}>{item.dealName}</option>
-                                            ))}
+                                        <option value="">--</option>
+                                        {dealData && dealData.map((item, index) => (
+                                            <option key={index} value={item.dealId}>{item.dealName}</option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className="col">
@@ -278,9 +285,8 @@ const AdminProposalForm = () => {
                                     <label htmlFor=""> Product</label>
                                     <select className='form-select' value={product}
                                         onChange={(e) => setProduct(e.target.value)}>
-                                        <option value="">A</option>
-                                        <option value="">B</option>
-                                        <option value="">C</option>
+                                        {productData && productData.map((products) => (<option value={products.name}>{products.name}</option>))}
+
                                     </select>
                                 </div>
                             </div>
@@ -414,7 +420,7 @@ const AdminProposalForm = () => {
                                     </div>
                                 </div>
                                 <div className="col-md-3 col-sm-6 mb-3">
-                                    <label>Tax</label>
+                                    <label>Total Tax</label>
                                     {rows.map((row, index) => (
                                         <div key={index}>
                                             <input type="text" value={row.tax} className='form-control' readOnly />
@@ -424,12 +430,20 @@ const AdminProposalForm = () => {
                                 <div className="col-md-3 col-sm-6 mb-3">
                                     <label>Total</label>
                                     <input type="text" className='form-control' value={calculateTotal()} readOnly />
+                                    {console.log("calculate Total", calculateTotal())}
                                 </div>
                             </div>
                             <div className="row mt-3">
+
                                 <div className="col">
-                                    <label htmlFor="">Note For The Recipient</label>
-                                    <textarea className='form-control'></textarea>
+                                    <label htmlFor="recipientNote">Note For The Recipient</label>
+                                    <textarea
+                                        id="recipientNote"
+                                        className='form-control'
+                                        value={recipientNote}
+                                        onChange={(e) => setRecipientNote(e.target.value)}
+                                    ></textarea>
+
                                 </div>
                                 <div className="col">
                                     <label htmlFor="">Terms and Conditions</label>
@@ -445,6 +459,7 @@ const AdminProposalForm = () => {
                         </form>
                     </div>
                 </div>
+                <ToastContainer />
             </div>
         </>
     );
