@@ -35,7 +35,6 @@ const AdminHolidayList = () => {
         <>
             <div className="page-wrapper">
                 <div className="content container-fluid pb-0">
-
                     <div className="row">
                         <div className="col-md-12">
                             <div className="page-head-box">
@@ -50,8 +49,6 @@ const AdminHolidayList = () => {
                             </div>
                         </div>
                     </div>
-                    {/* <!-- /Page Header --> */}
-                    {/* Page Content */}
                     <div className="row mb-3">
                         <div className="row mb-3">
                             <div className="col">
@@ -94,11 +91,6 @@ const AdminHolidayList = () => {
                                                         <ul className="dropdown-menu btn" aria-labelledby="dropdownMenuLink" style={{ fontSize: 'smaller' }}>
                                                             <li><a className="dropdown-item" ><i className="fa fa-eye"></i> View</a></li>
                                                             <li><a className="dropdown-item" href="#"><i className="fa fa-pen"></i> Edit</a></li>
-                                                            <li><a className="dropdown-item" href="#"><i className="fa fa-copy"></i> Duplicate</a></li>
-                                                            <li><a className="dropdown-item" href="#"><i className="fa fa-project-diagram"></i> Gant Chart</a></li>
-                                                            <li><a className="dropdown-item" href="#"><i className="fa fa-share-square"></i> Public Gant Chart</a></li>
-                                                            <li><a className="dropdown-item" href="#"><i className="fa fa-share-square"></i> Public Task Board</a></li>
-                                                            <li><a className="dropdown-item" href="#"><i className="fa fa-archive"></i> Archive</a></li>
                                                             <li><a className="dropdown-item" href="#"><i className="fa fa-trash" aria-hidden="true"></i> Delete</a></li>
                                                         </ul>
                                                     </>

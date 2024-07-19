@@ -1,11 +1,11 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.core.css';
 
-import { toast, ToastContainer } from 'react-toastify';
 
-const AdminAddAppreciation = () => {
+const UpdateAppericiationForm = () => {
     const [award, setAward] = useState('');
     const [givenTo, setGivenTo] = useState('');
     const [date, setDate] = useState('');
@@ -13,6 +13,7 @@ const AdminAddAppreciation = () => {
     const [photo, setPhoto] = useState(null);
     const [awardsOptions, setAwardsOptions] = useState([]);
     const [recipientsOptions, setRecipientsOptions] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     async function getData() {
         try {
@@ -51,37 +52,31 @@ const AdminAddAppreciation = () => {
         setPhoto(e.target.files[0]);
     };
 
-    const convertToBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
-        let fileData = '';
+        const formData = new FormData();
+        formData.append('awardId', award);
+        formData.append('employeesId', givenTo);
+        formData.append('givenDate', date);
+        formData.append('awardSummary', summary);
         if (photo) {
-            fileData = await convertToBase64(photo);
+            formData.append('fileData', photo);
         }
 
-        const formData = {
-            awardIId: award,
-            employeesId: givenTo,
-            givenDate: date,
-            awardSummary: summary,
-            fileData: fileData.split(',')[1], 
-        };
-
         try {
-            const response = await axios.post('http://localhost:8080/appericiation', formData);
-            toast.success("Data Send Successfully");
+            const response = await axios.put('http://localhost:8080/appericiation', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            toast.success("Data Updated Successfully");
         } catch (error) {
             console.log('Error submitting data', error);
             toast.error("Data Send Failed");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -149,7 +144,9 @@ const AdminAddAppreciation = () => {
                             </div>
                             <div className="row mt-3 mb-3">
                                 <div className="col">
-                                    <button type="submit" className='btn btn-white'><i className='fa fa-check'></i> Save</button> &nbsp;
+                                    <button type="submit" className='btn btn-white' disabled={loading}>
+                                        {loading ? 'Saving...' : <><i className='fa fa-check'></i> Save</>}
+                                    </button> &nbsp;
                                     <button type="button" className='btn btn-white'>Cancel</button>
                                 </div>
                             </div>
@@ -162,4 +159,4 @@ const AdminAddAppreciation = () => {
     );
 }
 
-export default AdminAddAppreciation;
+export default UpdateAppericiationForm;

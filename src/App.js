@@ -181,6 +181,7 @@ import AdminEmployeeEditForm from './Components/Admin/AdminEmployeeEditForm';
 import EmployeeHolidayListView from './Components/Employee/EmployeeHolidayListView';
 import EmployeeProfileSetting from './Components/Employee/EmployeeProfileSetting';
 import AdminEditCompanySetting from './Components/Admin/AdminEditCompanySetting';
+import AdminAwardForm from './Components/Admin/AdminAwardForm';
 function App() {
   const isLoggedIn = localStorage.getItem('token');
   return (
@@ -222,6 +223,7 @@ function App() {
             <Route path='/admin/designation' element={<AdminDesignationSection />} />
             <Route path='/admin/department' element={<AdminDepartmentSection />} />
             <Route path='/admin/appreciation' element={<AdminAppreciationSection />} />
+            <Route path='/admin/appreciation-page' element={<AdminAwardForm />} />
             <Route path='/admin/appreciation-award' element={<AdminAppreciationAwardPage />} />
 
             {/* Admin Work Section Routing */}

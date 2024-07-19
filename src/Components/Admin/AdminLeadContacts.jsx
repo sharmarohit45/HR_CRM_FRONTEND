@@ -85,6 +85,7 @@ function AdminLeadContacts() {
                                         {
                                             field: 'name', headerName: 'Contact Name', hideable: false, width: 190, renderCell: (params) => (
                                                 <div style={{ display: 'flex', alignItems: 'center', cursor:'pointer' }} onClick={() => profileOnchange(params.row.id)}>
+                                                    {/* <img src={`data:image/png;base64,${params.row.imageData}`} alt={params.value} style={{ height: '30px', width: '30px', marginRight: '10px', borderRadius: '50%' }} /> &nbsp; &nbsp; */}
                                                     {params.value}
                                                 </div>
                                             ),
@@ -110,6 +111,7 @@ function AdminLeadContacts() {
                                         id: row.id,
                                         name: row.name,
                                         companyName: row.companyName,
+                                        // imageData:row.
                                         email: row.email,
                                         addedBy: row.addedBy,
                                         savedAt: row.savedAt,

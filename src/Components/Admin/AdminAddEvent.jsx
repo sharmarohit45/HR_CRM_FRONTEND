@@ -1,6 +1,6 @@
 // import React, { useState } from 'react'
 // import ReactQuill from 'react-quill';
-// import 'react-quill/dist/quill.snow.css';
+// import 'react-quill/dist/quill.core.css';
 // import './quill.css'
 // import axios from 'axios';
 // const AdminAddEvent = () => {
@@ -253,7 +253,7 @@
 
 import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import 'react-quill/dist/quill.core.css';
 import axios from 'axios';
 
 const AdminAddEvent = () => {

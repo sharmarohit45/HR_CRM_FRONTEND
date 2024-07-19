@@ -57,7 +57,7 @@ function AdminEmployeeSection() {
     const deleteEmployee = async (empId) => {
         try {
             const response = await axios.delete(`http://localhost:8080/employee/${empId}`);
-           toast.error("Data Deleted Successfully")
+            toast.error("Data Deleted Successfully")
             getData();
         } catch (error) {
             console.error('There was an error deleting the employee!', error);
@@ -127,19 +127,19 @@ function AdminEmployeeSection() {
                                             width: 200,
                                             renderCell: (params) => (
                                                 <select
-                                                className="form-select"
-                                                style={{ marginTop: '6px' }}
-                                                aria-label="Default select User Role"
-                                                value={params.row.empUserRole || ''}
-                                                onChange={(e) => {
-                                                    // Handle change event if needed
-                                                }}
-                                            >
-                                                <option value="">{params.row.emp_User_Name}</option>
-                                                <option value="App Administrator">App Administrator</option>
-                                                <option value="Employee">Employee</option>
-                                                <option value="Manager">Manager</option>
-                                            </select>
+                                                    className="form-select"
+                                                    style={{ marginTop: '6px' }}
+                                                    aria-label="Default select User Role"
+                                                    value={params.row.empUserRole || ''}
+                                                    onChange={(e) => {
+                                                        // Handle change event if needed
+                                                    }}
+                                                >
+                                                    <option value="">{params.row.emp_User_Name}</option>
+                                                    <option value="App Administrator">App Administrator</option>
+                                                    <option value="Employee">Employee</option>
+                                                    <option value="Manager">Manager</option>
+                                                </select>
                                             ),
                                         },
                                         { field: 'reportingTo', headerName: 'Reporting To', width: 150 },

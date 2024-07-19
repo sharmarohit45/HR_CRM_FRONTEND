@@ -2,23 +2,24 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 const AdminAddBankAccount = () => {
     const [accountType, setAccountType] = useState('bank');
     const [formData, setFormData] = useState({
         bankName: '',
         accountHolderName: '',
         accountNumber: '',
-        accountType: 'Saving',
-        currency: 'USD($)',
+        accountType: 'Savings',
+        currency: 'USD',
         contactNumber: '',
         openingBalance: '',
         status: 'Active',
-        file: null,
         cashAccountHolderName: '',
         cashAccountNumber: '',
-        cashContactNumber: '',
         openingAmount: '',
+        cashContactNumber: '',
         cashStatus: 'Active',
+        bankData: '',
     });
 
     const handleAccountTypeChange = (event) => {
@@ -26,37 +27,35 @@ const AdminAddBankAccount = () => {
     };
 
     const handleChange = (e) => {
-        const { name, value, type, files } = e.target;
+        const { name, value } = e.target;
         setFormData({
             ...formData,
-            [name]: type === 'file' ? files[0] : value
+            [name]: value
         });
     };
 
     const handleFileChange = (event) => {
-        const { name, files } = event.target;
-        setFormData({
-            ...formData,
-            [name]: files[0]
-        });
+        const { files } = event.target;
+        const file = files[0];
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+            const blobString = reader.result.split(',')[1];
+            setFormData((prevState) => ({
+                ...prevState,
+                bankData: blobString,
+            }));
+        };
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const data = new FormData();
-            Object.keys(formData).forEach(key => {
-                data.append(key, formData[key]);
-            });
-
-            const response = await axios.post('http://localhost:8080/account', data, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+            const response = await axios.post('http://localhost:8080/account', formData);
             toast.success('Account added successfully');
         } catch (error) {
-            toast.error('Error adding account', error);
+            toast.error('Error adding account');
             if (error.response) {
                 console.error('Server response:', error.response.data);
             }
@@ -124,7 +123,7 @@ const AdminAddBankAccount = () => {
                                         <div className="col">
                                             <label htmlFor="accountType">Account Type</label>
                                             <select name="accountType" id="accountType" className='form-select' onChange={handleChange}>
-                                                <option value="Saving">Saving</option>
+                                                <option value="Savings">Savings</option>
                                                 <option value="Current">Current</option>
                                                 <option value="Credit Card">Credit Card</option>
                                                 <option value="Loans">Loans</option>
@@ -134,10 +133,10 @@ const AdminAddBankAccount = () => {
                                         <div className="col">
                                             <label htmlFor="currency">Currency</label>
                                             <select name="currency" id="currency" className="form-select" onChange={handleChange}>
-                                                <option value="USD($)">USD($)</option>
-                                                <option value="GBP(£)">GBP(£)</option>
-                                                <option value="EUR(€)">EUR(€)</option>
-                                                <option value="INR(₹)">INR(₹)</option>
+                                                <option value="USD">USD</option>
+                                                <option value="GBP">GBP</option>
+                                                <option value="EUR">EUR</option>
+                                                <option value="INR">INR</option>
                                             </select>
                                         </div>
                                         <div className="col">

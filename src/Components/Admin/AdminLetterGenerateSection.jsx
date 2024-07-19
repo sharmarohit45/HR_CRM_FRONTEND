@@ -3,6 +3,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { GridToolbar } from '@mui/x-data-grid';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AdminAddLetter from './AdminAddLetter';
+import 'react-quill/dist/quill.core.css';
 const AdminLetterGenerateSection = () => {
     return (
         <>
@@ -45,16 +46,14 @@ const AdminLetterGenerateSection = () => {
                                             },
                                             {
                                                 field: 'action', headerName: 'Action', width: 100, renderCell: (params) => (
-                                                    <div className="btn-group" role="group" aria-label="Basic outlined example">
-                                                        <MoreVertIcon style={{ fontSize: '15px' }} className="dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" />
-                                                        <ul className="dropdown-menu btn" aria-labelledby="dropdownMenuLink" style={{ fontSize: 'smaller' }}>
-                                                            <li><a className="dropdown-item" href="#"><i className="fa fa-eye"></i> View</a></li>
-                                                            <li><a className="dropdown-item" href="#"><i className="fa fa-download"></i> Download</a></li>
-                                                            <li><a className="dropdown-item" href="#"><i className="fa fa-copy"></i> Duplicate</a></li>
-                                                            <li><a className="dropdown-item" href="#"><i className="fa fa-edit"></i> Edit</a></li>
-                                                            <li><a className="dropdown-item" href="#"><i className="fa fa-trash" aria-hidden="true"></i> Delete</a></li>
-                                                        </ul>
-                                                    </div>
+                                                    <div>
+                                                    <MoreVertIcon style={{ fontSize: '15px' }} className="dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" />
+                                                    <ul className="dropdown-menu btn" aria-labelledby="dropdownMenuLink" style={{ fontSize: 'smaller' }}>
+                                                        <li><a className="dropdown-item"><i className="fa fa-eye"></i> View</a></li>
+                                                        <li><a className="dropdown-item"><i className="fa fa-pen"></i> Edit</a></li>
+                                                        <li><a className="dropdown-item" href="#"><i className="fa fa-trash" aria-hidden="true"></i> Delete</a></li>
+                                                    </ul>
+                                                </div>
                                                 )
                                             },
                                         ]}
