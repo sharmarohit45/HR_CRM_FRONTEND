@@ -9,11 +9,11 @@ import axios from 'axios';
 function AdminAddLeaveForm() {
     const [data, setData] = useState([]);
     const [formData, setFormData] = useState({
-        employee: '',
+        employeeId: '',
         leaveType: '',
         status: 'Pending',
-        leaveDuration: '',
-        leaveDate: null,
+        leaveDuration: 'Full Day', // default value
+        leaveDate: '',
         absenceReason: '',
         file: null,
     });
@@ -32,10 +32,14 @@ function AdminAddLeaveForm() {
         }));
     };
 
-    const [selectedOption, setSelectedOption] = useState('option1');
+    const [selectedOption, setSelectedOption] = useState('Full Day');
 
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
+        setFormData(prevState => ({
+            ...prevState,
+            leaveDuration: event.target.value
+        }));
     };
 
     const currentDate = new Date();
@@ -52,10 +56,22 @@ function AdminAddLeaveForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const currentDate = new Date().toISOString().split('T')[0];
-        const formDataWithDate = { ...formData, savedAt: currentDate };
+        const formDataWithDate = { ...formData, leaveDate: currentDate };
 
+        // Convert file to base64
+        const base64File = formData.file ? await convertToBase64(formData.file) : null;
+
+        const payload = {
+            employeeIId: formData.employeeId,
+            leaveType: formData.leaveType,
+            status: formData.status,
+            leaveDuration: formData.leaveDuration,
+            leaveDate: formData.leaveDate,
+            absenceReason: formData.absenceReason,
+            file: base64File,
+        };
         try {
-            const response = await axios.post('http://localhost:8080/leaves', formDataWithDate, {
+            const response = await axios.post('http://localhost:8080/leaves', payload, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -68,16 +84,36 @@ function AdminAddLeaveForm() {
             }
         } catch (error) {
             console.error('Error saving leave data:', error);
-            console.error('An error occurred while saving leave data');
+           
         }
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
+    const handleChange = async (e) => {
+        const { name, value, files } = e.target;
+        
+        if (name === 'file' && files.length > 0) {
+            const base64 = await convertToBase64(files[0]);
+            setFormData(prevState => ({
+                ...prevState,
+                file: files[0],  // Update the file state to store the File object itself
+                fileBase64: base64  // Store the base64-encoded string in a separate field if needed
+            }));
+        } else {
+            setFormData(prevState => ({
+                ...prevState,
+                [name]: value
+            }));
+        }
+    };
+    
+
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = error => reject(error);
+        });
     };
 
     return (
@@ -90,7 +126,7 @@ function AdminAddLeaveForm() {
                         <div className="row mt-4">
                             <div className="col">
                                 <label htmlFor="">Choose Member</label>
-                                <select className="form-select" name="employee" value={formData.employee} onChange={handleChange} required>
+                                <select className="form-select" name="employeeId" value={formData.employeeId} onChange={handleChange} required>
                                     <option value="">--</option>
                                     {data && data.map((item, index) => (
                                         <option key={index} value={item.empId}>
@@ -120,42 +156,32 @@ function AdminAddLeaveForm() {
                             <div className="col">
                                 <label htmlFor="">Select Duration</label><br />
                                 <div className="form-check form-check-inline">
-                                    <input className="form-check-input" type="radio" name="leaveDuration" id="inlineRadio1" value="option1"
-                                        checked={selectedOption === 'option1'} onChange={handleOptionChange} />
+                                    <input className="form-check-input" type="radio" name="leaveDuration" id="inlineRadio1" value="Full Day"
+                                        checked={selectedOption === 'Full Day'} onChange={handleOptionChange} />
                                     <label className="form-check-label" htmlFor="inlineRadio1">Full Day</label>
                                 </div>
                                 <div className="form-check form-check-inline">
-                                    <input className="form-check-input" type="radio" name="leaveDuration" id="inlineRadio2" value="multiple" checked={selectedOption === 'multiple'}
+                                    <input className="form-check-input" type="radio" name="leaveDuration" id="inlineRadio2" value="Multiple" checked={selectedOption === 'Multiple'}
                                         onChange={handleOptionChange} />
                                     <label className="form-check-label" htmlFor="inlineRadio2">Multiple</label>
                                 </div>
                                 <div className="form-check form-check-inline">
-                                    <input className="form-check-input" type="radio" name="leaveDuration" id="inlineRadio3" value="option2" checked={selectedOption === 'option2'} onChange={handleOptionChange} />
+                                    <input className="form-check-input" type="radio" name="leaveDuration" id="inlineRadio3" value="First Half" checked={selectedOption === 'First Half'} onChange={handleOptionChange} />
                                     <label className="form-check-label" htmlFor="inlineRadio3">First Half</label>
                                 </div>
                                 <div className="form-check form-check-inline">
-                                    <input className="form-check-input" type="radio" name="leaveDuration" id="inlineRadio4" value="option3" checked={selectedOption === 'option3'} onChange={handleOptionChange} />
+                                    <input className="form-check-input" type="radio" name="leaveDuration" id="inlineRadio4" value="Second Half" checked={selectedOption === 'Second Half'} onChange={handleOptionChange} />
                                     <label className="form-check-label" htmlFor="inlineRadio4">Second Half</label>
                                 </div>
                             </div>
                             <div className="col">
                                 <div className="row">
-                                    {selectedOption === 'option1' && (
+                                    {(selectedOption === 'Full Day' || selectedOption === 'First Half' || selectedOption === 'Second Half') && (
                                         <div className="col pt-4">
                                             <input type="date" name="leaveDate" value={formData.leaveDate} className='form-control' onChange={handleChange} />
                                         </div>
                                     )}
-                                     {selectedOption === 'option2' && (
-                                        <div className="col pt-4">
-                                            <input type="date" name="leaveDate" value={formData.leaveDate} className='form-control' onChange={handleChange} />
-                                        </div>
-                                    )}
-                                     {selectedOption === 'option3' && (
-                                        <div className="col pt-4">
-                                            <input type="date" name="leaveDate" value={formData.leaveDate} className='form-control' onChange={handleChange} />
-                                        </div>
-                                    )}
-                                    {selectedOption === 'multiple' && (
+                                    {selectedOption === 'Multiple' && (
                                         <div className="col pt-3">
                                             <DateRangePicker
                                                 ranges={[selectedRange]}
@@ -176,7 +202,7 @@ function AdminAddLeaveForm() {
                         </div>
                         <div className="row mt-4">
                             <label htmlFor="file">Add File</label>
-                            <input type="file" name="file" id="file" onChange={(e) => setFormData(prevState => ({ ...prevState, file: e.target.files[0] }))} />
+                            <input type="file" name="file" id="file" onChange={handleChange} />
                         </div>
                         <div className="row mt-4">
                             <div className="col-sm-4 mb-4">
@@ -185,11 +211,11 @@ function AdminAddLeaveForm() {
                             </div>
                         </div>
                     </div>
-                    <ToastContainer />
                 </div>
             </form>
+            <ToastContainer />
         </>
-    )
+    );
 }
 
 export default AdminAddLeaveForm;

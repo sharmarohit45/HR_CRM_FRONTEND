@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import './quill.css';
+import 'react-quill/dist/quill.core.css';
+
 
 const EmployeeAddProjectForm = () => {
     const [editorData, setEditorData] = useState('');

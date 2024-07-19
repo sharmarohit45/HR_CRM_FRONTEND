@@ -1,11 +1,24 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import { GridToolbar } from '@mui/x-data-grid';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AdminCreateTemplate from './AdminCreateTemplate';
+import axios from 'axios';
 
 const AdminLetterTemplateSection = () => {
-    
+    const [data, setData] = useState([]);
+
+    async function getData() {
+        try {
+            const response = await axios.get("http://localhost:8080/template");
+            setData(response.data);
+        } catch (error) {
+            console.log("data fetching failed", error);
+        }
+    }
+    useEffect(() => {
+        getData();
+    }, [])
     return (
         <>
             <div className="page-wrapper">
@@ -36,31 +49,26 @@ const AdminLetterTemplateSection = () => {
                                     <DataGrid
                                         columns={[
                                             // { field: 'id', headerName: 'id', hideable: false, width: 100 },
-                                            { field: 'template', headerName: 'Title', hideable: false, width: 1050  },
+                                            { field: 'template', headerName: 'Title', hideable: false, width: 1050 },
                                             {
                                                 field: 'action', headerName: 'Action', width: 100, renderCell: (params) => (
-                                                    <div className="btn-group" role="group" aria-label="Basic outlined example">
+                                                    <div>
                                                         <MoreVertIcon style={{ fontSize: '15px' }} className="dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" />
                                                         <ul className="dropdown-menu btn" aria-labelledby="dropdownMenuLink" style={{ fontSize: 'smaller' }}>
-                                                            <li><a className="dropdown-item" href="#"><i className="fa fa-eye"></i> View</a></li>
-                                                            <li><a className="dropdown-item" href="#"><i className="fa fa-edit"></i> Edit</a></li>
+                                                            <li><a className="dropdown-item" ><i className="fa fa-eye"></i> View</a></li>
+                                                            <li><a className="dropdown-item" ><i className="fa fa-pen"></i> Edit</a></li>
                                                             <li><a className="dropdown-item" href="#"><i className="fa fa-trash" aria-hidden="true"></i> Delete</a></li>
                                                         </ul>
                                                     </div>
                                                 )
                                             },
                                         ]}
-                                        // rows={rows
-                                        //          rows.map(row => ({
-                                        //             id: row.id,
-                                        //     //     name: row.name,
-                                        //     //     companyName: row.companyName,
-                                        //     //     email: row.email,
-                                        //     //     addedBy: row.addedBy,
-                                        //     //     savedAt: row.savedAt,
-                                        //     //     action: row.action
-                                        //      }))
-                                        // }
+                                        rows={data.map(row => ({
+                                            id: row.templateId,
+                                            template: row.title,
+                                            action: row.action
+                                        }))
+                                        }
                                         slots={{
                                             toolbar: GridToolbar,
                                         }}

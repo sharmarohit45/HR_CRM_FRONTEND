@@ -9,6 +9,8 @@ function AdminPrivateDashboard() {
   const [dateTime, setDateTime] = useState(new Date());
   const [isOtherLocation, setIsOtherLocation] = useState(false);
   const [empData, setEmpData] = useState([]);
+  const [leaveData, setLeaveData] = useState([]);
+  const [currentLeaveEmployees, setCurrentLeaveEmployees] = useState([]);
   const [anniversaryEmployees, setAnniversaryEmployees] = useState([]);
   const [joinedTodayEmployees, setJoinedTodayEmployees] = useState([]);
   const navigate = useNavigate();
@@ -34,6 +36,8 @@ function AdminPrivateDashboard() {
     probationDate: true,
     internshipDate: true,
   });
+  const [appreciation, setAppreciation] = useState([]);
+  const [filteredAppreciation, setFilteredAppreciation] = useState([]);
   const [probationEndEmployees, setProbationEndEmployees] = useState([]);
   const [formData, setFormData] = useState({
     employeeId: '',
@@ -58,6 +62,19 @@ function AdminPrivateDashboard() {
       console.log("data fetching failed", error);
     }
   }
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/leaves");
+      setLeaveData(response.data);
+      filterCurrentDateLeaves(response.data); // Filter leaves on initial load
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -67,7 +84,7 @@ function AdminPrivateDashboard() {
       setIsOtherLocation(false);
     }
   };
-  
+
   const handleClockIn = async (e) => {
     e.preventDefault();
     const response = await axios.post('/api/attendance/clock-in', {
@@ -117,7 +134,7 @@ function AdminPrivateDashboard() {
     });
   };
 
- 
+
   async function getdata() {
     try {
       const noticeReponse = await axios.get("http://localhost:8080/notice");
@@ -126,15 +143,46 @@ function AdminPrivateDashboard() {
       console.log("data fetching failed", error);
     }
   }
+  const fetchAppreciationData = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/appericiation");
+      const data = response.data;
+      filterAppreciationData(data);
+    } catch (error) {
+      console.error("Data fetching failed", error);
+    }
+  };
   const filterProbationEmployees = (data) => {
     const today = new Date();
     const filteredEmployees = data.filter(employee => {
-      const probationEndDate = new Date(employee.provision_End_Date); // Assuming probationEndDate is in "YYYY-MM-DD" format
-      return probationEndDate >= today; // Employee is still in probation if end date is in the future
+      const probationEndDate = new Date(employee.provision_End_Date);
+      return probationEndDate >= today;
     });
-    console.log("Filtered Employees:", filteredEmployees); // Log filtered employees
     setProbationEndEmployees(filteredEmployees);
   };
+  const filterAppreciationData = (data) => {
+    console.log('Data received:', data); // Debugging
+    if (!Array.isArray(data)) {
+      console.error('Data is not an array:', data);
+      return;
+    }
+
+    const today = new Date();
+    const startOfYear = new Date(today.getFullYear(), 0, 1);
+    const endOfYear = new Date(today.getFullYear(), 11, 31);
+
+    const filteredData = data.filter(item => {
+      const appreciationDate = new Date(item.givenDate);
+      return appreciationDate >= startOfYear && appreciationDate <= endOfYear;
+    });
+    setFilteredAppreciation(filteredData);
+  };
+
+
+  useEffect(() => {
+    fetchAppreciationData();
+  }, []);
+
 
   const filterNoticePeriodEmployees = (data) => {
     const today = new Date();
@@ -148,7 +196,21 @@ function AdminPrivateDashboard() {
     });
     setNoticePeriodEmployees(filteredEmployees);
   };
-  
+  const filterCurrentDateLeaves = (data) => {
+    const today = new Date();
+    const filteredLeaves = data.filter(leave => {
+      const leaveDate = new Date(leave.leaveDate);
+      // Check if leaveDate is today's date (ignoring time)
+      return leaveDate.getFullYear() === today.getFullYear() &&
+        leaveDate.getMonth() === today.getMonth() &&
+        leaveDate.getDate() === today.getDate() &&
+        leave.status === 'Approved'; // Filter for approved leaves only
+    });
+    setCurrentLeaveEmployees(filteredLeaves);
+  };
+
+
+
   function filterBirthdays(data) {
     const currentMonth = new Date().getMonth() + 1;
     const filteredBirthdays = data.filter((employee) => {
@@ -510,18 +572,44 @@ function AdminPrivateDashboard() {
             )}
             {sectionsVisibility.appreciations && (
               <div className="card">
-                <div className="row p-2">
-                  <h4>
-                    <b>Employee Appreciations</b><hr />
-                  </h4>
-                  <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
-                    <div className="col">
-                      <i className='fa fa-list'></i>
-                      <p>- No record found. -</p>
-                    </div>
+                <div className="p-2">
+                  <h4><b>Employee Appreciations</b></h4>
+                  <hr />
+                  <div className='text-center' style={{ fontSize: 'smaller' }}>
+                    {filteredAppreciation.length === 0 ? (
+                      <p>No appreciations found for this year.</p>
+                    ) : (
+                      <>
+                        {filteredAppreciation.map((item) => (
+                          <div className="row" key={item.id}>
+                            <div className="col text-start"  onClick={() => profileOnchange(item.employee.empId)} >
+                              <p><img src={`data:image/png;base64,${item.employee.imageData}`} style={{ borderRadius: '50%', height: '30px', width: '30px' }} alt="" />&nbsp; <b>{item.employee.empName}</b>
+                              </p>
+                            </div>
+                            <div className="col"> 
+                              <div className="row pt-1">
+                                <div className="col-sm-9 text-end" style={{fontSize:'smaller'}}>
+                                 <b>{item.awardList.title}</b><br/>
+                                  <b>{new Date(item.givenDate).toLocaleDateString()}</b>
+                                </div>
+                                <div className="col-sm-3 text-start">
+                                <i style={{ backgroundColor: item.awardList.colorCode, fontSize: '18px', padding: '4px', borderRadius: '20%' }} className={item.awardList.icon}></i>
+
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+
+                        ))}
+                      </>
+
+
+                    )}
                   </div>
                 </div>
               </div>
+
             )}
             {sectionsVisibility.onLeaveToday && (
               <div className="card">
@@ -529,10 +617,34 @@ function AdminPrivateDashboard() {
                   <h4>
                     <b>On Leave Today</b><hr />
                   </h4>
-                  <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                  <div className='row text-center d-flex align-items-center justify-content-center' style={{  fontSize: '15px', height: '100%' }}>
                     <div className="col">
-                      <i className='fa fa-list'></i>
-                      <p>- No record found. -</p>
+                      {currentLeaveEmployees && currentLeaveEmployees.length > 0 ? (
+                        currentLeaveEmployees.map(leaveData => (
+                          <div className="row"key={leaveData.leaveId}>
+                            <div className="col pt-1 text-start">
+                              <p onClick={() => profileOnchange(leaveData.employee.empId)}
+                                style={{ cursor: 'pointer', fontSize: 'smaller' }}>
+                                {console.log(leaveData.employee.imageData)}
+                                <img src={`data:image/png;base64,${leaveData.employee.imageData}`} style={{ borderRadius: '50%', height: '30px', width: '30px' }} alt="" />
+                                &nbsp; <b>{leaveData.employee.empName}</b>
+                              </p>
+                            </div>
+                            <div className="col pt-2">
+                              <b>{leaveData.leaveDuration}</b>
+                            </div>
+                            <div className="col pt-2 text-end">
+                              <p><b>{leaveData.leaveDate}</b></p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center">
+                          <i className='fa fa-list'></i>
+                          <p>- No employees on leave today. -</p>
+                        </div>
+                      )}
+
                     </div>
                   </div>
                 </div>
@@ -589,23 +701,23 @@ function AdminPrivateDashboard() {
                   </h4>
                   <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
                     <div className="col">
-                        {noticePeriodEmployees.length > 0 ? (
-                          noticePeriodEmployees.map(employee => (
-                              <div className="row" style={{fontSize:'smaller'}}>
-                                <div className="col text-start">
-                                <p onClick={() => profileOnchange(employee.empId)} style={{ cursor: 'pointer' }}><img src={`data:image/png;base64,${employee.imageData}`} style={{ borderRadius: '15px', height: '30px', width: '30px' }} /> &nbsp; <b>{employee.empName}</b></p>
-                                </div>
-                                <div className="col pt-1">
-                                  <p><b>{employee.notice_Period_Date} -  {employee.notice_Period_Enddate}</b></p>
-                                </div>
-                              </div>
-                          ))
-                        ) : (
-                          <div className="text-center">
-                            <i className='fa fa-list'></i>
-                            <p>- No employees in notice period. -</p>
+                      {noticePeriodEmployees.length > 0 ? (
+                        noticePeriodEmployees.map(employee => (
+                          <div className="row" style={{ fontSize: 'smaller' }}>
+                            <div className="col text-start">
+                              <p onClick={() => profileOnchange(employee.empId)} style={{ cursor: 'pointer' }}><img src={`data:image/png;base64,${employee.imageData}`} style={{ borderRadius: '15px', height: '30px', width: '30px' }} /> &nbsp; <b>{employee.empName}</b></p>
+                            </div>
+                            <div className="col pt-2 text-end">
+                              <p><b>{employee.notice_Period_Date} -  {employee.notice_Period_Enddate}</b></p>
+                            </div>
                           </div>
-                        )}
+                        ))
+                      ) : (
+                        <div className="text-center">
+                          <i className='fa fa-list'></i>
+                          <p>- No employees in notice period. -</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -619,25 +731,25 @@ function AdminPrivateDashboard() {
                   </h4>
                   <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
                     <div className="col">
-                    {probationEndEmployees.length > 0 ? (
-              probationEndEmployees.map(employee => (
-                <div className="row" key={employee.employeeId} style={{fontSize:'smaller'}}>
-                  <div className="col text-start">
-                    
-                    <p onClick={() => profileOnchange(employee.empId)} style={{ cursor: 'pointer' }}><img src={`data:image/png;base64,${employee.imageData}`} style={{ borderRadius: '15px', height: '30px', width: '30px' }} /> &nbsp; <b>{employee.empName}</b></p>
-                    
-                  </div>
-                  <div className="col text-end p-1">
-                    <strong>Probation End Date: {employee.provision_End_Date}</strong>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center">
-                <i className='fa fa-list'></i>
-                <p>- No employees ending probation today. -</p>
-              </div>
-            )}
+                      {probationEndEmployees.length > 0 ? (
+                        probationEndEmployees.map(employee => (
+                          <div className="row" key={employee.employeeId} style={{ fontSize: 'smaller' }}>
+                            <div className="col text-start">
+
+                              <p onClick={() => profileOnchange(employee.empId)} style={{ cursor: 'pointer' }}><img src={`data:image/png;base64,${employee.imageData}`} style={{ borderRadius: '15px', height: '30px', width: '30px' }} /> &nbsp; <b>{employee.empName}</b></p>
+
+                            </div>
+                            <div className="col text-end p-1">
+                              <strong>Probation End Date: {employee.provision_End_Date}</strong>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center">
+                          <i className='fa fa-list'></i>
+                          <p>- No employees ending probation today. -</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

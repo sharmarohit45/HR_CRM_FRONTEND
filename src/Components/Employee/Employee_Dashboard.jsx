@@ -2,10 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
 import EmployeeMyCalendar from './EmployeeMyCalendar';
 function EmployeeDashboard() {
   const navigate = useNavigate();
@@ -16,6 +12,10 @@ function EmployeeDashboard() {
   const [imageUrl, setImageUrl] = useState(null);
   const [sessionValue, setSessionValue] = useState('')
   const [birthdays, setBirthdays] = useState([]);
+  const [leaveData, setLeaveData] = useState([]);
+  const [currentLeaveEmployees, setCurrentLeaveEmployees] = useState([]);
+  const [anniversaryEmployees, setAnniversaryEmployees] = useState([]);
+  const [joinedTodayEmployees, setJoinedTodayEmployees] = useState([]);
   const [formData, setFormData] = useState({
     attendanceDate: new Date().toISOString().split('T')[0],
     attendanceTime: new Date().toLocaleTimeString(),
@@ -27,11 +27,12 @@ function EmployeeDashboard() {
   useEffect(() => {
     getData()
     getSessionValue()
+    fetchData();
   }, [])
 
   useEffect(() => {
-    const interval = setInterval(checkDayCompletion, 60000); // Check every minute
-    return () => clearInterval(interval); // Clean up interval on unmount
+    const interval = setInterval(checkDayCompletion, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   const checkDayCompletion = async () => {
@@ -43,7 +44,15 @@ function EmployeeDashboard() {
 
     }
   };
-
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/leaves");
+      setLeaveData(response.data);
+      filterCurrentDateLeaves(response.data); // Filter leaves on initial load
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
   const getSessionValue = () => {
     const getvalue = sessionStorage.getItem('clockin')
     setSessionValue(getvalue)
@@ -70,9 +79,6 @@ function EmployeeDashboard() {
       }
     }
   };
-
-
-
   const handleClockIn = async (e) => {
     e.preventDefault();
     sessionStorage.setItem('clockin', 'Active');
@@ -106,7 +112,7 @@ function EmployeeDashboard() {
     e.preventDefault();
 
     try {
-      const logoutTime = new Date().toLocaleTimeString(); // Set the logout time
+      const logoutTime = new Date().toLocaleTimeString();
       const logoutData = {
         logoutTime,
         status: 'Not Active'
@@ -150,11 +156,24 @@ function EmployeeDashboard() {
         navigate('/');
       }
       filterBirthdays(response.data);
+      filterAnniversaryEmployees(response.data);
+      filterJoinedTodayEmployees(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   }
-
+  const filterJoinedTodayEmployees = (data) => {
+    const today = new Date();
+    const joinedTodayEmployees = data.filter(employee => {
+      const joiningDate = new Date(employee.joiningDate);
+      return (
+        joiningDate.getFullYear() === today.getFullYear() &&
+        joiningDate.getMonth() === today.getMonth() &&
+        joiningDate.getDate() === today.getDate()
+      );
+    });
+    setJoinedTodayEmployees(joinedTodayEmployees);
+  };
   function filterBirthdays(data) {
     const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-indexed month
     const filteredBirthdays = data.filter((employee) => {
@@ -168,6 +187,29 @@ function EmployeeDashboard() {
     });
     setBirthdays(filteredBirthdays);
   }
+  const filterAnniversaryEmployees = (data) => {
+    const today = new Date();
+    const anniversaryEmployees = data.filter(employee => {
+      const anniversaryDate = new Date(employee.joiningDate);
+      return (
+        anniversaryDate.getMonth() === today.getMonth() &&
+        anniversaryDate.getDate() === today.getDate()
+      );
+    });
+    setAnniversaryEmployees(anniversaryEmployees);
+  };
+  const filterCurrentDateLeaves = (data) => {
+    const today = new Date();
+    const filteredLeaves = data.filter(leave => {
+      const leaveDate = new Date(leave.leaveDate);
+      // Check if leaveDate is today's date (ignoring time)
+      return leaveDate.getFullYear() === today.getFullYear() &&
+        leaveDate.getMonth() === today.getMonth() &&
+        leaveDate.getDate() === today.getDate() &&
+        leave.status === 'Approved'; // Filter for approved leaves only
+    });
+    setCurrentLeaveEmployees(filteredLeaves);
+  };
   const formattedDateTime = {
     day: dateTime.toLocaleDateString(undefined, { weekday: 'long' }),
     time: dateTime.toLocaleTimeString()
@@ -318,7 +360,7 @@ function EmployeeDashboard() {
                 </div>
               </div>
               <div className="card p-4">
-              <div className="row p-2">
+                <div className="row p-2">
                   <h4>
                     <b>Birthday</b><hr />
                   </h4>
@@ -330,7 +372,7 @@ function EmployeeDashboard() {
                           <>
                             <div className="row mt-2">
                               <div className="col">
-                                <p style={{fontSize: 'smaller' }}><img src={`data:image/png;base64,${employee.imageData}`} style={{ borderRadius: '50%', height: '30px', width: '30px' }} alt="" /> &nbsp; <b>{employee.empName}</b></p>
+                                <p style={{ fontSize: 'smaller' }}><img src={`data:image/png;base64,${employee.imageData}`} style={{ borderRadius: '50%', height: '30px', width: '30px' }} alt="" /> &nbsp; <b>{employee.empName}</b></p>
 
                               </div>
                               <div className="col text-end">
@@ -368,17 +410,38 @@ function EmployeeDashboard() {
                   </div>
                 </div>
               </div>
-              <div className="card p-4">
-                <div className="row">
+              <div className="card">
+                <div className="row p-2">
                   <h4>
-                    <b>On Leave Today</b>
+                    <b>On Leave Today</b><hr />
                   </h4>
-                  <div className="col">
-                    <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
-                      <div className="col">
-                        <i className='fa fa-list'></i>
-                        <p>- No record found. -</p>
-                      </div>
+                  <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                    <div className="col">
+                      {currentLeaveEmployees && currentLeaveEmployees.length > 0 ? (
+                        currentLeaveEmployees.map(leaveData => (
+                          <div className="row" style={{ fontSize: 'smaller' }} key={leaveData.leaveId}>
+                            <div className="col text-start">
+                              <p 
+                                style={{ cursor: 'pointer', fontSize: 'smaller' }}>
+                                <img src={`data:image/png;base64,${leaveData.employee.imageData}`} style={{ borderRadius: '50%', height: '30px', width: '30px' }} alt="" />
+                                &nbsp; <b>{leaveData.employee.empName}</b>
+                              </p>
+                            </div>
+                            <div className="col pt-2">
+                              <b>{leaveData.leaveDuration}</b>
+                            </div>
+                            <div className="col pt-2 text-end">
+                              <p><b>{leaveData.leaveDate}</b></p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center">
+                          <i className='fa fa-list'></i>
+                          <p>- No employees on leave today. -</p>
+                        </div>
+                      )}
+
                     </div>
                   </div>
                 </div>
@@ -398,20 +461,32 @@ function EmployeeDashboard() {
                   </div>
                 </div>
               </div>
-              <div className="card p-4">
-                <div className="row">
-                  <h4>
-                    <b>Today's Joinings & Work Anniversary</b>
-                  </h4>
-                  <div className="col">
-                    <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
-                      <div className="col">
-                        <i className='fa fa-list'></i>
-                        <p>- No record found. -</p>
-                      </div>
+              
+              <div className="card">
+                <div className="row p-2">
+                  <h4><b>Today's Joinings & Work Anniversary</b><hr /></h4>
+                  <div className='row text-center d-flex align-items-center justify-content-center' style={{ color: 'gray', fontSize: '15px', height: '100%' }}>
+                    <div className="col">
+                      {anniversaryEmployees.length > 0 ? (
+                        anniversaryEmployees.map(employee => (
+                          <>
+                            <div className="row mt-2 overflow-y" style={{ fontSize: 'smaller' }}>
+                              <div className="col text-start">
+                                <p><img src={`data:image/png;base64,${employee.imageData}`} style={{ borderRadius: '15px', height: '30px', width: '30px' }} /> &nbsp; <b>{employee.empName}</b></p>
+                              </div>
+                              <div className="col text-end">
+                                <p>{employee.joiningDate}</p>
+                              </div>
+                            </div>
+                          </>
+                        ))
+                      ) : (
+                        <p>- No work anniversaries today. -</p>
+                      )}
                     </div>
                   </div>
                 </div>
+
               </div>
             </div>
             <div className="col-sm-7">

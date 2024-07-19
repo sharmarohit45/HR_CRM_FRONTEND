@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import axios from 'axios';
-import 'react-quill/dist/quill.snow.css';
-import './quill.css';
+import 'react-quill/dist/quill.core.css';
+
 
 const AdminAddContractForm = () => {
     const [editorData, setEditorData] = useState('');

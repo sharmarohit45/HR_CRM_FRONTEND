@@ -49,10 +49,7 @@ const AdminProposalSection = () => {
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                     />
-                    <ul
-                        className="dropdown-menu btn"
-                        aria-labelledby="dropdownMenuLink"
-                        style={{ fontSize: 'smaller' }}
+                    <ul className="dropdown-menu btn" aria-labelledby="dropdownMenuLink" style={{ fontSize: 'smaller' }}
                     >
                         <li><a className="dropdown-item" href="#" onClick={() => handleProfileChange(params.row.id)}><i className="fa fa-eye"></i> View</a></li>
                         <li><a className="dropdown-item" href="#"><i className="fa fa-link"></i> Public link</a></li>

@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import 'react-quill/dist/quill.core.css';
 import ImageResize from 'quill-image-resize-module-react';
 import jsPDF from 'jspdf';
-import './quill.css';
+import axios from 'axios';
 
 Quill.register('modules/imageResize', ImageResize);
 
@@ -14,6 +14,33 @@ const AdminAddLetter = () => {
     const [employees, setEmployees] = useState('');
     const [employeeName, setEmployeeName] = useState('');
     const editorRef = useRef(null);
+    const [data, setData] = useState([]);
+
+    async function getData() {
+        try {
+            const response = await axios.get("http://localhost:8080/template");
+            setData(response.data);
+        } catch (error) {
+            console.log("Data fetching failed", error);
+        }
+    }
+
+    function handleLetterContent(letterTypeId) {
+        const letter = data.find(item => item.templateId === parseInt(letterTypeId));
+        if (letter) {
+            setEditorData(letter.description);
+        }
+    }
+
+    useEffect(() => {
+        getData();
+    }, []);
+
+    useEffect(() => {
+        if (letterType) {
+            handleLetterContent(letterType);
+        }
+    }, [letterType, data]);
 
     const modules = {
         toolbar: [
@@ -108,8 +135,10 @@ const AdminAddLetter = () => {
                                     <div className="col">
                                         <label htmlFor="letterType">Letter Type</label>
                                         <select id="letterType" className="form-select" value={letterType} onChange={(e) => setLetterType(e.target.value)}>
-                                            <option value="">Select Letter Type</option>
-                                            {/* Add options here */}
+                                            <option value="">-- Select an option --</option>
+                                            {data.map(item => (
+                                                <option key={item.templateId} value={item.templateId}>{item.title}</option>
+                                            ))}
                                         </select>
                                     </div>
                                 </div>
@@ -124,7 +153,7 @@ const AdminAddLetter = () => {
                                 </div>
                                 <div className="row mt-3">
                                     <div className="col">
-                                        <label>Employees Name</label>
+                                        <label>Employee Name</label>
                                         <input type="text" className="form-control" value={employeeName} onChange={(e) => setEmployeeName(e.target.value)} />
                                     </div>
                                 </div>
@@ -163,7 +192,6 @@ const AdminAddLetter = () => {
                                             theme="snow"
                                             modules={modules}
                                             formats={formats}
-                                            className="form-control quill-editor"
                                         /><br />
                                     </div>
                                 </div>
@@ -221,7 +249,7 @@ const AdminAddLetter = () => {
                                 </div>
                             </div>
                             <div className="row mt-3">
-                                <div className="col p-3" style={{ margin: `${margins.top}px ${margins.right}px ${margins.bottom}px ${margins.left}px`}}>
+                                <div className="col p-3" style={{ margin: `${margins.top}px ${margins.right}px ${margins.bottom}px ${margins.left}px` }}>
                                     <div dangerouslySetInnerHTML={{ __html: editorData }} />
                                 </div>
                             </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import './quill.css';  // Assuming this file is required for custom styles
+import 'react-quill/dist/quill.core.css';
+  // Assuming this file is required for custom styles
 import axios from 'axios';
 
 const AdminAddExpensesForm = () => {

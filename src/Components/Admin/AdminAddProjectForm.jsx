@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import './quill.css';
+import 'react-quill/dist/quill.core.css';
+
 import Box from '@mui/material/Box';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
@@ -152,7 +152,7 @@ const AdminAddProjectForm = () => {
     const handleFilmsChange = (event, value) => {
         let selectedIds = value.map(employee => employee.empId);
         setSelectedemployee(value);
-        setEmployeeIds(selectedIds); // Ensure selectedIds is an array of integers
+        setEmployeeIds(selectedIds);
     };
 
     const handleClient = (event, value) => {

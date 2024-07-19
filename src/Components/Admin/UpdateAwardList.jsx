@@ -1,43 +1,52 @@
-import React, { useState } from 'react';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const AdminAwardForm = () => {
+const UpdateAwardList = ({ id }) => {
     const [title, setTitle] = useState('');
     const [icon, setIcon] = useState('');
     const [colorCode, setColorCode] = useState('#000000');
-    const [status, setStatus] = useState('active');
     const [summary, setSummary] = useState('');
+    const [status, setStatus] = useState('Active'); // Added state for status
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (id) {
+            const fetchAward = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:8080/award/${id}`);
+                    const { title, icon, colorCode, summary, status } = response.data;
+                    setTitle(title);
+                    setIcon(icon);
+                    setColorCode(colorCode);
+                    setSummary(summary);
+                    setStatus(status); // Initialize status
+                } catch (error) {
+                    console.error("Error fetching award details", error);
+                }
+            };
+
+            fetchAward();
+        }
+    }, [id]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
 
-        if (!title || !icon || !summary) {
-            alert('Please fill in all required fields');
-            setLoading(false);
-            return;
-        }
-
         try {
-            await axios.post('http://localhost:8080/award', {
+            await axios.put(`http://localhost:8080/award/${id}`, {
                 title,
                 icon,
                 colorCode,
                 summary,
-                status
+                status, // Include status in the update
             });
-            toast.success('Award details saved successfully');
-            // Optionally reset the form fields
-            setTitle('');
-            setIcon('');
-            setColorCode('#000000');
-            setSummary('');
-            setStatus('active')
+            toast.success("Award updated successfully!");
         } catch (error) {
-            console.error('Error saving award details:', error.response ? error.response.data : error.message);
-            toast.error('Failed to save award details');
+            console.error("Error updating award", error);
+            toast.error("Failed to update award. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -49,7 +58,7 @@ const AdminAwardForm = () => {
                 <form onSubmit={handleSubmit}>
                     <div className="row">
                         <div className="col">
-                            <h3><b>Add Award Details</b><hr /></h3>
+                            <h3><b>Update Award Details</b><hr /></h3>
                         </div>
                     </div>
                     <div className="row">
@@ -91,9 +100,8 @@ const AdminAwardForm = () => {
                                 style={{ backgroundColor: colorCode, fontSize: '18px', padding: '10px', borderRadius: '20%' }}></i>
                         </div>
                     </div>
-
                     <div className="row mt-3">
-                        <div className="col-sm-1">
+                        <div className="col-sm-2">
                             <label htmlFor="colorCode">Color Code</label>
                             <input
                                 type="color"
@@ -102,6 +110,18 @@ const AdminAwardForm = () => {
                                 value={colorCode}
                                 onChange={(e) => setColorCode(e.target.value)}
                             />
+                        </div>
+                        <div className="col-sm-2">
+                            <label htmlFor="status">Status</label>
+                            <select
+                                className="form-select"
+                                id="status"
+                                value={status}
+                                onChange={(e) => setStatus(e.target.value)}
+                            >
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
                         </div>
                     </div>
                     <div className="row mt-3">
@@ -133,4 +153,4 @@ const AdminAwardForm = () => {
     );
 };
 
-export default AdminAwardForm;
+export default UpdateAwardList;
