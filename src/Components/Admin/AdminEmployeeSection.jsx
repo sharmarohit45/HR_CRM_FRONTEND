@@ -65,17 +65,6 @@ function AdminEmployeeSection() {
         }
     };
 
-    // const updateEmployee = async (empId, dataToUpdate) => {
-    //     try {
-    //         const response = await axios.put(`http://localhost:8080/employee/${empId}`, dataToUpdate);
-    //         toast.success('Employee Data Updated Successfully');
-    //         getData();
-    //     } catch (error) {
-    //         console.error('There was an error updating the employee!', error);
-    //         throw error;
-    //     }
-    // };
-
     return (
         <>
             <div className="page-wrapper">

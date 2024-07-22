@@ -42,19 +42,25 @@ const AdminCreateTemplate = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log('Editor content:', description); // Log the raw content
+    
+        // Optional: Strip image data if you don't want to send it
+        const strippedDescription = description.replace(/<img[^>]*>/g, '');
+    
         try {
-            // Replace `YOUR_BACKEND_ENDPOINT` with your actual backend endpoint
             const response = await axios.post('http://localhost:8080/template', {
                 title,
-                description
+                description: strippedDescription // Send stripped description
             });
-            toast.success('Form submitted successfully:', response.data);
+            console.log(response.data);
+            toast.success('Form submitted successfully');            
         } catch (error) {
             console.error('Form submission failed:', error);
             toast.error('Form submission failed');
         }
     };
-
+    
+    
     return (
         <div className="row">
             <div className="col">
