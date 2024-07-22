@@ -1,11 +1,23 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import { GridToolbar } from '@mui/x-data-grid';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AdminAssetsForm from './AdminAssetsForm';
+import axios from 'axios';
 const AdminAssetsSection = () => {
     const [rows, setRows] = useState([]);
+    const getData = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/assets");
+            setRows(response.data);
+        } catch (error) {
+            console.error("Data fetching failed:", error);
+        }
+    };
+    useEffect(() => {
+        getData();
+    }, [])
     return (
         <>
             <div className="page-wrapper">
@@ -36,7 +48,17 @@ const AdminAssetsSection = () => {
                                 <DataGrid
                                     columns={[
                                         { field: 'id', headerName: 'Id', hideable: false, width: 50 },
-                                        { field: 'assetPicture', headerName: 'Asset Picture', hideable: true, width: 200 },
+                                        {
+                                            field: 'assetPicture', headerName: 'Asset Picture', hideable: true, width: 200, renderCell: (params) => (
+                                                <>
+                                                    <img
+                                                        src={`data:image/png;base64,${params.row.assetPicture}`}
+                                                        alt="assets_picture"
+                                                        style={{ height: '30px', width: '30px', marginRight: '10px', borderRadius: '50%' }}
+                                                    />
+                                                </>
+                                            )
+                                        },
                                         { field: 'assetName', headerName: 'Asset Name', hideable: true, width: 200 },
                                         { field: 'lentTo', headerName: 'Lent To', hideable: true, width: 200 },
                                         { field: 'status', headerName: 'Status', hideable: true, width: 300 },
@@ -54,7 +76,17 @@ const AdminAssetsSection = () => {
                                             )
                                         },
                                     ]}
-                                    rows={rows}
+                                    rows={rows.map(row => ({
+                                        id: row.assetsId,
+                                        assetPicture: row.assetPicture,
+                                        assetName: row.assetName,
+                                        lentTo: row.lentTo,
+                                        status: row.status,
+                                        date: row.date,
+                                        action: row.action
+
+
+                                    }))}
                                     slots={{
                                         toolbar: GridToolbar,
                                     }}
